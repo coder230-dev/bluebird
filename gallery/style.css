@@ -1,0 +1,341 @@
+body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background: #003D5B;
+  margin: 0;
+  color: white;
+  font-family: Poppins, sans-serif;
+  .home {
+    width: 100%;
+    padding: 12px;
+  }
+}
+
+/* Upload Area */
+.upload-area {
+  text-align: center;
+  padding: 20px;
+  background: #222;
+  border: dashed 2px #888;
+  cursor: pointer;
+  margin: 10px;
+  width: calc(100% - 60px);
+}
+
+/* Manager Button */
+.open-manager-btn {
+  margin-bottom: 10px;
+  padding: 8px 16px;
+  border: none;
+  background: #444;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Manager Popup Overlay */
+.manager-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transform: scale(0.9);
+  align-items: center;
+  justify-content: center;
+  z-index: -1000;
+  transition: 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+  display: flex;
+}
+.manager-popup {
+  background: #222;
+  width: 80%;
+  max-width: 600px;
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+}
+.manager-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.close-manager-btn {
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Media Manager (thumbnails & remove buttons) */
+.media-manager {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  overflow: auto;
+}
+.manager-item {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  overflow: visible;
+}
+.manager-item img,
+.manager-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 1px solid #555;
+  border-radius: 4px;
+}
+.remove-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: red;
+  border: none;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* Progress area and controls */
+.progress-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.progress-bar-container {
+  display: flex;
+  width: 100%;
+  height: 6px;
+  gap: 2px;
+  border-radius: 90px;
+}
+.progress-segment {
+  flex: 1;
+  height: 100%;
+  background: rgb(84, 120, 140);
+  position: relative;
+  overflow: hidden;
+  border-radius: 90px;
+}
+.active-segment {
+  position: absolute;
+  height: 100%;
+  background: #fff;
+  width: 0%;
+}
+.control-buttons {
+  position: absolute;
+  left: -50px;
+  top: 0;
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+}
+.progress-wrapper:hover .control-buttons {
+  display: flex;
+}
+.control-buttons button {
+  border: none;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.right-item {
+    height: 100vh;
+    border-left: 2px solid white;
+    padding-left: 10px;
+    position: sticky;
+    top: 0;
+}
+
+/* Story Container */
+.story-container {
+  position: relative;
+  height: 100%;
+  aspect-ratio: 9 / 16;
+  background: black;
+  overflow: hidden;
+  border-radius: 10px;
+}
+.story {
+  width: 100%;
+  height: 100%;
+}
+.story-item {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+.story-item.active {
+  display: block;
+}
+
+/* Base styles for #front and its children */
+#front {
+  text-align: center;
+  align-items: center;
+  position: relative;
+  margin: 0 auto;
+  padding: 10px;
+  width: fit-content;
+  height: calc(100% - 100px);
+}
+
+#front .story-container {
+  text-align: center;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+/* Fullscreen mode styles */
+#front.full-screen-mode {
+  height: 100%;
+  * {
+    cursor: none;
+  }
+}
+#front.full-screen-mode .story-container {
+  height: calc(100% - 20px);
+  text-align: center;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%);
+  width: 100%;
+}
+#front.full-screen-mode .progress-wrapper {
+  width: 100%;
+}
+
+/* Ensure story area centers its media, and that images/videos fit */
+#front .story-container .story {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+#front .story-container img,
+#front .story-container video {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Optional home class for other pages */
+.home {
+  text-align: center;
+  position: relative;
+  display: block;
+  align-items: center;
+  overflow: auto;
+  max-height: 100%;
+}
+
+details {
+    text-align: left;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 20px;
+    border: 1px solid cyan;
+    height: 200px;
+    min-height: 40px;
+    overflow: hidden;
+    transition: 0.8s cubic-bezier(0.075, 0.82, 0.165, 1);
+    max-height: 0;
+}
+
+details[open] {
+    max-height: 1000px; /* Adjust based on content */
+    height: fit-content;
+    opacity: 1;
+}
+
+summary {
+    padding: 10px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+summary:hover {
+    border: 1px solid #D1495B;
+}
+
+/* Optional: Fade-in effect for content */
+details[open] summary ~ * {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+details .bottom-btns {
+    display: flex;
+    justify-content: right;
+    gap: 10px;
+    button {
+        padding: 12px 30px;
+        border-radius: 90px;
+        background: none;
+        color: white;
+        border: 2px solid #EDAE49;
+        cursor: pointer;
+        font-family: "Poppins";
+    }
+    button:nth-child(2) {
+        border: 2px solid white;
+    }
+    button:hover {
+        border: 2px solid white;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+
+        transform: translateY(-10px);
+    }
+    to {
+
+        transform: translateY(0);
+    }
+}
+
+.set-con {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #EDAE49;
+    padding: 12px;
+    align-items: center;
+    border-radius: 15px;
+    margin: 10px 2px;
+    input[type=color] {
+        border-radius: 10px;
+        background: none;
+        border: 1px solid white;
+    }
+    input[type=number] {
+        width: 40px;
+        padding: 12px;
+        font-family: "Poppins";
+        border: 2px solid white;
+        background: none;
+        color: white;
+        border-radius: 15px;
+    }
+}

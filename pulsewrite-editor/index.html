@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="titleForTab">Bluebird PulseWrite - Free for Everyone</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.css" integrity="sha512-GmZYQ9SKTnOea030Tbiat0Y+jhnYLIpsGAe6QTnToi8hI2nNbVMETHeK4wm4MuYMQdrc38x+sX77+kVD01eNsQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,500,0,0" />
+    <link rel="shortcut icon" href="https://bing.com/th/id/BCO.6355e1b5-cb70-4368-a053-5d43c3357421.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/brands.css" integrity="sha512-jG4VcHToStFVmfyfu3sYtwOhrqm7XyZ4kZkbaZjiSux0LQKxtFDR1ojOx6ImcmPEuFb889S2rt8j7koy2wQe4Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="">
+</head>
+<div id="bg-overlay">
+    <div id="popup-w-overlay-menu"></div>
+</div>
+<div id="notification"></div> 
+<div id="context-menu"></div>
+<body>
+    <div class="container">
+        <div class="top-left-c drag-region">
+            <button onclick="setUpAndOpenContextMenu('file-menu', this)"><i class="fa-solid fa-bars"></i></button>
+            <span class="logo-for-te">PulseWrite</span>
+        </div>
+        <div id="navbar" class="drag-region"></div>
+        <div id="sidebar">
+            <select id="themeSelector">
+                <option value="vs-dark">Dark</option>
+                <option value="vs">Light</option>
+                <option value="hc-black">High Contrast</option>
+            </select>
+            <h3>Upload Files to get Started!</h3>
+            <button onclick="uploadFiles()">Upload Files</button>
+            <button onclick="uploadFolder()">Upload Folders</button>
+        </div>
+        <div id="main-content"></div>
+    </div>
+</body>
+<script src="script.js"></script>
+<script src="renderer.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@latest/min/vs/loader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+</html>

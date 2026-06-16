@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tic Tac Toe</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
+    /* Basic Styles */
+    body { margin: 0; font-family: Arial, sans-serif; background-color: #f0f0f0; color: #ffffff; background: url(https://cdn12.picryl.com/photo/2016/12/31/blue-background-water-relaxing-backgrounds-textures-a166f4-1024.jpg); background-repeat: no-repeat; background-size: cover; font-family: "Source Code Pro"; }
+    nav { background-color: var(--button-background-light); padding: 10px; display: flex; justify-content: space-between; align-items: center; color: #fff; }
+    nav h1 { margin: 0; }
+    h1, h2, h3 { font-family: "Comfortaa"; }
+    #navbar-links button { margin-left: 10px; background-color: #555; color: #fff; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+    #navbar-links button:hover { background-color: #777; }
+    #popup { display: none; position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background-color: #444; color: #fff; padding: 15px 30px; border-radius: 5px; z-index: 1000; }
+    .container { text-align: center; padding: 20px; }
+    .game-board { display: grid; grid-template-columns: repeat(3, 100px); grid-gap: 5px; justify-content: center; margin: 20px auto; }
+    .cell { border-radius: 4px; width: 100px; height: 100px; background-color: rgba(0, 0, 0, 0.237); border: 2px solid #333; font-size: 2em; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .cell:hover { backdrop-filter: blur(20px); background-color: rgba(149, 149, 149, 0.191); }
+    button, select { padding: 10px 20px; transition: 0.3s; margin: 5px; cursor: pointer; border: 2px solid white !important; border-radius: 5px; background-color: transparent !important; border-radius: 45px; color: #fff; font-family: "Source Code Pro"; }
+    button:hover, select:hover { background-color: rgba(255, 255, 0, 0.336) !important; transform: translateY(-5px); }
+    #start-screen, #end-screen, #mode-selection { margin-top: 10%; text-align: center; }
+    @media (max-width: 600px) {
+      .cell { width: 80px; height: 80px; font-size: 1.5em; }
+    }
+    #xp-info { width: 300px; aspect-ratio: 16/ 9; position: absolute; left: 50%; transform: translate(-50%); text-align: left; border: 2px solid white; background-color: rgba(0, 0, 0, 0.33); border-radius: 12px; padding: 12px; }
+    #xp-info progress { display: block; width: 100%; height: 20px; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav id="navbar">
+    <h1 id="navbar-title">Tic Tac Toe</h1>
+    <div id="navbar-links" style="display: flex; float: left;">
+      <button id="restart-button" style="display: none;">Restart Game</button>
+      <button id="toggle-theme-button">Toggle Theme</button>
+      <div id="google_translate_element"></div>
+    </div>
+  </nav>
+
+  <!-- Popup Message -->
+  <div id="popup"></div>
+
+  <!-- Start Screen -->
+  <div id="start-screen" class="container">
+    <h1>Welcome to Tic Tac Toe</h1>
+    <button id="start-button">Start Game</button>
+    <div id="xp-info"></div>
+  </div>
+
+  <!-- Game Mode Selection -->
+  <div id="mode-selection" class="container" style="display: none;">
+    <h2>Select Game Mode</h2>
+    <fieldset>
+      <legend>Play with CPU</legend>
+      <button id="player-vs-computer-easy-button">Player vs Computer (Easy)</button>
+      <button id="player-vs-computer-hard-button">Player vs Computer (Hard)</button>
+    </fieldset>
+    <button id="player-vs-player-button">Player vs Player</button>
+  </div>
+
+  <!-- Game Interface -->
+  <div id="game-interface" class="container" style="display: none;">
+    <h2 id="game-status">Player X's Turn</h2>
+    <div id="game-board" class="game-board"></div>
+  </div>
+
+  <!-- End Screen -->
+  <div id="end-screen" class="container" style="display: none;">
+    <h1 id="end-message"></h1>
+    <button onclick="startGame()">Play Again</button>
+    <button id="play-again-button">Main Menu</button>
+  </div>
+
+  <div id="info-bar" style="position: fixed; bottom: 0; left: 0; width: 100%; display: flex; align-items: center; justify-content: space-between;">
+    <footer>2025 Bluebird IPE. Bluebird Games. <a style="color: #0084ff;" href="index.html">Back to all games.</a></footer>
+    <div id="level-bar" style="display: flex; align-items: center;"></div>
+  </div>
+
+  <audio id="click-sound" src="https://freesound.org/data/previews/256/256113_3263906-lq.mp3"></audio>
+  <audio id="shuffle-sound" src="https://freesound.org/data/previews/130/130657_2337295-lq.mp3"></audio>
+  <audio id="win-sound" src="https://freesound.org/data/previews/198/198841_2859979-lq.mp3"></audio>
+  <audio id="lose-sound" src="https://freesound.org/data/previews/353/353497_2256123-lq.mp3"></audio>
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+    }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script>
+    window.onload = function() {
+      document.getElementById('preloader').style.display = 'none';
+    }
+    // Level System 
+    const usersJSON = localStorage.getItem('users');
+let users = [];
+if (usersJSON) {
+    try {
+        users = JSON.parse(usersJSON);
+    } catch (error) {
+        console.error('Error parsing users JSON:', error);
+    }
+}
+
+var currentUser = localStorage.getItem('currentUser');
+if (currentUser) {
+    try {
+        currentUser = JSON.parse(currentUser);
+    } catch (error) {
+        console.error('Error parsing currentUser JSON:', error);
+        currentUser = { xpLevel: 0, level: 1, username: 'Guest' };
+    }
+} else {
+    currentUser = { xpLevel: 0, level: 1, username: 'Guest' }; // Initialize default values
+}
+
+function getMultiplier() {
+  var day = new Date().getDay();
+  if (day > 5 || day == 0) {
+      return 1.8;
+    } else if (day == 2) {
+      return 1.2
+    }
+    else if (day == 5) {
+      return 1.5
+    }
+     else {
+      return 1;
+    }
+}
+
+let multiplier = setInterval(getMultiplier(), 60000)
+
+loadLevelElement()
+
+function giveXP(amount) {
+    let xpLevel = currentUser.xpLevel;
+    let level = currentUser.level;
+
+    xpLevel += amount * multiplier;
+    if (xpLevel >= 100) {
+        xpLevel = 0;
+        level += 1; // Level up when XP reaches 100
+        popupMessage(`${currentUser.username} leveled up to level ${level}!`, 4000)
+    }
+
+    currentUser.xpLevel = xpLevel;
+    currentUser.level = level;
+
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    const userIndex = users.findIndex(user => user.username === currentUser.username);
+    if (userIndex !== -1) {
+        users[userIndex].xpLevel = xpLevel;
+        users[userIndex].level = level;
+    } else {
+        users.push(currentUser);
+    }
+
+    localStorage.setItem('users', JSON.stringify(users));
+
+    loadLevelElement()
+}
+
+function loadLevelElement() {
+  let xpLevel = Math.round(currentUser.xpLevel)
+    let level = currentUser.level;
+
+  document.querySelectorAll('#xp-info').forEach(element => {
+    // Update the innerHTML for the XP display
+    element.innerHTML = `
+        <h3>${currentUser.username || 'Guest'}</h3>
+        <h4>Level ${level}</h4>
+        <progress max="100" value="${xpLevel}"></progress>
+        <p>${xpLevel}XP / 100XP</p>
+        <h5>${100 - xpLevel}XP to next level</h5>
+        <h6>Today's Multiplier: ${multiplier}</h6>
+        <details>
+          <summary>Bonus XP Days</summary>
+          <p>Fri: 1.5x</p>
+          <p>Sat-Sun: 1.8x</p>
+          <p>Tues: 1.2x</p>
+          <p>Mon, Wed, Thurs: 1x</p>
+        </details>
+        <p>Not you. Switch Accounts <a href="../account/index.html?redirect=true">here</a>.</p>
+    `;
+});
+document.getElementById('level-bar').innerHTML = `
+        <h4>Level ${level}</h4>
+        <progress max="100" value="${xpLevel}"></progress>
+        <p>${xpLevel}XP / 100XP; Multiplier: ${multiplier}</p>
+    `;
+}
+// DOM Elements
+const startButton = document.getElementById('start-button');
+const restartButton = document.getElementById('restart-button');
+const playerVsPlayerButton = document.getElementById('player-vs-player-button');
+const playerVsComputerEasyButton = document.getElementById('player-vs-computer-easy-button');
+const playerVsComputerHardButton = document.getElementById('player-vs-computer-hard-button');
+const startScreen = document.getElementById('start-screen');
+const modeSelection = document.getElementById('mode-selection');
+const gameInterface = document.getElementById('game-interface');
+const gameStatus = document.getElementById('game-status');
+const gameBoard = document.getElementById('game-board');
+const endScreen = document.getElementById('end-screen');
+const endMessage = document.getElementById('end-message');
+const playAgainButton = document.getElementById('play-again-button');
+const popup = document.getElementById('popup');
+
+// Game Variables
+let board = ['', '', '', '', '', '', '', '', ''];
+let currentPlayer = 'X';
+let isGameActive = false;
+let gameMode = ''; // "easy" or "hard"
+
+// Winning Combinations
+const winningConditions = [
+  [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+  [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+  [0, 4, 8], [2, 4, 6]             // Diagonals
+];
+
+// Event Listeners
+startButton.addEventListener('click', () => {
+  startScreen.style.display = 'none';
+  modeSelection.style.display = 'block';
+});
+
+playerVsPlayerButton.addEventListener('click', () => {
+  modeSelection.style.display = 'none';
+  gameMode = 'player-vs-player';
+  startGame();
+});
+
+playerVsComputerEasyButton.addEventListener('click', () => {
+  modeSelection.style.display = 'none';
+  gameMode = 'easy';
+  startGame();
+});
+
+playerVsComputerHardButton.addEventListener('click', () => {
+  modeSelection.style.display = 'none';
+  gameMode = 'hard';
+  startGame();
+});
+
+restartButton.addEventListener('click', restartGame);
+playAgainButton.addEventListener('click', restartGame);
+
+// Game Functions
+function startGame() {
+  endScreen.style.display = 'none';
+  isGameActive = true;
+  board = ['', '', '', '', '', '', '', '', ''];
+  currentPlayer = 'X';
+  gameInterface.style.display = 'block';
+  gameStatus.textContent = `Player ${currentPlayer}'s Turn`;
+  restartButton.style.display = 'inline-block';
+  renderBoard();
+  if ((gameMode === 'easy' || gameMode === 'hard') && currentPlayer === 'O') {
+    setTimeout(computerMove, 500);
+  }
+}
+
+function renderBoard() {
+  gameBoard.innerHTML = '';
+  board.forEach((cell, index) => {
+    const cellElement = document.createElement('div');
+    cellElement.classList.add('cell');
+    cellElement.setAttribute('data-index', index);
+    cellElement.textContent = cell;
+    if (cell === '' && isGameActive) {
+      cellElement.addEventListener('click', handleCellClick);
+    }
+    gameBoard.appendChild(cellElement);
+  });
+}
+
+function handleCellClick(event) {
+  const index = event.target.getAttribute('data-index');
+  if (board[index] !== '' || !isGameActive) return;
+  updateCell(index, currentPlayer);
+  checkResult();
+  if ((gameMode === 'easy' || gameMode === 'hard') && isGameActive && currentPlayer === 'O') {
+    setTimeout(computerMove, 500);
+  }
+}
+
+function updateCell(index, player) {
+  board[index] = player;
+  renderBoard();
+}
+
+function changePlayer() {
+  currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+  gameStatus.textContent = `Player ${currentPlayer}'s Turn`;
+  if (currentPlayer == 'O') {
+    giveXP(2)
+  }
+}
+
+function checkResult() {
+  let roundWon = false;
+  for (let i = 0; i < winningConditions.length; i++) {
+    const [a, b, c] = winningConditions[i];
+    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+      roundWon = true;
+      break;
+    }
+  }
+
+  if (roundWon) {
+    gameStatus.textContent = `Player ${currentPlayer} Wins!`;
+    popupMessage(`Player ${currentPlayer} Wins!`, 3000);
+    if (gameMode == 'hard' && currentPlayer == 'X') {
+      giveXP(50);
+    } else {
+      giveXP(25);
+    }
+    endGame();
+    return;
+  }
+
+  if (!board.includes('')) {
+    gameStatus.textContent = `It's a Draw!`;
+    giveXP(10)
+    popupMessage(`It's a Draw!`, 3000);
+    endGame();
+    return;
+  }
+
+  changePlayer();
+}
+
+function endGame() {
+  isGameActive = false;
+  gameInterface.style.display = 'none';
+  endScreen.style.display = 'block';
+  endMessage.textContent = gameStatus.textContent;
+}
+
+function restartGame() {
+  endScreen.style.display = 'none';
+  gameInterface.style.display = 'none';
+  startScreen.style.display = 'block';
+  restartButton.style.display = 'none';
+}
+
+// Computer Move
+function computerMove() {
+  if (!isGameActive) return;
+
+  if (gameMode === 'easy') {
+    easyComputerMove();
+  } else if (gameMode === 'hard') {
+    hardComputerMove();
+  }
+}
+
+function easyComputerMove() {
+  const availableSpots = board.reduce((acc, val, idx) => {
+    if (val === '') acc.push(idx);
+    return acc;
+  }, []);
+  const randomSpot = availableSpots[Math.floor(Math.random() * availableSpots.length)];
+  updateCell(randomSpot, currentPlayer);
+  checkResult();
+}
+
+function hardComputerMove() {
+  const bestMove = minimax(board, currentPlayer);
+  updateCell(bestMove.index, currentPlayer);
+  checkResult();
+}
+
+// Minimax Algorithm
+function minimax(newBoard, player) {
+  const availSpots = newBoard.reduce((acc, val, idx) => {
+    if (val === '') acc.push(idx);
+    return acc;
+  }, []);
+
+  if (checkWin(newBoard, 'X')) {
+    return { score: -10 };
+  } else if (checkWin(newBoard, 'O')) {
+    return { score: 10 };
+  } else if (availSpots.length === 0) {
+    return { score: 0 };
+  }
+
+  const moves = [];
+  for (let i = 0; i < availSpots.length; i++) {
+    const move = {};
+    move.index = availSpots[i];
+    newBoard[availSpots[i]] = player;
+
+    if (player === 'O') {
+      const result = minimax(newBoard, 'X');
+      move.score = result.score;
+    } else {
+      const result = minimax(newBoard, 'O');
+      move.score = result.score;
+    }
+
+    newBoard[availSpots[i]] = '';
+    moves.push(move);
+  }
+
+  let bestMove;
+  if (player === 'O') {
+    let bestScore = -Infinity;
+    for (let i = 0; i < moves.length; i++) {
+      if (moves[i].score > bestScore) {
+        bestScore = moves[i].score;
+        bestMove = i;
+      }
+    }
+  } else {
+    let bestScore = Infinity;
+    for (let i = 0; i < moves.length; i++) {
+      if (moves[i].score < bestScore) {
+        bestScore = moves[i].score;
+        bestMove = i;
+      }
+    }
+  }
+
+  return moves[bestMove];
+}
+
+function checkWin(board, player) {
+  return winningConditions.some(condition => {
+    return condition.every(index => board[index] === player);
+  });
+}
+
+// Popup Message Function
+function popupMessage(message, seconds) {
+  if (!seconds) seconds = 3000;
+  popup.style.display = 'block';
+  popup.innerHTML = message;
+  setTimeout(function () {
+    popup.style.display = 'none';
+    popup.innerHTML = '';
+  }, seconds);
+}
+  </script>
+</body>
+</html>

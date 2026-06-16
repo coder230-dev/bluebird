@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enhanced Stories Gallery</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.css" integrity="sha512-GmZYQ9SKTnOea030Tbiat0Y+jhnYLIpsGAe6QTnToi8hI2nNbVMETHeK4wm4MuYMQdrc38x+sX77+kVD01eNsQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style></style>
+</head>
+<body>
+    <div class="home">
+        <h1>Bluebird Photo Gallery</h1>
+        <p>Upload your photos and images and let them play automatically. More to come soon.</p>
+        <div class="media-manager"></div>
+        <h1 style="text-align: left;">Steps</h1>
+        <details open class="step">
+            <summary><span class="step-num">1</span>  Upload Files</summary>
+            <p>Upload images and videos. Upload as many as you like.</p>
+            <div class="upload-area" ondrop="handleDrop(event)" ondragover="event.preventDefault()">
+                <h1><i class="fa-solid fa-file-import" style="font-size: 5rem;"></i></h1>
+                <p>Drag & Drop or Select Files. Select or Upload Multiple</p>
+                <input type="file" id="fileInput" multiple accept="image/*,video/*"/>
+            </div>
+            <div class="bottom-btns">
+                <button onclick="openDetail('.step', 1)">Next</button>
+            </div>
+        </details>
+        <details class="step">
+            <summary><span class="step-num">2</span>  Customize Colors</summary>
+            <p>Change background color, progress bar color, and more.</p>
+            <div class="set-con"><h3>Background Color</h3> <input type="color" id="bgColorB" value="#000000"></div>
+            <div class="set-con"><h3>Progress Color</h3> <input type="color" id="progressColorB" value="#54788c"></div>
+            <div class="set-con"><h3>Progress Active Color</h3> <input type="color" id="activeColorB" value="#ffffff"></div>
+            <div class="bottom-btns"><button onclick="openDetail('.step', 0)">Back</button><button onclick="openDetail('.step', 2)">Next</button></div>
+        </details>
+        <details class="step">
+            <summary><span class="step-num">3</span>  Settings</summary>
+            <p>Change duration, and more.</p>
+            <div class="set-con"><h3>Max Video Duration</h3> <span><input type="number" id="maxVidB" value="90"> sec.</span></div>
+            <div class="set-con"><h3><i class="fa-solid fa-volume-xmark"></i>Mute</h3> <input type="checkbox" id="muteB" checked></div>
+            <div class="bottom-btns"><button onclick="openDetail('.step', 1)">Back</button><button onclick="openDetail('.step', 0)">Start Over</button><button onclick="openFullscreen(document.getElementById('front'))">Full Screen</button></div>
+        </details>
+        <button id="openManager" class="open-manager-btn">Show Preview</button>
+    </div>
+    <section class="right-item">
+        <h1>Preview</h1>
+        <section class="front" id="front">
+            <!-- Progress bar container with pause/mute button holder -->
+            <div class="progress-wrapper">
+                <div class="control-buttons">
+                    <button id="pauseBtn" title="Pause/Resume"><span>⏯</span></button>
+                    <button id="muteBtn" title="Mute/Unmute"><span>🔇</span></button>
+                    <button id="fullScreen" title="Full Screen"><span></span></button>
+                </div>
+                <div class="progress-bar-container"></div>
+            </div>
+            
+            <!-- Story container -->
+            <div class="story-container" id="story-con">
+                <div class="story">
+                    <h1>Upload Files!</h1>
+                    <p>Once Uploaded, it will show here.</p>
+                </div>
+            </div>
+        </section>
+    </section>
+        <!-- Manager Button (to open popup) -->
+  <button class="open-manager-btn" style="position: fixed; top: 0; right: 0;" onclick="openFullscreen(document.getElementById('front'))">Full Screen</button>
+
+  <!-- Manager Popup -->
+  <div class="manager-popup-overlay" id="managerPopup">
+    <div class="manager-popup">
+      <div class="manager-popup-header">
+        <s> </s>
+        <button id="closeManager" class="close-manager-btn">×</button>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

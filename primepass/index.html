@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Pass - Ticket Service by Bluebird</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.css" integrity="sha512-GmZYQ9SKTnOea030Tbiat0Y+jhnYLIpsGAe6QTnToi8hI2nNbVMETHeK4wm4MuYMQdrc38x+sX77+kVD01eNsQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="shortcut icon" href="th.jpg" type="image/x-icon" style="border-radius: 90px;">
+    <style id="style"></style>
+</head>
+<body>
+    <nav>
+        <h1> <img src="th.jpg" alt="PrimePass"> Prime Pass</h1>
+        <br>
+        <button onclick="openApp('dashboard')">Go to Dashboard</button>
+        <button onclick="popup('addEvent', true); openApp('dashboard')">Create an Event</button>
+        <span>Account</span>
+    </nav>
+    <div style="padding: 50px; display: block;"></div>
+    <section>
+        <h1>Your Main Board</h1>
+        <span class="date-time"></span>
+        <h2>Events Today:</h2>
+        <div id="events-main">No Events for Today.</div>
+        <button onclick="openApp('dashboard')">View All Events</button>
+        <button onclick="popup('addEvent', true)">Add a New Event</button>
+    </section>
+    <section class="upcoming">
+        <h1>Upcoming</h1>
+        <span id="events-upcomming"></span>
+    </section>
+    <section>
+        <h1>Create Events and Share Passes with Ease.</h1>
+        <p>PrimePass, made by Bluebird, is a ticketing service that is new, but simple and easy. With QR code ticks, just scan and you are in.</p>
+        <button>Create an Event</button>
+    </section>
+    <section>
+        <h1>It is as easy as it sounds! It just 1, 2, 3</h1>
+        <p>1. Create an Event and Edit it</p>
+        <p>2. Share the QR code (same QR code or different for only one person)</p>
+        <p>3. Enjoy.</p>
+    </section>
+    <div class="popup" id="addEvent">
+        <button class="close-btn" onclick="popup('addEvent', false)">x</button>
+        <h1>Add Event</h1>
+        <p>Hi, ready for a new event? Awesome, just put the name of the event and date here and we'll take you to the event dashboard.</p>
+        <p>Event Name: *</p>
+        <input type="text" id="event-name-from-popup" placeholder="Event Name">
+        <p>Date * (Local Time):</p>
+        <input type="datetime-local" id="event-date-from-popup">
+        <button style="display: block; width: 100%;" onclick="saveEvent()">Create</button>
+    </div>
+    <div class="popup" id="addEventfromFile">
+        <button class="close-btn" onclick="popup('addEventfromFile', false)">x</button>
+        <h1>Upload File</h1>
+        <h3>Select your file here:</h3>
+        <input type="file" accept="application/json" id="uploadedFileAdd">
+    </div>
+    <div class="popup" id="deleteEvent">
+        <h1>Delete Event?</h1>
+        <p>Are you sure? It cannot be retrivable.</p>
+        <button>No</button>
+        <button>Yes</button>
+    </div>
+    <div id="dashboard" class="section-app">
+        <button class="close-btn" onclick="closeApp('dashboard')">x</button>
+        <h1>Dashboard   <button onclick="popup('addEvent', true)">Create Event</button> <button onclick="popup('addEventfromFile', true)">Import from File</button> </h1>
+        <p>View, manage, and edit your events here.</p>
+        <div id="events" class="app-section-app">
+            <h1>No Events To Show.</h1>
+            <p>Why not create a new one?</p>
+        </div>
+    </div>
+    <div id="dashboard-event-details" class="section-app">
+        <section class="app-section-app" style="position: sticky; top: -22px; left: -24px; padding: -12px; display: flex; justify-content: space-between; align-items: center; border-radius: 20px; z-index: 100;">
+            <h1 id="modal-title"></h1>
+            <h2 id="days-to-event"></h2>
+            <span>
+                <button onclick="closeApp('dashboard-event-details')">Close</button>
+                <button onclick="updateEvent()">Update</button>
+            </span>
+        </section>
+        <div class="flexbox">
+            <section class="app-section-app">
+                <h2>Edit</h2>
+                <p>Event Name:</p>
+                <input type="text" id="edit-title">
+                <p>Event Date: </p>
+                <input type="datetime-local" id="edit-date">
+                <p>Info Description: </p>
+                <textarea id="edit-info"></textarea>
+                <p>Location:</p>
+                <input type="text" id="edit-location">
+                <br>
+                <p>Event Color (main color for event)</p>
+                <input type="color" id="edit-event-color" value="#000080">
+                <p>Text Color</p>
+                <input type="color" id="edit-event-txt" value="#00000">
+                <p style="font-family: 'Playfair Display';">* Keep in mind that any changes here (event name, date, location, and color) would generate a new QR code, and any other QR codes generated before won't work.</p>
+            </section>
+            <section class="app-section-app">
+                <h2>Shareable QR Code</h2>
+                <canvas id="qrCanvas"></canvas>
+                <br>
+                <div class="shareButtons">
+                    <button onclick="downloadQRCode()">Download QR</button>
+                    <p>or share via link</p>
+                    <button onclick="shareCanvas('facebook')"><i class="fa-brands fa-facebook"></i> Facebook</button>
+                    <button onclick="shareCanvas('twitter')"><i class="fa-brands fa-x-twitter"></i> Twitter (X)</button>
+                    <button onclick="shareCanvas('linkedin')"><i class="fa-brands fa-linkedin"></i> LinkedIn</button>
+                    <button onclick="shareCanvas('reddit')"><i class="fa-brands fa-reddit"></i> Reddit</button>
+                    <button onclick="shareCanvas('whatsapp')"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
+                    <br>
+                    <button onclick="shareCanvas('copyLink')"><i class="fa-solid fa-link"></i> Copy Link</button>
+                    <button onclick="shareCanvas('native')"><i class="fa-solid fa-share"></i> Share via Device</button>
+                </div>
+                <p>* All their logos go to their responsable owners</p>
+                <h1>Want to use your other device to host too?</h1>
+                <p>You'll get a file to share it to your other devices. Use it carefully. When edited on one device, it cannot be edited on the other. Use when ready.</p>
+                <button id="share-file-other">Share with Other Devices</button>
+            </section>
+        </div>
+        <section class="app-section-app">
+            <h1>Settings</h1>
+            <h2>Assigned areas / seats / etc.</h2>
+            <h3>Change settings if it applies to your event. (if it is movie, seats, party: no change)</h3>
+            <p>Assigned areas / seats / etc. Would you like it to be assigned?</p>
+            <label for="yes-assigned"><input type="radio" name="Assigned" id="yes-assigned"> Yes, I want to have assigned areas / seats / etc.</label>
+            <label for="no-assigned"><input type="radio" name="Assigned" id="no-assigned" selected> No, I want everyone to choose where to be where ever they want.</label>
+            <br>
+            <h2>When Scanned Instructions</h2>
+            <p>What should the user do when they scanned their QR code?</p>
+            <textarea id="when-scanned" placeholder="Instructions"></textarea>
+            <h2>Anything they should be aware about?</h2>
+            <p>Anything? If so, enter it here. If not, leave it blank.</p>
+            <textarea id="be-aware-about" placeholder="Want to tell what they should be careful about?"></textarea>
+            <h2>Tickets</h2>
+            <p>Shut Down Entry after amount of hours from start date.</p>
+            <input type="number" id="after-shut">
+            <p>Open Entry before amount of hours from start date.</p>
+            <input type="number" id="before-start">
+        </section>
+        <section class="app-section-app">
+            <h1>Organizer Tools</h1>
+            <h3>Scanner</h3>
+            <p>Let the people in.</p>
+            <button onclick="startScanning()" id="qr-button">Start Scanning QR codes</button>
+            <h3>Info Screen</h3>
+            <p>Get the screen and opens in fullscreen.</p>
+            <button onclick="setUpEventScreen()">Open Info Screen</button>
+        </section>
+    </div>
+    <div id="scanner-results" style="text-align: center;" class="section-app">
+    </div>
+    <div id="qr-scanner" class="section-app" style="max-width: 1000px;">
+        <h1 id="qr-event-name">Event Name Here</h1>
+        <p>Scan your QR code and then wait for instructions.</p>
+        <button class="close-btn" onclick="location.reload()">x</button>
+        <div id="qr-reader"></div>
+        <h2>Info</h2>
+        <p id="qr-info"></p>
+        <h2>Ticket Info</h2>
+        <p id="ticket-info"></p>
+    </div>
+    <div id="eventDetailsScreen" class="section-app">
+    </div>
+    <script src="script.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</body>
+</html>

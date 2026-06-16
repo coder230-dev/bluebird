@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Domino Duel</title>
+  <link rel="shortcut icon" href="https://tse1.mm.bing.net/th?id=OIG1.tWCrNWDFXhoUPaxIhAZ4&pid=ImgGn" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.css" integrity="sha512-GmZYQ9SKTnOea030Tbiat0Y+jhnYLIpsGAe6QTnToi8hI2nNbVMETHeK4wm4MuYMQdrc38x+sX77+kVD01eNsQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    /* Basic Styles */
+    /* Define Light and Dark Mode Color Schemes */
+    @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
+
+    body {margin: 0;padding: 0;background-color: #0d00ff;color: #fff; /* background-image: url('https://t3.ftcdn.net/jpg/02/70/35/00/360_F_270350073_WO6yQAdptEnAhYKM5GuA9035wbRnVJSr.jpg'); */ background-repeat: no-repeat;background-size: cover;font-family: "Poppins"; transition: 0.5s cubic-bezier(0.075, 0.82, 0.165, 1); width: 100%; height: calc(100vh - 24px); overflow: hidden;}
+    * {font-family: "Poppins";}
+    #preloader { width: 100%; height: 100%; position: fixed; left: 0; top: 0; background-image: url('../Images/44-PM-unscreen.gif'); background-repeat: no-repeat; background-position: center; background-size: 5rem; background-color: #00000050; z-index: 100;}
+    nav { background-color: var(--button-background-light); padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+    nav h1 { margin: 0; }
+    #navbar-links { display: flex; align-items: center; }
+    #navbar-links button { margin-left: 10px; background-color: #55555539; color: #fff; border: 1px solid cyan; padding: 20px; border-radius: 90px; cursor: pointer; width: 50%; }
+    #navbar-links button:hover { background-color: #777; }
+    h1, h2, h3 { text-align: center; margin-top: 20px; font-family: "Poppins"; }
+    button, a, select, input, details { padding: 15px 32px; margin: 5px; transition: 0.3s; cursor: pointer; border: 2px solid white; border-radius: 45px; background-color: #5555555d; color: #fff; font-family: "Josefin Sans"; }
+    a { color: cyan; }
+    button:hover, select:hover, input:hover, details:hover, a:hover { background-color: #777; transform: translateY(-5px); }
+    #start-screen, #end-screen, #mode-selection, #domino-count-selection { margin-top: 10%; text-align: center; position: relative; }
+    #game-interface { display: none; padding: 20px; }
+    #domino-table {display: flex;justify-content: center;align-items: center;margin: 1px;padding-left: 20px;overflow: auto;/* width: 100%; */border-bottom: 3px solid white; width: calc(100% - 40px); background-color: #5555555d;}
+    .player-section { margin: 20px 0; }
+    .player-hand-title { margin-bottom: 5px; }
+    .player-hand { display: flex; flex-wrap: wrap; justify-content: center; }
+    .domino-tile { width: 100px; height: 50px; background-color: #fff; border: 2px solid #000; border-radius: 5px; margin: 1px; display: flex; cursor: pointer; position: relative; transition: 0.2s; }
+    .domino-tile:hover { border: 2px solid cyan; }
+    .domino-half { width: 50px; height: 50px; position: relative; }
+    .domino-half:first-child { border-right: 1px solid #000; }
+    .double-domino { width: 50px; height: 100px; flex-direction: column; }
+    .double-domino .domino-half { height: 40px; }
+    .double-domino .domino-half:first-child { border-bottom: 1px solid #000; border-right: none; }
+    .dot { width: 6px; height: 6px; background-color: #000; border-radius: 50%; position: absolute; }
+    .back-side { background-color: #444; border: 2px solid #222; }
+    .flipped { transform: rotate(180deg); }
+    .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
+    .modal-content { background-color: #333; margin: 10% auto; padding: 20px; width: 80%; max-width: 500px; color: #fff; border-radius: 10px; text-align: center; position: relative; }
+    #popup { position: fixed; left: 50%; bottom: 0%; transform: translate(-50%, 0%); z-index: 100; background-color: white; color: black; border-radius: 90px; width: 0; padding: 0; transition: 0.5s; max-width: none; min-width: none; white-space: nowrap; }
+    .close-button { position: absolute; top: 10px; right: 15px; color: #aaa; font-size: 28px; cursor: pointer; }
+    #xp-info { text-align: left !important; align-items: left; background-color: rgba(0, 0, 0, 0.168); backdrop-filter: blur(20px); aspect-ratio: 16/ 9; width: 300px; padding: 12px; border: 1px solid white; border-radius: 15px; transform: translate(-50%); position: absolute; left: 50%; }
+    #level-bar { display: flex; height: 10px; align-items: center; }
+    #xp-info progress { display: block; width: 100%; height: 20px; }
+    progress::-webkit-progress-bar { background-color: #ffdede; }
+    progress::-webkit-progress-value { background-color: #2934ff; }
+    progress::-moz-progress-bar { background-color: #2934ff; }
+    .close-button:hover { color: #fff; }
+    #info-bar { position: fixed; left: 0; bottom: 0; background-color: #00000031; width: 100%; padding: 12px; display: flex; align-items: center; justify-content: space-between; padding: 0; margin: 0}
+    #main-menu { overflow: auto; z-index: 100; background-color: rgba(0, 0, 0, 0.4); position: fixed; right: 0; top: 0; transform: translate(100%); width: 400px; height: calc(100% - 40px); transition: 0.4s cubic-bezier(0.075, 0.82, 0.165, 1); height: 100%; padding: 20px; .close-button { position: fixed; top: 10px; left: 10px; width: fit-content; height: fit-content; padding: 5px; font-size: 2rem; } #game-info { background-color: black; border-radius: 10px; width: calc(100% - 40px); padding: 20px; .player-info { border: 1px solid white; padding: 12px; border-radius: 15px; margin: 4px; } } .full { width: 100%; } button, a { border-radius: 10px; } button:hover, a:hover { opacity: 0.8; transform: none; }}
+    button:disabled, a:disabled { opacity: 0.4; cursor: not-allowed; }
+  </style>
+</head>
+<div id="main-menu">
+  <button class="close-button" onclick="mainMenu()"><i class="fa-solid fa-xmark"></i></button>
+  <h1>Menu</h1>
+  <h2 style="text-align: left;">Game Info</h2>
+  <div id="game-info">You will see the info when you start a game.</div>
+  <button class="full" id="pause-btn-menu" style="background-color: rgb(98, 0, 255);" onclick="pauseGame()" disabled>Pause</button>
+  <button class="full" id="start-btn-menu" style="background-color: rgb(32, 114, 255);" onclick="startGame()" disabled>Start New Game</button>
+  <div style="width: calc(100% - 24px); position: static; transform: none;" id="xp-info"></div>
+  <div style="display: flex; position: static; bottom: 0; left: 0;">
+    <a href="index.html" style="background-color: rgb(138, 90, 0); text-align: center; align-items: center; display: flex; justify-content: center; width: 50%; padding: 10px;"><i class="fa-solid fa-arrow-left"></i>Return to All Games</a>
+    <button id="leave-btn-menu" onclick="endGame('Game ended by Player')" disabled style="background-color: rgb(113, 1, 1);"><i class="fa-solid fa-right-from-bracket"></i>Leave Current Game</button>
+  </div>
+</div>
+<body>
+  <div id="preloader"></div>
+
+  <!-- Navbar -->
+  <nav id="navbar">
+    <div style="float: left; display: flex;">
+    <button onclick="mainMenu(true)" style="padding: 12px;"><i class="fa-solid fa-bars"></i></button>
+    <h1 id="navbar-title">Domino Duel</h1>
+    </div>
+    <div id="navbar-links" style="float: left;">
+      <button onclick="fullScreen()"><i class="fa-solid fa-expand"></i></button>
+      <button id="pause-button" style="display: none;"><i class="fa-solid fa-circle-pause"></i>Pause</button>
+      <button id="end-game-button" style="display: none;"><i class="fa-solid fa-circle-stop"></i></button>
+      <div id="google_translate_element"></div>
+    </div>
+  </nav>
+
+  <!-- Popup -->
+   <div id="popup" class="modal-content">
+
+   </div>
+
+  <!-- Start Screen -->
+  <div id="start-screen">
+    <img src="https://tse1.mm.bing.net/th?id=OIG1.tWCrNWDFXhoUPaxIhAZ4&pid=ImgGn" style="width: 10rem; border-radius: 90px;" alt="Logo">
+    <h1>Welcome to Domino Duel</h1>
+    <button id="start-button" style="padding: 20px 42px; background-color: rgba(0, 255, 255, 0.415);"><i class="fa-solid fa-play" title="Start Game"></i>Start Game</button>
+    <br>
+    <button id="tutorial-button"><i class="fa-solid fa-question"></i>Tutorial</button>
+    <button id="leaderboard-button">Leaderboard</button>
+    <a href="dominos.html" download="dominos.html">Download</a>
+    <div id="xp-info" style="text-align: center; align-items: center; justify-content: center;">
+    </div>
+  </div>
+
+  <!-- Game Mode Selection -->
+  <div id="mode-selection" style="display: none;">
+    <h2>Select Number of Players</h2>
+    <button data-players="2" class="player-select-button"><i class="fa-solid fa-user"></i><i class="fa-solid fa-user"></i>2 Players</button>
+    <button data-players="3" class="player-select-button"><i class="fa-solid fa-user"></i><i class="fa-solid fa-user"></i><i class="fa-solid fa-user"></i>3 Players</button>
+    <button data-players="4" class="player-select-button"><i class="fa-solid fa-user"></i><i class="fa-solid fa-user"></i><i class="fa-solid fa-user"></i><i class="fa-solid fa-user"></i>4 Players</button>
+    <br>
+    <button onclick="document.getElementById('mode-selection').style.display = 'none'; document.getElementById('start-screen').style.display = 'block';"><i class="fa-solid fa-arrow-left"></i>Back</button>
+  </div>
+
+  <!-- Domino Count Selection -->
+  <div id="domino-count-selection" style="display: none;">
+    <h2>Select Number of Dominoes per Player</h2>
+    <input type="number" id="domino-count" min="1" max="14" value="7">
+    <button id="domino-count-button">Continue<i class="fa-solid fa-arrow-right"></i></button>
+    <h5 id="max-dominos-count">Max</h5>
+    <br>
+    <button onclick="document.getElementById('domino-count-selection').style.display = 'none'; document.getElementById('mode-selection').style.display = 'block';"><i class="fa-solid fa-arrow-left"></i>Back</button>
+  </div>
+
+  <!-- Player Type Selection -->
+  <div id="player-type-selection" style="display: none; justify-content: center; align-items: center;">
+    <div style="text-align: center;">
+      <h2>Select Player Types</h2>
+      <div id="player-type-options"></div>
+      <button onclick="document.getElementById('player-type-selection').style.display = 'none'; document.getElementById('domino-count-selection').style.display = 'block';"><i class="fa-solid fa-arrow-left"></i>Back</button>
+      <button id="start-game-button"><i class="fa-solid fa-circle-play"></i>Start Game</button>
+    </div>
+  </div>
+
+  <!-- Game Interface -->
+  <div id="game-interface" style="position: relative; align-items: center; text-align: center;">
+    <div id="domino-table"></div>
+    <div id="player-hands"></div>
+  </div>
+
+  <!-- Pause Menu Modal -->
+  <div id="pause-menu" class="modal">
+    <div class="modal-content">
+      <h2>Game Paused</h2>
+      <button id="resume-button"><i class="fa-solid fa-circle-play"></i>Resume Game</button>
+      <button id="end-game-button-pause">End Game</button>
+    </div>
+  </div>
+
+  <!-- End Screen -->
+  <div id="end-screen" style="display: none;">
+    <h1 id="result-message"></h1>
+    <button onclick="document.getElementById('end-screen').style.display = 'none'; prepareStart()"><i class="fa-solid fa-rotate-right"></i>Play Again</button>
+    <br>
+    <button onclick="document.getElementById('end-screen').style.display = 'none'; document.getElementById('mode-selection').style.display = 'block'; menuPause.setAttribute('disabled', true); menuStart.setAttribute('disabled', true)"><i class="fa-solid fa-gear"></i>Change Game Settings</button>
+    <br>
+    <button id="play-again-button"><i class="fa-solid fa-backward"></i>Back to Main Menu</button>
+    <div id="xp-info">
+    </div>
+  </div>
+
+  <!-- Leaderboard Modal -->
+  <div id="leaderboard-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" id="leaderboard-close">&times;</span>
+      <h2>Leaderboard</h2>
+      <ul id="leaderboard-list"></ul>
+    </div>
+  </div>
+
+  <!-- Tutorial Modal -->
+  <div id="tutorial-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" id="tutorial-close">&times;</span>
+      <h2>How to Play</h2>
+      <p id="tutorial-text"></p>
+    </div>
+  </div>
+
+  <div id="info-bar">
+    <p>Domino Duel</p>
+    <div id="level-bar"></div>
+  </div>
+
+  <!-- Game Sounds -->
+  <audio id="click-sound" src="https://freesound.org/data/previews/256/256113_3263906-lq.mp3"></audio>
+  <audio id="shuffle-sound" src="https://freesound.org/data/previews/130/130657_2337295-lq.mp3"></audio>
+  <audio id="win-sound" src="https://freesound.org/data/previews/198/198841_2859979-lq.mp3"></audio>
+  <audio id="lose-sound" src="https://freesound.org/data/previews/353/353497_2256123-lq.mp3"></audio>
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+    }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script>
+    window.onload = function() {
+      document.getElementById('preloader').style.display = 'none';
+      popupMessage('Loaded.', 3000)
+      detectDeviceType();
+      setRandomBackgroundColor()
+    }
+    // Level System 
+    const usersJSON = localStorage.getItem('users');
+let users = [];
+if (usersJSON) {
+    try {
+        users = JSON.parse(usersJSON);
+    } catch (error) {
+        console.error('Error parsing users JSON:', error);
+    }
+}
+
+function setRandomBackgroundColor() {
+  var red = Math.floor(Math.random() * 255)
+  var green = Math.floor(Math.random() * 255)
+  var blue = Math.floor(Math.random() * 255)
+  document.body.style.background = `rgb(${red}, ${green}, ${blue})`
+}
+
+var currentUser = localStorage.getItem('currentUser');
+if (currentUser) {
+    try {
+        currentUser = JSON.parse(currentUser);
+        if (!currentUser['xpLevel'] && !currentUser['level']) {
+          currentUser = { xpLevel: 0, level: 1, username: currentUser['username'] };
+        }
+    } catch (error) {
+        console.error('Error parsing currentUser JSON:', error);
+        currentUser = { xpLevel: 0, level: 1, username: 'Guest' };
+    }
+} else {
+    currentUser = { xpLevel: 0, level: 1, username: 'Guest' }; // Initialize default values
+}
+
+function getMultiplier() {
+  var day = new Date().getDay();
+  if (new Date().getHours() < 18 && new Date().getHours() > 16) {
+      extraMult = 2.2
+    }
+    else {
+      extraMult = 1
+    }
+  if (day > 5 || day == 0) {
+      return 1.8 * 1;
+    }
+    else if (day == 5) {
+      return 1.5 * 1
+    }
+    else if (day == 2) {
+      console.log("It's Tuesday");
+      return 1.2 * 1
+    }
+     else {
+      return 1 * 1;
+    }
+}
+
+let multiplier = getMultiplier()
+
+loadLevelElement()
+
+function giveXP(amount) {
+    let xpLevel = currentUser.xpLevel;
+    let level = currentUser.level;
+
+    xpLevel += amount * multiplier;
+    if (xpLevel >= 100) {
+        xpLevel = 0;
+        level += 1; // Level up when XP reaches 100
+        popupMessage(`${currentUser.username} leveled up to level ${level}!`, 4000)
+    }
+
+    currentUser.xpLevel = xpLevel;
+    currentUser.level = level;
+
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    const userIndex = users.findIndex(user => user.username === currentUser.username);
+    if (userIndex !== -1) {
+        users[userIndex].xpLevel = xpLevel;
+        users[userIndex].level = level;
+    } else {
+        users.push(currentUser);
+    }
+
+    localStorage.setItem('users', JSON.stringify(users));
+
+    loadLevelElement()
+}
+
+function loadLevelElement() {
+  let xpLevel = Math.round(currentUser.xpLevel)
+    let level = currentUser.level;
+
+  document.querySelectorAll('#xp-info').forEach(element => {
+    // Update the innerHTML for the XP display
+    element.innerHTML = `
+        <h3>${currentUser.username || 'Guest'}</h3>
+        <h4>Level ${level}</h4>
+        <progress max="100" value="${xpLevel}"></progress>
+        <p>${xpLevel}XP / 100XP</p>
+        <h5>${100 - xpLevel}XP to next level</h5>
+        <h6>Today's Multiplier: ${multiplier}</h6>
+        <details>
+          <summary>Bonus XP Days</summary>
+          <p>Fri: 1.5x</p>
+          <p>Sat-Sun: 1.8x</p>
+          <p>Tues: 1.2x</p>
+          <p>Mon, Wed, Thurs: 1x</p>
+        </details>
+        <p>Not you. Switch Accounts <a href="../account/index.html?redirect=true">here</a>.</p>
+    `;
+});
+document.getElementById('level-bar').innerHTML = `
+        <h4>Level ${level}</h4>
+        <progress max="100" value="${xpLevel}"></progress>
+        <p>${xpLevel}XP / 100XP; Multiplier: ${multiplier}</p>
+    `;
+}
+
+    // DOM Elements
+    const navbar = document.getElementById('navbar');
+    const pauseButton = document.getElementById('pause-button');
+    const endGameButton = document.getElementById('end-game-button');
+    const startButton = document.getElementById('start-button');
+    const tutorialButton = document.getElementById('tutorial-button');
+    const startScreen = document.getElementById('start-screen');
+    const modeSelection = document.getElementById('mode-selection');
+    const dominoCountSelection = document.getElementById('domino-count-selection');
+    const dominoCountInput = document.getElementById('domino-count');
+    const dominoCountButton = document.getElementById('domino-count-button');
+    const playerTypeSelection = document.getElementById('player-type-selection');
+    const playerTypeOptions = document.getElementById('player-type-options');
+    const startGameButton = document.getElementById('start-game-button');
+    const gameInterface = document.getElementById('game-interface');
+    const dominoTable = document.getElementById('domino-table');
+    const playerHandsDiv = document.getElementById('player-hands');
+    const endScreen = document.getElementById('end-screen');
+    const resultMessage = document.getElementById('result-message');
+    const playAgainButton = document.getElementById('play-again-button');
+    const pauseMenu = document.getElementById('pause-menu');
+    const resumeButton = document.getElementById('resume-button');
+    const endGameButtonPause = document.getElementById('end-game-button-pause');
+    const tutorialModal = document.getElementById('tutorial-modal');
+    const tutorialClose = document.getElementById('tutorial-close');
+    const tutorialTextElem = document.getElementById('tutorial-text');
+    const leaderboardModal = document.getElementById('leaderboard-modal');
+    const leaderboardClose = document.getElementById('leaderboard-close');
+    const leaderboardList = document.getElementById('leaderboard-list');
+    const menuPause = document.getElementById('pause-btn-menu');
+    const menuStart = document.getElementById('start-btn-menu');
+    const menuLeave = document.getElementById('leave-btn-menu');
+    const gamePlayersMenu = document.getElementById('game-info');
+
+    // Game Variables
+    let dominoSet = [], players = [], currentPlayerIndex = 0, passCount = 0;
+    let tableEnds = [], dominoChain = [], gameOver = false, isPaused = false;
+    let leaderboard = [];
+    let dominoesPerPlayer = 7;
+
+    // Player Constructor Function
+    function Player(name, isComputer, handDiv) {
+      this.name = name;
+      this.isComputer = isComputer;
+      this.hand = [];
+      this.handDiv = handDiv;
+    }
+
+    // Event Listeners
+    pauseButton.addEventListener('click', togglePauseMenu);
+    endGameButton.addEventListener('click', endGameEarly);
+    endGameButtonPause.addEventListener('click', endGameEarly);
+    resumeButton.addEventListener('click', resumeGame);
+    startButton.addEventListener('click', () => {
+      startScreen.style.display = 'none';
+      modeSelection.style.display = 'block';
+    });
+    tutorialButton.addEventListener('click', () => {
+      tutorialTextElem.innerHTML = tutorialText;
+      tutorialModal.style.display = 'block';
+    });
+    tutorialClose.addEventListener('click', () => {
+      tutorialModal.style.display = 'none';
+    });
+    leaderboardClose.addEventListener('click', () => {
+      leaderboardModal.style.display = 'none';
+    });
+    playAgainButton.addEventListener('click', () => location.reload());
+
+    window.addEventListener('click', (event) => {
+      if (event.target === leaderboardModal) leaderboardModal.style.display = 'none';
+      if (event.target === tutorialModal) tutorialModal.style.display = 'none';
+      if (event.target === pauseMenu) pauseMenu.style.display = 'none';
+    });
+
+    // Initialize Game
+    document.querySelectorAll('.player-select-button').forEach(button => {
+      button.addEventListener('click', () => {
+        const numPlayers = parseInt(button.getAttribute('data-players'));
+        const maxText = document.getElementById('max-dominos-count');
+        const input = document.getElementById('domino-count');
+        modeSelection.style.display = 'none';
+        dominoCountSelection.style.display = 'block';
+        if (numPlayers == 2) {
+          maxText.innerHTML = 'Max Dominos per Player: 14'
+          input.setAttribute('max', '14')
+          input.setAttribute('value', '14')
+        } else if (numPlayers == 3) {
+          maxText.innerHTML = 'Max Dominos per Player: 9; 1 left over'
+          input.setAttribute('max', '9')
+          input.setAttribute('value', '9')
+        } else if (numPlayers == 4) {
+          maxText.innerHTML = 'Max Dominos per Player: 7'
+          input.setAttribute('max', '7')
+          input.setAttribute('value', '7')
+        }
+        dominoCountButton.onclick = () => {
+          dominoesPerPlayer = parseInt(dominoCountInput.value);
+          dominoCountSelection.style.display = 'none';
+          setupPlayerTypes(numPlayers);
+        };
+      });
+    });
+
+    function setupPlayerTypes(numPlayers) {
+      playerTypeOptions.innerHTML = '';
+      for (let i = 1; i <= numPlayers; i++) {
+        const div = document.createElement('div');
+        if (i == 1) {
+          var selected = 'selected';
+          var comSelected = '';
+        }
+        else {
+          var selected = '';
+          var comSelected = 'selected';
+        }
+        div.innerHTML = `
+          <label>Player ${i}:</label>
+          <select id="player-type-${i}">
+            <option value="human" ${selected}>Human</option>
+            <option value="computer" ${comSelected}>Computer</option>
+          </select>
+        `;
+        playerTypeOptions.appendChild(div);
+      }
+      playerTypeSelection.style.display = 'flex';
+    }
+
+    startGameButton.addEventListener('click', () => {
+      prepareStart();
+      menuLeave.removeAttribute('disabled');
+      menuPause.removeAttribute('disabled');
+      menuStart.removeAttribute('disabled');
+    });
+
+    function prepareStart() {
+      gamePlayersMenu.innerHTML = ''
+      setupPlayers();
+      startGame();
+      renderAllHands()
+    }
+
+    function setupPlayers() {
+      players = [];
+      playerHandsDiv.innerHTML = '';
+      const numPlayers = playerTypeOptions.children.length;
+      for (let i = 1; i <= numPlayers; i++) {
+        const type = document.getElementById(`player-type-${i}`).value;
+        const isComputer = type === 'computer';
+        const playerName = `${isComputer ? 'Computer' : 'Player'} ${i}`;
+        const handDiv = document.createElement('div');
+        handDiv.classList.add('player-section');
+        if (playerName.includes('Player')) {
+          icon = `<i class="fa-solid fa-person"></i>`
+        }
+        else {
+          icon = `<i class="fa-solid fa-computer"></i>`
+        }
+        handDiv.innerHTML = `
+          <h3 class="player-hand-title">${icon} ${playerName}'s Hand: <span id="${playerName}-count">Count</span></h3>
+          <div id="player-hand-${i}" class="player-hand"></div>
+        `;
+        gamePlayersMenu.innerHTML += `
+        <div class="player-info">
+        <h2 style="text-align: left;">${icon}</h2>${playerName}</div>
+        `
+        playerHandsDiv.appendChild(handDiv);
+        const player = new Player(playerName, isComputer, handDiv.querySelector('.player-hand'));
+        players.push(player);
+      }
+    }
+
+    function startGame() {
+      document.getElementById('preloader').style.display = 'block';
+      playerTypeSelection.style.display = 'none';
+      resetGame();
+      createDominoSet();
+      shuffleDominoes();
+      dealDominoes();
+      updateNavbar(true);
+      gameInterface.style.display = 'block';
+      renderDominoTable();
+      renderAllHands();
+      var playerCount = players.length
+      giveXP(5 * playerCount)
+      console.log(playerCount - 1)
+      let playingPlayer = Math.floor(Math.random() * playerCount)
+      popupMessage(`${players[currentPlayerIndex].name} starts first.`, 3000);
+      if (players[currentPlayerIndex].isComputer) {
+        setTimeout(computerTurn, 1000);
+      } else {
+        setTimeout(playerAction, 500);
+      }
+      setTimeout(function() {
+        document.getElementById('preloader').style.display = 'none';
+      }, 800)
+    }
+
+    function resetGame() {
+      dominoSet = []; tableEnds = []; dominoChain = []; gameOver = false; isPaused = false; passCount = 0;
+      dominoTable.innerHTML = '';
+      players.forEach(player => { player.hand = []; player.handDiv.innerHTML = ''; });
+      updateNavbar(false);
+    }
+
+    function createDominoSet() {
+      dominoSet = [];
+      for (let i = 0; i <= 6; i++)
+        for (let j = i; j <= 6; j++)
+          dominoSet.push({ left: i, right: j });
+    }
+
+    function shuffleDominoes() {
+      dominoSet.sort(() => Math.random() - 0.5);
+    }
+
+    function dealDominoes() {
+      const totalRequiredDominoes = dominoesPerPlayer * players.length;
+      if (totalRequiredDominoes > dominoSet.length) {
+        popupMessage('Not enough dominoes for the selected number per player. Please choose a lower number', 5000)
+        location.reload();
+        return;
+      }
+      for (let i = 0; i < dominoesPerPlayer; i++) {
+        players.forEach(player => {
+          player.hand.push(dominoSet.pop());
+        });
+      }
+    }
+
+    function renderDominoTable() {
+      dominoTable.innerHTML = `<div id="ready-player" style="width: 100%; height: 100%; position: absolute; display: none; background-color: rgba(0, 0, 0, 0.3); z-index: 10; display: none; align-items: center; justify-content: center;"></div>`;
+      var firstElement = document.firstElementChild
+      var lastElement = document.lastElementChild
+      dominoChain.forEach(domino => {
+        const dominoElem = createDominoElement(domino);
+        dominoTable.appendChild(dominoElem);
+      });
+    }
+
+    function renderAllHands() {
+      players.forEach(player => {
+        renderPlayerHand(player);
+      });
+    }
+
+    function renderPlayerHand(player) {
+        const handDiv = player.handDiv;
+        handDiv.innerHTML = '';
+        player.hand.forEach((domino, index) => {
+          document.getElementById(`${player.name}-count`).innerHTML = `(${index + 1})`;
+        let dominoElem = document.createElement('div');
+        if (player.isComputer) {
+            dominoElem.classList.add('domino-tile', 'back-side');
+            dominoElem.style.visibility = 'visible';
+        } else {
+            dominoElem = createDominoElement(domino);
+            dominoElem.addEventListener('click', function() { playDomino(domino, index);});
+            if (!canPlayDomino(domino)) {
+                dominoElem.style.opacity = '0.4'
+              }
+        }
+        handDiv.appendChild(dominoElem);
+        });
+    }
+
+
+    function createDominoElement(domino) {
+      const dominoElem = document.createElement('div');
+      dominoElem.classList.add('domino-tile');
+      if (domino.left === domino.right) dominoElem.classList.add('double-domino');
+      if (domino.flip) dominoElem.classList.add('flipped');
+      const leftHalf = document.createElement('div');
+      leftHalf.classList.add('domino-half');
+      renderDots(leftHalf, domino.left);
+      const rightHalf = document.createElement('div');
+      rightHalf.classList.add('domino-half');
+      renderDots(rightHalf, domino.right);
+      dominoElem.appendChild(leftHalf);
+      dominoElem.appendChild(rightHalf);
+      return dominoElem;
+    }
+
+    function renderDots(halfElem, number) {
+      const positions = [
+        { top: '50%', left: '50%' },
+        { top: '20%', left: '20%' },
+        { top: '20%', left: '80%' },
+        { top: '80%', left: '20%' },
+        { top: '80%', left: '80%' },
+        { top: '50%', left: '20%' },
+        { top: '50%', left: '80%' }
+      ];
+      const patterns = {
+        0: [], 1: [0], 2: [1,4], 3: [0,1,4],
+        4: [1,2,3,4], 5: [0,1,2,3,4], 6: [1,2,3,4,5,6]
+      };
+      patterns[number].forEach(posIndex => {
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        dot.style.top = positions[posIndex].top;
+        dot.style.left = positions[posIndex].left;
+        halfElem.appendChild(dot);
+      });
+    }
+
+    function playDomino(domino, index) {
+      if (isPaused || gameOver) return;
+      const player = players[currentPlayerIndex];
+      if (player.isComputer) return;
+      if (canPlayDomino(domino)) {
+        playSound('click-sound');
+        giveXP(3)
+        player.hand.splice(index, 1);
+        updateTable(domino);
+        renderDominoTable();
+        renderPlayerHand(player);
+        passCount = 0;
+        checkForWin(player);
+        if (!gameOver) moveToNextPlayer();
+      } else {
+        popupMessage(`You cannot play that domino.`, 3000)
+      }
+    }
+
+    function playerAction() {
+      if (isPaused || gameOver) return;
+      const player = players[currentPlayerIndex];
+      if (hasPlayableDomino(player)) {
+        
+      } else {
+        if (dominoSet.length > 0) {
+          player.hand.push(dominoSet.pop());
+          renderPlayerHand(player);
+          popupMessage(`${player.name} drew a domino.`, 3000)
+          setTimeout(playerAction, 500);
+        } else {
+          passCount++;
+          popupMessage(`${player.name} passes their turn.`, 3000)
+          checkForConsecutivePasses();
+          moveToNextPlayer();
+        }
+      }
+    }
+
+    function computerTurn() {
+     if (isPaused || gameOver) return;
+     const player = players[currentPlayerIndex];
+    if (!player.isComputer) {
+    playerAction();
+    return;
+  }
+  if (hasPlayableDomino(player)) {
+    passCount = 0;
+    for (let i = 0; i < player.hand.length; i++) {
+      if (canPlayDomino(player.hand[i])) {
+        updateTable(player.hand[i]);
+        player.hand.splice(i, 1);
+        break;
+      }
+    }
+    renderDominoTable();
+    renderPlayerHand(player); // Correctly render the computer's hand
+    checkForWin(player);
+    if (!gameOver) moveToNextPlayer();
+  } else {
+    if (dominoSet.length > 0) {
+      player.hand.push(dominoSet.pop());
+      renderPlayerHand(player); // Correctly render the computer's hand
+      popupMessage(`${player.name} drew a domino.`, 3000)
+      setTimeout(computerTurn, 500);
+    } else {
+      passCount++;
+      popupMessage(`${player.name} passes their turn.`, 3000)
+      checkForConsecutivePasses();
+      moveToNextPlayer();
+    }
+  }
+}
+
+
+    function moveToNextPlayer() {
+      currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+      if (gameOver) return;
+      const nextPlayer = players[currentPlayerIndex];
+      if (nextPlayer.isComputer) {
+        setTimeout(computerTurn, 1000);
+      } else {
+        setTimeout(() => {
+          hideAllHands();
+          showCurrentPlayerHand(nextPlayer);
+          renderPlayerHand(nextPlayer)
+          setTimeout(playerAction, 500);
+          if (players >= "2") {
+          document.getElementById('ready-player').innerHTML = `Pass the device to the next player. Click ready ${nextPlayer}! <br> <button onclick="ready()">Ready</button>`;
+        }
+        }, 500);
+      }
+    }
+
+    function ready() {
+        document.getElementById('ready-player').style.display = 'none';
+    }
+
+    function hasPlayableDomino(player) {
+      return player.hand.some(canPlayDomino);
+    }
+
+    function hideAllHands() {
+      players.forEach(player => {
+        player.handDiv.style.visibility = 'hidden';
+      });
+    }
+
+    function showCurrentPlayerHand(player) {
+      player.handDiv.style.visibility = 'visible';
+    }
+
+    function canPlayDomino(domino) {
+      if (tableEnds.length === 0) return true;
+      return tableEnds.includes(domino.left) || tableEnds.includes(domino.right);
+    }
+
+    function updateTable(domino) {
+      if (tableEnds.length === 0) {
+        tableEnds = [domino.left, domino.right];
+        dominoChain.push(domino);
+      } else {
+        if (tableEnds[0] === domino.right) {
+          tableEnds[0] = domino.left;
+          dominoChain.unshift(domino);
+        } else if (tableEnds[0] === domino.left) {
+          tableEnds[0] = domino.right;
+          dominoChain.unshift(domino);
+          domino.flip = true;
+        } else if (tableEnds[1] === domino.left) {
+          tableEnds[1] = domino.right;
+          dominoChain.push(domino);
+        } else if (tableEnds[1] === domino.right) {
+          tableEnds[1] = domino.left;
+          dominoChain.push(domino);
+          domino.flip = true;
+        }
+      }
+    }
+
+    function checkForWin(player) {
+      if (player.hand.length === 0) {
+        playSound('win-sound');
+        endGame(`${player.name} wins!`);
+        giveXP(30);
+      } else if (passCount >= players.length && !canAnyonePlay()) {
+        endGame('All players passed. The game is over.');
+        giveXP(15)
+      }
+    }
+
+    function canAnyonePlay() {
+      return players.some(player => hasPlayableDomino(player)) || dominoSet.length > 0;
+    }
+
+    function checkForConsecutivePasses() {
+      if (passCount >= players.length) {
+        giveXP(20);
+        endGame('All players passed. The game is over.');
+      }
+    }
+
+    function endGame(message) {
+      gameOver = true;
+      resultMessage.textContent = message;
+      gameInterface.style.display = 'none';
+      endScreen.style.display = 'block';
+      menuLeave.setAttribute('disabled', true);
+      menuPause.setAttribute('disabled', true);
+      updateNavbar(false);
+    }
+
+    function togglePauseMenu() {
+      isPaused ? resumeGame() : pauseGame();
+    }
+
+    function pauseGame() {
+      isPaused = true;
+      pauseMenu.style.display = 'block';
+    }
+
+    function resumeGame() {
+      isPaused = false;
+      pauseMenu.style.display = 'none';
+    }
+
+    function endGameEarly() {
+      isPaused = false;
+      pauseMenu.style.display = 'none';
+      gameOver = true;
+      giveXP(5)
+      endGame('Game ended by player.');
+    }
+
+    function updateNavbar(isGameActive) {
+      if (isGameActive) {
+        pauseButton.style.display = 'inline-block';
+        endGameButton.style.display = 'inline-block';
+      } else {
+        pauseButton.style.display = 'none';
+        endGameButton.style.display = 'none';
+      }
+    }
+    
+    function popupMessage(message, seconds) {
+        // Shows and delete the popup after seconds seconds
+
+        if (seconds) {
+            seconds = seconds;
+        }
+        else {
+            seconds = 99999999999999999;
+        }
+
+        document.getElementById('popup').style.minWidth = 'fit-content';
+        document.getElementById('popup').style.padding = '20px';
+        document.getElementById('popup').innerHTML = message;
+
+        setTimeout(function() {
+            document.getElementById('popup').style.minWidth = '0';
+            document.getElementById('popup').style.padding = '0';
+            document.getElementById('popup').innerHTML = '';
+        }, seconds)
+    }
+
+    function playSound(id) {
+      const sound = document.getElementById(id);
+      sound.currentTime = 0;
+      sound.play();
+    }
+
+    function displayLeaderboard() {
+        popupMessage(`Leaderboard is not avaiable yet.`, 3000);
+    }
+
+    const tutorialText = `
+      <strong>Welcome to Domino Duel!</strong><br><br>
+      <em>Objective:</em> Be the first player to run out of dominoes.<br><br>
+      <em>How to Play:</em><br>
+      - Players take turns matching dominoes to the chain.<br>
+      - Match dominoes by connecting ends with the same number.<br>
+      - If you can't play, a domino will be drawn for you.<br>
+      - If no moves are possible and the boneyard is empty, the game ends.<br><br>
+      Good luck and have fun!
+    `;
+
+    function showGames() {
+        document.getElementById('allGames').style.display = 'block';
+    }
+    
+    function fullScreen() {
+      // Function to toggle full-screen mode
+    const element = document.documentElement; // Use the entire document
+
+    if (!document.fullscreenElement) {
+        // Request full-screen mode
+        element.requestFullscreen().catch(err => {
+            console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+        });
+    } else {
+        // Exit full-screen mode
+        document.exitFullscreen();
+    }
+  }
+  function detectDeviceType() {
+    const userAgent = navigator.userAgent;
+
+    if (/Mobile|Android|iPhone|iPad/i.test(userAgent)) {
+        if (/Tablet|iPad/i.test(userAgent)) {
+            console.log("Playing on a tablet.");
+            dominoTable.style.flexWrap = 'nowrap'
+            dominoTable.style.overflowWrap = 'nowrap'
+            return "tablet";
+        } else {
+            console.log("Playing on a phone.");
+            dominoTable.style.flexWrap = 'nowrap'
+            dominoTable.style.overflowWrap = 'nowrap'
+            return "phone";
+        }
+    } else {
+        console.log("Playing on a desktop.");
+        dominoTable.style.flexWrap = 'wrap'
+        dominoTable.style.overflowWrap = 'wrap'
+        return "desktop";
+    }
+}
+
+  function mainMenu(action) {
+    var mainMenu = document.getElementById('main-menu');
+    var body = document.body;
+
+    if (action) {
+      mainMenu.style.transform = 'translate(0%)';
+      body.style.width = 'calc(100% - 440px)';
+    } else {
+      mainMenu.style.transform = 'translate(100%)'
+      body.style.width = '100%';
+    }
+  }
+
+  </script>
+</body>
+</html>

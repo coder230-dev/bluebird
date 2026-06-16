@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Academic Viewer</title>
+  <link rel="stylesheet" href="style.css" />
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+/>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header id="academic-header">
+    <img id="academic-image" src="https://via.placeholder.com/80" alt="Logo" />
+    <div>
+      <h1 id="academic-title">My Academic Dashboard</h1>
+      <p id="academic-description">
+        Track your classes, assignments, and progress through the year.
+      </p>
+    </div>
+  </header>
+
+  <!-- OVERVIEW -->
+  <section id="overview">
+    <h2>Overview</h2>
+
+    <!-- Year Progress -->
+    <div class="overview-row">
+      <label>Year Progress:</label>
+      <div class="progress-bar" id="year-progress-bar">
+        <div class="fill"></div>
+      </div>
+      <span id="year-progress-text">0%</span>
+    </div>
+
+    <!-- Week & Day Counters -->
+    <div class="overview-row">
+      <span id="week-info">Week 0 / 0</span>
+      <span id="day-info">Day 0 / 0</span>
+    </div>
+
+    <!-- Overview Notes -->
+    <div class="overview-row">
+      <textarea id="overview-notes" placeholder="Reflect on your progress..."></textarea>
+    </div>
+  </section>
+
+  <!-- SETTINGS BUTTON -->
+  <button id="settings-btn" class="sett-btn">
+    <i class="fa-solid fa-gear"></i>
+  </button>
+
+  <!-- SETTINGS POPUP -->
+  <div id="sett-pop" class="settings-popup">
+    <header class="sett-header">
+      <h1>Settings</h1>
+      <button class="rounded" onclick="toggleOpenClass(settPop)">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </header>
+    <nav class="sidebar">
+      <button class="active"><i class="fa-solid fa-gear"></i> General</button>
+      <button><i class="fa-solid fa-clock"></i> Durations</button>
+      <button><i class="fa-solid fa-signature"></i> Calendar</button>
+    </nav>
+
+    <section class="sett-main">
+      <!-- GENERAL PANEL -->
+      <div class="panel" id="panel-general">
+        <label>
+          Term Start:
+          <input type="date" id="cfg-start" />
+        </label>
+        <label>
+          Term End:
+          <input type="date" id="cfg-end" />
+        </label>
+        <label>
+          <input type="checkbox" id="cfg-weekends"/>
+          Include Weekends
+        </label>
+        <label>
+          Holidays (comma-separated YYYY-MM-DD):<br/>
+          <input type="text" id="cfg-holidays" placeholder="2025-11-28,2026-01-01"/>
+        </label>
+        <button id="save-config">Save Settings</button>
+      </div>
+
+      <!-- DURATIONS PANEL -->
+      <div class="panel hidden" id="panel-durations">
+        <h2>Special-Day Durations</h2>
+        <form id="override-form">
+          <label>
+            Applies To:
+            <select id="override-target">
+              <option value="all">All Class Periods</option>
+              <!-- JS will append each class here -->
+            </select>
+          </label>
+          <label>
+            Type:
+            <select id="override-type">
+              <option value="weekday">Weekday</option>
+              <option value="date">Specific Date</option>
+            </select>
+          </label>
+          <div id="override-weekday">
+            <label>
+              Weekday:
+              <select id="override-weekday-select">
+                <option>Sunday</option>
+                <option>Monday</option>
+                <option>Tuesday</option>
+                <option>Wednesday</option>
+                <option>Thursday</option>
+                <option>Friday</option>
+                <option>Saturday</option>
+              </select>
+            </label>
+          </div>
+          <div id="override-date-input" class="hidden">
+            <label>
+              Date:
+              <input type="date" id="override-date" />
+            </label>
+          </div>
+          <label>
+            Duration (min):
+            <input type="number" id="override-duration" min="1"/>
+          </label>
+          <button type="submit">Add Override</button>
+        </form>
+        <ul id="overrides-list"></ul>
+      </div>
+
+      <!-- CALENDAR INFO PANEL -->
+      <div class="panel hidden" id="panel-calendar">
+        <p>Navigate the calendar below to view day-by-day summaries.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- MAIN WRAPPER -->
+  <main class="wrapper">
+    <!-- CLASSES SECTION -->
+    <section id="classes-section">
+      <h2>Your Classes</h2>
+      <div id="classes-list"></div>
+      <button id="add-class">+ Add Class</button>
+    </section>
+
+    <!-- CALENDAR SECTION -->
+    <section id="calendar-section">
+      <div class="calendar-header">
+        <button id="prev-month"><i class="fa-solid fa-chevron-left"></i></button>
+        <h2 id="calendar-title">Loading…</h2>
+        <button id="next-month"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+      <div id="calendar"></div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

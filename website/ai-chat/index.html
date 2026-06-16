@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlueAI - Inspire</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.css" integrity="sha512-GmZYQ9SKTnOea030Tbiat0Y+jhnYLIpsGAe6QTnToi8hI2nNbVMETHeK4wm4MuYMQdrc38x+sX77+kVD01eNsQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div id="context-menu">
+        hello. text
+    </div>
+    <button id="compress-btn" style="position: fixed; top: 10px; right: 10px; z-index: 1001; display: none; border: 2px solid var(--hover-color);" onclick="compressAll()"><i class="fa-solid fa-compress"></i></button>
+    <nav id="navbar">
+        <button id="chat-btn" onclick="renderMessages()"><i class="fa-solid fa-comment"></i></button>
+        <button id="home-btn" style="display: none;" onclick="showStartPage()"><i class="fa-solid fa-house"></i></button>
+        <img style="border-radius: 90px; height: 40px;" src="../Images/_b592bfe0-b181-4743-b09b-75f5fac04ef5.jpeg" alt="Inspire Logo">
+        <h4>BlueAI</h4>
+        <button onclick="togglePopup('commands', false)"><i class="fa-solid fa-terminal"></i></button>
+        <button onclick="autoFillInput('clear chat', true)"><i class="fa-solid fa-trash"></i></button>
+        <button onclick="togglePopup('moreMenu', false)"><i class="fa-solid fa-ellipsis"></i></button>
+    </nav>
+    <div class="popup" id="commands">
+        <h1>All Commands: Basics</h1>
+        <table style="min-width: 100%;">
+            <tr>
+                <td>calculate [equation]</td>
+                <td>Uses math to calculate the equation</td>
+            </tr>
+            <tr>
+                <td>create qr code [url]</td>
+                <td>creates qr code for the url</td>
+            </tr>
+        </table>
+        <p>See all commands in <a href="script.js">line 20 to 37 in the open source code</a>.</p>
+    </div>
+    <div class="popup" id="moreMenu">
+        <div class="closebtn" onclick="togglePopup('moreMenu', true)"><i class="fa-solid fa-x"></i></div>
+        <h1>Menu</h1>
+        <a href="script.js">View Open Source Code</a>
+        <details>
+            <summary>About BlueAI</summary>
+            <p>BlueAI is a assistant AI part of Inspire. We don't use an ai, ever. It it meant to be a personal ai chatbox, where you can create webpages and more. See what you can do with BlueAI!</p>
+        </details>
+        <details>
+            <summary>What's New?</summary>
+            <h3>March 28, 2025</h3>
+            <p>AI Refresh: chats are now like text chats, notifications change, style change, bug fixes fixed</p>
+            <h4>Looks like you reached the desert.</h4>
+        </details>
+    </div>
+    <div class="body">
+        <span id="notification"></span>
+        <div class="explore" id="explore" style="display: flex; align-items: center; justify-content: center; border-radius: 40px;">
+            <div>
+                <h1 id="load-greeting">Hi! I am your personal ai assistant, BlueAI</h1>
+                <h3>Start off with starters</h3>
+                <div style="display: flex; justify-content: space-around; overflow: auto; flex-wrap: wrap; gap: 3px; max-width: 800px; width: 100%;">
+                    <span class="starter" onclick="autoFillInput('create an iframe [website]')">
+                        <h3>Create a iframe</h3>
+                        <p>Load up a webpage</p>
+                    </span>
+                    <span class="starter" onclick="autoFillInput('generate qr code [url]')">
+                        <h3>Generate a a qr code</h3>
+                        <p>Share with friends</p>
+                    </span>
+                    <span class="starter" onclick="autoFillInput('hi', true)">
+                        <h3>Talk to AI</h3>
+                        <p>* Limited</p>
+                    </span>
+                    <span class="starter" onclick="autoFillInput('calculate [equation]')">
+                        <h3>Process Math</h3>
+                        <p>Give it a math equation.</p>
+                    </span>
+            </div>
+            <p>or continue with your chat.</p>
+            <button style="margin-top: 20px;" onclick="renderMessages()">Show All Messages</button>
+            <br>
+        </div>
+    </div>
+        <div id="messages">
+    </div>
+    <button id="showChatInput" onclick="chat()" style="position: fixed; left: 50%; bottom: 0; transform: translate(-50%, 100%); background-color: var(--background); z-index: 10;">
+        Show Chatbox
+    </button>
+    <div class="chatContainer" id="chatContainer" style="z-index: 11;">
+        <button onclick="chat(true)" style="padding: 12px; width: fit-content; height: fit-content;"><i class="fa-solid fa-keyboard"></i></button>
+        <br>
+        <textarea type="text" id="message-input" placeholder="Type a message to get started!"></textarea>
+        <button onclick="sendMessage()" id="send"><i class="fa-solid fa-paper-plane"></i></button>
+        <select id="select-mode" class="command-btn" style="font-size: 1rem; padding: 0; left: 0; right: unset;">
+            <option value="talk">Chat Only</option>
+            <option value="commands" selected>Chat & Execute Commands</option>
+        </select>
+        <footer>BlueAI is in BETA. View source code <a href="script.js" target="_blank">here</a>.</footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,729 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Special+Gothic+Expanded+One&display=swap');
+
+body {
+    background: black;
+    color: white;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    font-family: "Poppins";
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+}
+
+:disabled {
+    opacity: 0.6;
+    border: 1px solid red;
+}
+
+* {
+    position: relative;
+}
+
+.logo-for-te {
+    font-family: "Special Gothic Expanded One";
+}
+
+body.light {
+    background: white;
+    color: black; 
+    button:not([class]):not([id]) {
+        color: black;
+        border: 1px solid black;
+    }
+    button:not([class]):not([id]):hover {
+        background: rgb(0, 170, 255);
+    }
+    #sidebar {
+        background: rgb(215, 215, 215);
+        color: black;
+        .file-in-sidebar:hover, .folder-in-sidebar:hover {
+            background: rgb(230, 230, 230);
+        }
+    }
+    #main-content, #navbar, .top-left-c {
+        background: rgb(225, 225, 225);
+        color: black;
+        button {
+            border: 1px solid blue;
+            color: black;
+        }
+        button:hover {
+            background: rgb(86, 148, 255);
+        }
+    }
+    button {
+        color: black;
+    }
+    button:before {
+        background: linear-gradient(cyan, magenta);
+    }
+    .tab {
+        background: none;
+        border: 1px solid black !important;
+    }
+    .tab.active {
+        background: rgb(0, 210, 233) !important;
+    }
+    #bg-overlay {
+        #popup-w-overlay-menu {
+            background: white;
+            .sidebar-settings {
+                color: black;
+                button {
+                    color: black;
+                }
+                button:hover {
+                    background: rgb(218, 218, 218);
+                    color: black;
+                }
+                button.active {
+                    background: rgb(0, 162, 255);
+                    color: black;
+                }
+            }
+            .main-settings {
+                background: white;
+                color: black;
+                .item-f {
+                    border: 1px solid black;
+                    select {
+                        color: black;
+                        border: 1px solid black;
+                    }
+                    select:hover {
+                        background: rgba(0, 0, 0, 0.145);
+                    }
+                }
+            }
+        }
+        .popup-close-btn {
+            color: black;
+            border: 1px solid black;
+        }
+        .popup-close-btn:hover {
+            background: cyan;
+        }
+    }
+}
+
+* {
+    position: relative;
+}
+
+.container {
+    grid-area: content;
+}
+
+.on-app {
+    .top-left-c, #navbar {
+        min-height: 40px !important;
+    }
+}
+
+button:not([class]):not([id]) {
+    padding: 12px;
+    background: none;
+    border: 1px solid white;
+    border-radius: 10px;
+    color: white;
+    margin: 2px;
+    cursor: pointer;
+}  
+
+button:not([class]):not([id]):hover {
+    background: rgb(0, 72, 255);
+
+}
+
+button, .tab {
+    -webkit-app-region: no-drag;
+    user-select: auto;
+}
+
+#notification {
+    bottom: 0;
+    left: 50%;
+    position: fixed;
+    transform: translate(-50%, 100%);
+    padding: 20px;
+    background: rgba(0, 114, 176, 0.519);
+    backdrop-filter: blur(20px);
+    color: white;
+    z-index: 1000;
+    border-radius: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    i, span {
+        font-size: 1.4rem;
+    }
+}
+
+.preloader {
+    background: rgba(0, 0, 0, 0.238);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+#context-menu {
+    padding: 6px;
+    border-radius: 10px;
+    background: rgba(61, 61, 61, 0.781);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    color: #e0e0e0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    z-index: 9999;
+    transform: scale(0.995) translateY(-5px);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+    min-width: 180px;
+    max-width: 260px;
+    max-height: 60%;
+    overflow: auto;
+    backdrop-filter: blur(6px);
+}
+
+#context-menu .ul-opt {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#context-menu .cMB {
+  padding: 6px 10px;
+  border-radius: 8px;
+  margin: 2px 0;
+  cursor: pointer;
+}
+
+#context-menu .cMB:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+#context-menu.open {
+    z-index: 1000;
+    transform: scale(1);
+    opacity: 1;
+    transition: transform 0.4s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.4s cubic-bezier(0.075, 0.82, 0.165, 1), z-index 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.container {
+    position: relative;
+    display: grid;
+    grid-template-columns: 225px 1fr;
+    grid-template-rows: 40px 1fr;
+    grid-template-areas:
+        "topleft tabbar"
+        "sidebar main";
+    min-height: 100vh;
+    max-height: 100vh;
+    transition: 0.3s !important;
+    grid-area: content;
+    gap: 5px;
+    div {
+        border-radius: 10px;
+    }
+}
+
+body:has(.container #apps-installed.open) {
+    .container {
+        grid-template-areas:
+        "topleft tabbar tabbar"
+        "sidebar main app";
+        grid-template-columns: 225px 1fr 30%;
+        transition: 0.4s;
+        gap: 10px;
+        background: rgb(37, 37, 37);
+    }
+    #apps-installed {
+        display: block;
+    }
+}
+
+
+#apps-installed {
+    grid-area: app;
+    z-index: 1000;
+    background: black;
+    height: 100vh;
+    display: none;
+    color: white;
+    padding: 12px;
+    .app-topbar {
+        margin: 4px;
+        background: black;
+    }
+}
+
+#main-content {
+    width: calc(100% - 24px);
+    padding: 12px;
+    grid-area: main;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: opacity(0.7);
+    position: relative;
+    overflow: auto;
+    max-height: 100vh;
+}
+
+.editor-topbar {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0;
+    padding: 6px;
+    button {
+        padding: 10px !important;
+        border: none;
+        align-items: center;
+        margin: 0;
+        border: none !important;
+    }
+    button:hover {
+        background: rgb(52, 52, 52);
+    }
+    button:focus {
+        border: 1px solid lime;
+    }
+    button::before {
+        content: attr(data-action);
+        z-index: -1;
+        background: rgb(46, 46, 46);
+        border-radius: 10px;
+        text-transform: capitalize;
+        padding: 6px;
+        position: absolute;
+        bottom: calc(-100% - 3px);
+        left: 50%;
+        transform: translate(-50%) scale(0.9);
+        transition: 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+        opacity: 0;
+    }
+    button:hover::before {
+        transition-delay: 0.4s;
+        z-index: 100;
+        transform: translate(-50%);
+        opacity: 1;
+    }
+}
+
+#sidebar {
+    grid-area: sidebar;
+    background: rgba(22, 22, 22, 0.6);
+    backdrop-filter: opacity(0.7);
+    overflow-y: auto;
+    padding: 10px;
+    max-height: 100vh;
+    overflow: auto;
+    .file-in-sidebar, .folder-in-sidebar {
+        padding: 7px;
+        position: relative;
+        i {
+            margin-right: 10px;
+        }
+    }
+    .folder-in-sidebar i:nth-last-of-type(1) {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translate(0, -50%);
+        aspect-ratio: 1/1;
+    }
+    .file-in-sidebar:hover, .folder-in-sidebar:hover {
+        background: rgb(63, 63, 63);
+        cursor: pointer;
+    }
+    .folder-in-sidebar.open {
+        i:nth-last-of-type(1) {
+            top: 5px;
+            transform: rotate(90deg);
+            aspect-ratio: 1/1;
+        }
+    }
+    .sidebar-nav {
+        display: flex;
+        justify-content: right;
+        align-items: center;
+        gap: 1px;
+        button {
+            padding: 3px;
+            aspect-ratio: 1/1;
+            height: 30px;
+            margin: 0;
+            font-size: 1.3rem;
+            border: none;
+        }
+    }
+    .hidden-from-sidebar {
+        display: none;
+    }
+}
+
+#navbar {
+    grid-area: tabbar;
+    background: rgb(27, 27, 27);
+    backdrop-filter: opacity(0.7);
+    display: flex;
+    gap: 10px;
+    max-width: 100%;
+    .tab {
+        width: 250px;
+        height: calc(100% - 13px);
+        display: flex; 
+        align-items: center; 
+        border: 1px solid white;
+        padding: 6px 30px 6px 6px;
+        border-radius: 10px;
+        cursor: pointer;
+        position: relative;
+        transition: 0.1s;
+        backdrop-filter: opacity(0.5);
+        span.tab-icon {
+            padding: 12px;
+        }
+        .need-save {
+            margin-left: 12px;
+        }
+        .close {
+            position: absolute;
+            right: 10px;
+            font-size: 1.3rem;
+        }
+        .close:hover {
+            backdrop-filter: blur(20px);
+        }
+    }
+    .tab.active {
+        background: rgb(0, 0, 157);
+        border: 1px solid cyan;
+    }
+}
+
+.top-left-c {
+    grid-area: topleft;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    button {
+        z-index: 100000 !important;
+    }
+}
+
+.welcome-page {
+    padding: 20px;
+    text-align: center;
+    img {
+        border-radius: 90px;
+        height: 200px;
+    }
+    button {
+        padding: 12px 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        background: none;
+        color: white;
+        border: 1px solid cyan;
+        position: relative;
+        overflow: hidden;
+        z-index: 2;
+        aspect-ratio: 1/1;
+        font-family: "Special Gothic Expanded One";
+        i {
+            display: block;
+            margin-bottom: 40px;
+            font-size: 3rem;
+        }
+    }
+    button::before {
+        content: "";
+        width: 100%;
+        height: 0;
+        background: linear-gradient(to bottom right, navy, magenta);
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        z-index: -1;
+        transition: 0.4s;
+
+    }
+    button:hover::before {
+        height: 100%;
+    }
+}
+
+.preloader {
+    width: 100%;
+    height: 100%;
+    z-index: 103;
+    div {
+        padding: 12px;
+        background: rgb(16, 16, 16) !important;
+        border-radius: 35px;
+        svg {
+            width: 4.4rem;
+            circle {
+                stroke: white;
+            }
+        }
+    }
+}
+
+/* Preloader from UIVerse.io */
+svg {
+    width: 2em;
+    transform-origin: center;
+    animation: rotate4 2s linear infinite;
+}
+
+circle {
+    fill: none;
+    stroke: cyan;
+    stroke-width: 4;
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    stroke-linecap: round;
+    animation: dash4 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate4 {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes dash4 {
+    0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+    }
+
+    50% {
+        stroke-dasharray: 90, 200;
+        stroke-dashoffset: -35px;
+    }
+
+    100% {
+        stroke-dashoffset: -125px;
+    }
+}
+
+.editor-top-bar {
+    position: relative;
+    padding: 7px;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    button {
+        padding: 12px;
+        background: black;
+        border: 1px solid white;
+        border-radius: 10px;
+        color: white;
+        cursor: pointer;
+        i {
+            font-size: 1rem;
+        }
+    }
+}
+
+#bg-overlay {
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.228);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    #popup-w-overlay-menu {
+        padding: 50px;
+        background: rgb(37, 37, 37);
+        position: relative;
+        width: 800px;
+        min-height: 500px;
+        max-height: 100%;
+        border-radius: 20px;
+        transform: scale(0.9);
+        overflow: scroll;
+    }
+    .popup-close-btn {
+        position: absolute; 
+        top: 10px; 
+        left: 10px; 
+        padding: 13px; 
+        border-radius: 10px;
+        background: none;
+        color: white;
+        border: 1px solid white;
+    }
+    .popup-close-btn:hover {
+        background: navy;
+        cursor: pointer;
+    }
+}
+
+#bg-overlay.open {
+    display: flex;
+    #popup-w-overlay-menu {
+        transform: none;
+        transition: 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+    }
+}
+
+#bg-overlay.settings-menu-app {
+    #popup-w-overlay-menu {
+        padding: 12px;
+        display: grid;
+        grid-template-areas: 
+        'sidebar-set main-set';
+        grid-template-columns: 200px 1fr;
+        gap: 20px;
+        a {
+            color: cyan;
+        }
+        .sidebar-settings {
+            grid-area: sidebar-set;
+            margin: 40px 5px 5px 5px;
+            border-radius: 35px;
+            z-index: 0;
+            button {
+                border-radius: 10px;
+                padding: 15px 12px;
+                display: block;
+                width: calc(100% - 4px);
+                margin: 0;
+                background: none;
+                border: none;
+                text-align: left;
+                font-family: "poppins";
+                color: white;
+                i {
+                    margin-right: 10px;
+                }
+            }
+            button:hover {
+                background: rgb(9, 9, 9);
+                cursor: inherit;
+            }
+            button.active {
+                background: cyan;
+                color: black;
+            }
+            .popup-close-btn {
+                z-index: 10000;
+            }
+        }
+        .main-settings {
+            grid-area: main-set;
+            color: white;
+            background: rgb(45, 45, 45);
+            margin-right: 6px;
+            padding: 12px;
+            border-radius: 35px;
+        }
+    }
+}
+
+#bg-overlay.about-menu-app {
+    text-align: center;
+}
+
+.switch {
+	font-size: 17px;
+	position: relative;
+	display: inline-block;
+	width: 3.5em;
+	height: 2em;
+}
+  
+.switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.switch:has(input:disabled) {
+	opacity: 0.5;
+	background-color: red;
+}
+  
+.slider {
+	position: absolute;
+	cursor: pointer;
+	inset: 0;
+	background: rgb(79, 79, 79);
+	border-radius: 50px;
+	transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+}
+  
+.slider:before {
+	position: absolute;
+	content: "";
+	height: 1.4em;
+	width: 1.4em;
+	left: 0.3em;
+	bottom: 0.3em;
+	background-color: rgb(255, 255, 255);
+	border-radius: 50px;
+	box-shadow: 0 0px 20px rgba(0,0,0,0.4);
+	transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+  
+.switch input:checked + .slider {
+	background: rgb(0, 238, 255);
+}
+  
+.switch input:focus + .slider {
+	box-shadow: 0 0 1px #574fce;
+}
+  
+.switch input:checked + .slider:before {
+	transform: translateX(1.6em);
+	height: 1.4em;
+	width: 1.4em;
+	background-color: white;
+}
+
+.item-f {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid white;
+    border-radius: 20px;
+    margin-top: 5px;
+    select, button, a {
+        padding: 12px;
+        background: none;
+        border: 1px solid white;
+        color: white;
+        border-radius: 15px;
+    }
+    select:hover, button:hover, a:hover {
+        background: rgba(255, 255, 255, 0.221);
+        cursor: pointer;
+        transition: 0.1s;
+    }
+    input[type=color] {
+        background: white;
+        border-radius: 10px;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+    }
+    img {
+        border-radius: 50%;
+        height: 40px;
+    }
+}

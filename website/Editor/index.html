@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Editor</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="editor-container">
+        <input type="file" id="fileInput" accept=".txt,.html,.css,.js,image/*,audio/*,video/*" onchange="loadFile(event)">
+        <textarea id="editor" placeholder="Start typing..." oninput="saveHistory()"></textarea>
+        <div class="toolbar text-toolbar">
+            <button onclick="applyStyle('bold')"><i class="fas fa-bold"></i></button>
+            <button onclick="applyStyle('italic')"><i class="fas fa-italic"></i></button>
+            <button onclick="applyStyle('underline')"><i class="fas fa-underline"></i></button>
+            <input type="color" id="colorPicker" onchange="applyColor()">
+            <select id="fontPicker" onchange="applyFont()">
+                <option value="Arial">Arial</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Verdana">Verdana</option>
+            </select>
+            <button onclick="undo()"><i class="fas fa-undo"></i></button>
+            <button onclick="redo()"><i class="fas fa-redo"></i></button>
+            <button onclick="resetEditor()"><i class="fas fa-trash"></i></button>
+        </div>
+        <button onclick="saveFile()">Save</button>
+        <div id="imagePreview"></div>
+        <canvas id="imageCanvas" style="display:none;"></canvas>
+        <div class="toolbar image-toolbar">
+            <button onclick="cropImage()">Crop</button>
+            <button onclick="drawOnImage()">Draw</button>
+            <button onclick="applyFilter('grayscale')">Grayscale</button>
+            <button onclick="applyFilter('sepia')">Sepia</button>
+            <label for="brightnessInput">Brightness:</label>
+            <input type="number" id="brightnessInput" value="0" step="0.1" onchange="adjustImage('brightness', this.value)">
+            <label for="saturationInput">Saturation:</label>
+            <input type="number" id="saturationInput" value="0" step="0.1" onchange="adjustImage('saturation', this.value)">
+            <button onclick="convertImage()">Convert Image</button>
+        </div>
+        <div class="toolbar file-toolbar">
+            <button onclick="convertFile()">Convert File</button>
+        </div>
+        <div id="mediaPreview"></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>

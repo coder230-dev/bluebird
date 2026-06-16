@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Login</title>
+	<link rel="stylesheet" href="../style.css">
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=fingerprint" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/brands.css"
+		integrity="sha512-Ve5cyESWChtU1zL3EIMU0T1LddBbffKw+bZsuO6YpN65a0EvnQnyiXnU72Xt9CgWyW7hMafF3hSWcUf55rGa/Q=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="container">
+			<div class="login-signup-selector">
+				<a class="selected" href="#">Log In</a>
+				<a href="../signup/index.html">Sign Up</a>
+			</div>
+
+			<section id="user-section">
+				<h1 style="text-align: center;">
+					<i class="material-symbols-outlined main-icon">
+						fingerprint
+					</i>
+				</h1>
+				<h1 class="main-header">Welcome Back!</h1>
+				<label for="loginWithEmail">
+					<input type="checkbox" id="loginWithEmail">
+					Login with email instead.
+				</label>
+
+				<div class="input-cont">
+					<label id="loginLabel">Username</label>
+					<input id="loginInput" type="text" placeholder="ex. theLonleyGhost" required>
+				</div>
+				<div class="btn-cont">
+					<button class="submit-btn" onclick="showPasswordPage()">Next</button>
+				</div>
+			</section>
+
+			<section id="password-section" style="display: none;">
+				<h1 style="text-align: center;">
+					<i class="material-symbols-outlined main-icon">
+						fingerprint
+					</i>
+				</h1>
+				<h1 class="main-header">Enter Your Password</h1>
+				<div class="input-cont">
+					<label>
+						Password
+					</label>
+					<input type="password" id="passwordInput" placeholder="Password" required>
+				</div>
+				<label for="keepMeLoggedIn" style="display: flex; align-items: center; gap: 6px;">
+					<input type="checkbox" id="keepMeLoggedIn">
+					Keep Me Logged In
+				</label>
+				<div class="btn-cont">
+					<button class="submit-btn" id="submit-btn">Log in</button>
+				</div>
+			</section>
+			<div class="bottom-links">No account? <a href="../signup/index.html">Sign Up</a> | <a href="">Help</a>
+			</div>
+		</div>
+	</div>
+
+	<footer>
+		<div style="grid-area: left;">
+			<b style="font-family: 'Special Gothic Expanded One';"> © 2026 Bluebird IPE by Bryant</b>
+			<hr>
+			<b>
+				"I love minimalism, of course."
+			</b>
+			<blockquote>
+				It’s not just about having fewer things — it’s about giving every element a purpose.
+				Minimalism is clarity disguised as simplicity. It’s the discipline of removing noise so the essentials
+				can breathe.
+
+				When you strip away the unnecessary, what’s left becomes sharper, more intentional, more honest.
+
+				Minimalism isn’t empty. It’s focused.
+				It’s the confidence to let a single detail carry the moment.
+
+				And once you start seeing the beauty in restraint, it becomes second nature — almost inevitable.
+
+				That’s why I say I love minimalism of course — because once you understand it, it stops being a style
+				and becomes a mindset.
+			</blockquote>
+			<p>Quote info expanded by AI, while the quote is made by me.</p>
+		</div>
+		<div style="grid-area: right;"></div>
+		<div style="grid-area: bottom;" class="socialize">
+			<div id="socialize-message">
+				<h3>Let's get social</h3>
+				<p>You know, it never hurts to talk</p>
+			</div>
+			<div>
+				<a class="instagram-link-bio" href="https://instagram.com/bryant_san230" target="_blank"
+					rel="noopener noreferrer">
+					<i class="fa-brands fa-instagram"></i>
+				</a>
+				<a class="threads-link-bio" href="https://threads.com/bryant_san230" target="_blank"
+					rel="noopener noreferrer">
+					<i class="fa-brands fa-threads"></i>
+				</a>
+				<a class="tiktok-link-bio" href="https://tiktok.com/@bryant230sacramento" target="_blank"
+					rel="noopener noreferrer">
+					<i class="fa-brands fa-tiktok"></i>
+				</a>
+				<a class="x-link-bio" href="https://x.com/bryant_san230" target="_blank" rel="noopener noreferrer">
+					<i class="fa-brands fa-x-twitter"></i>
+				</a>
+				<a class="github-link-bio" href="https://github.com/coder230_dev" target="_blank"
+					rel="noopener noreferrer">
+					<i class="fa-brands fa-github"></i>
+				</a>
+			</div>
+		</div>
+	</footer>
+
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+	<script src="../databaseInfo.js"></script>
+	<script src="script.js"></script>
+</body>
+
+</html>

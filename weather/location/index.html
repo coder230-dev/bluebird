@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Info</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.css"
+        integrity="sha512-NhLySQDkiKSKnT+R795uaHWRQ7D3VuIvgeOLCK8cWq4w5fq4sWF90gj8eURpTqn/f1mFzqClpOz8JPlgVTLfFw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons.css"
+        integrity="sha512-WrHplq3TYPEkwmx3iOWybuK9tQ4oq6Qxff1aM48V2RI4CHPU3zBXebikfBsSf+/pMwc6vNUaMQLtwG7KUoP+kA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="manifest" href="../manifest.json">
+</head>
+
+<body>
+    <div id="notification"></div>
+    <nav id="navbar">
+        <span>
+            <button style="display: flex; align-items: center;" class="liquid-glass">
+                <i class="wi wi-day-sunny-overcast"></i>
+                <h1 style="padding: 0; margin: 0;">Bluebird Weather</h1>
+            </button>
+            <a href="../index.html">< Back To Home Page</a>
+        </span>
+        <span style="justify-content: center;">
+            <button class="liquid-glass"><i class="material-symbols-rounded">breaking_news</i> News & Alerts <i
+                    class="material-symbols-rounded">arrow_drop_down</i></button>
+            <button style="background: rgba(0, 255, 255, 0.292);" class="liquid-glass"><i class="material-symbols-rounded">location_on</i> Locations <i
+                    class="material-symbols-rounded">arrow_drop_down</i></button>
+            <button class="liquid-glass"><i class="material-symbols-rounded">radar</i> Radar</button>
+            <button id="search-btn" onclick="openSearch()" class="liquid-glass"><i
+                    class="material-symbols-rounded">search</i></button>
+        </span>
+        <span style="justify-content: right;">
+            <div id="searchBarNavCont">
+                <div class="top-cont liquid-glass">
+                    <i class="material-symbols-rounded">search</i>
+                    <input placeholder="Search For Locations, Coordinates, and Alerts" type="search" id="searchBarNav">
+                </div>
+                <div id="nav-search-results" style="display: none;"></div>
+            </div>
+            <button id="settings-btn" class="liquid-glass"><i class="material-symbols-rounded">settings</i></button>
+            <button id="more-small-dev-btn" style="display: none;" class="liquid-glass"><i
+                    class="material-symbols-rounded">more_vert</i></button>
+        </span>
+    </nav>
+    <div id="state-weather-alerts"></div>
+    <div class="container">
+        <aside>
+            <a href="#overview">Today's Overview</a>
+            <a href="#daily">Daily</a>
+            <a href="#hourly">Hourly</a>
+            <a href="#weather-info">Weather Info</a>
+            <a href="#location-info">Location Info</a>
+        </aside>
+        <main id="main-content">
+
+        </main>
+    </div>
+    <footer>
+        <h5>2026 Bluebird IPE</h5>
+
+        All weather data from Open Meteo. Alerts, weather images, and stories from weather.gov. Images from PublicDomainPicutres and from Google Search Results (Creative Commons Licences). Location data mostly from the Big Data Cloud API.
+    </footer>
+    <script src="../script.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

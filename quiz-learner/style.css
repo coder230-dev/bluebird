@@ -1,0 +1,86 @@
+body {
+    background: var(--scheme-1);
+    color: var(--scheme-10);
+    color-scheme: dark;
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+    /* Deep navy → colorful near-white */
+    --c1: #141c2c;
+    /* darkest blue */
+    --c2: #182235;
+    --c3: #1c2d45;
+    --c4: #1f3858;
+    --c5: #21446c;
+    --c6: #215083;
+    --c7: #2160a0;
+    --c8: #4d8fd6;
+    /* more saturation */
+    --c9: #a3ccf5;
+    /* brighter, softer */
+    --c10: #e4f1ff;
+    /* more color than before, still near-white */
+
+    /* Auto-switching scheme using light-dark()
+	   Light mode → reverse (10 → 1)
+	   Dark mode → normal (1 → 10)
+	*/
+    --scheme-1: light-dark(var(--c10), var(--c1));
+    --scheme-2: light-dark(var(--c9), var(--c2));
+    --scheme-3: light-dark(var(--c8), var(--c3));
+    --scheme-4: light-dark(var(--c7), var(--c4));
+    --scheme-5: light-dark(var(--c6), var(--c5));
+    --scheme-6: light-dark(var(--c5), var(--c6));
+    --scheme-7: light-dark(var(--c4), var(--c7));
+    --scheme-8: light-dark(var(--c3), var(--c8));
+    --scheme-9: light-dark(var(--c2), var(--c9));
+    --scheme-10: light-dark(var(--c1), var(--c10));
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--scheme-9);
+    position: sticky;
+    top: 0;
+    background: var(--scheme-1);
+
+    span {
+        display: flex;
+        gap: 5px;
+    }
+
+    button {
+        background: none;
+        color: var(--txt);
+        border: 1px solid var(--scheme-5);
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        border-radius: 30px;
+        font-family: "Poppins", sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        i {
+            font-size: 1.25rem !important;
+        }
+
+        &:hover {
+            background: var(--scheme-4);
+            border: 1px solid var(--scheme-10);
+        }
+    }
+
+    b {
+        font-size: 1.5rem;
+    }
+}
+
+main {
+    padding: 12px;
+}

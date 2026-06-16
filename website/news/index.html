@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NewsBird - The little birde is there</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.css" integrity="sha512-GmZYQ9SKTnOea030Tbiat0Y+jhnYLIpsGAe6QTnToi8hI2nNbVMETHeK4wm4MuYMQdrc38x+sX77+kVD01eNsQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="https://bing.com/th/id/BCO.21abc941-75af-4797-94d2-e20678617fb2.png" type="image/x-icon">
+</head>
+<body>
+  <div id="contextMenu"></div>
+    <nav id="sidebar">
+        <!-- <img src="https://bing.com/th/id/BCO.21abc941-75af-4797-94d2-e20678617fb2.png" alt="" srcset=""> -->
+        <button onclick="toggleOpenClass('feed-settings')" title="Manage News Feeds"><i class="fa-solid fa-square-rss"></i></button>
+        <hr>
+        <span id="newsFeedSidebar">
+            <a href="#"><i class="material-symbols-rounded">home</i></a>
+        </span>
+        <hr>
+        <button id="profile-pic-nav" onclick="setUpContextMenuFor('account')" title="My Account"><span class="material-symbols-rounded">account_circle_off</span></button>
+    </nav>
+  <popup id="translate">
+    <button class="closeBtn" onclick="toggleOpenClass('translate')"><i class="fa-solid fa-xmark"></i></button>
+    <h1>Translate</h1>
+    <p>Translate to mutiple languages, powered by Google.</p>
+    <div id="google_translate_element"></div>
+  </popup>
+  <popup id="feed-settings" class="from-nav-pop">
+	<button class="closeBtn" onclick="toggleOpenClass('feed-settings')"><i class="fa-solid fa-xmark"></i></button>
+    <button id="refresh-all">Refresh</button>
+    <h2>Manage RSS Feeds</h2>
+    <div class="input-group">
+      <input type="text" id="new-feed-url" placeholder="Enter RSS feed URL">
+      <button id="add-feed">Add Feed</button>
+    </div>
+    <ul id="feed-list"></ul>
+  </popup>
+  <div class="main-cont-for-news open" style="grid-area: main;">
+    <input type="text" id="search-input" placeholder="Search all articles…">
+  <section id="for-you">
+    <h2>For You</h2>
+    <p>Shows the newest first, which might be most revelevant to you.</p>
+    <div id="for-you-articles" class="articles-grid"></div>
+  </section>
+
+  <section id="feed-articles">
+    <!-- per-feed sections are injected here -->
+  </section>
+
+</div>
+  <popup></popup>
+  <div id="speech-bar">
+  <div id="speech-title">🗞️ <span id="speech-article-title">Loading...</span></div>
+
+  <div id="speech-controls">
+	<button id="playPauseBtn" onclick="togglePlayPause()"><i class="fa-solid fa-play"></i></button>
+	<button onclick="restartSpeech()"><i class="material-symbols-rounded" translate="no">replay</i></button>
+    <div id="seekContainer">
+        <input type="range" id="seekSlider" min="0" value="0" step="1">
+        <span id="seekLabel">0:00 / 0:00</span>
+    </div>
+
+      <select id="voiceSelect" onchange="populateVoices()"></select>
+
+      <input type="range" id="speedSlider" min="0.5" max="2" step="0.1" value="1">
+      <label for="speedSlider">Speed</label>
+    </div>
+	<button onclick="toggleOpenClass('speech-bar'); if (speechSynthesis.speaking && !speechSynthesis.paused) { speechSynthesis.pause(); }"><i class="fa-solid fa-xmark"></i></button>
+
+  <script src="script.js"></script>
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

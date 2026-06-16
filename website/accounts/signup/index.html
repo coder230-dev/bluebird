@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=add_reaction,alternate_email,calendar_month,check_alert,check_circle,email,lock,password,person,security,storage" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/brands.css"
+        integrity="sha512-Ve5cyESWChtU1zL3EIMU0T1LddBbffKw+bZsuO6YpN65a0EvnQnyiXnU72Xt9CgWyW7hMafF3hSWcUf55rGa/Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="container" id="cont">
+            <div class="login-signup-selector">
+                <a href="../login/index.html">Log In</a>
+                <a class="selected" href="#">Sign Up</a>
+            </div>
+            <h1 style="text-align: center;">
+                <i class="material-symbols-rounded main-icon">
+                    add_reaction
+                </i>
+            </h1>
+            <h1 class="main-header">Signup</h1>
+            <section id="signup-details-section">
+                <form id="signup-form" novalidate>
+                    <div class="input-cont">
+                        <span class="material-symbols-rounded">
+                            person
+                        </span>
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" placeholder="ex. Jane Doe" autocomplete="name">
+                    </div>
+                    <div class="input-cont">
+                        <span class="material-symbols-rounded">
+                            alternate_email
+                        </span>
+                        <label for="username">Username <span class="required">* Required</span></label>
+                        <input type="text" id="username" name="username" placeholder="ex. theLonelyGhost" required
+                            minlength="3" maxlength="18" autocomplete="username">
+                        <span id="username-status" class="username-status"></span>
+                        <span class="info">This is how you are going to appear throughout Bluebird. Usernames must have
+                            a minimum of 3 characters and a maximum of 18 characters.</span>
+                    </div>
+                    <div class="input-cont">
+                        <span class="material-symbols-rounded">
+                            lock
+                        </span>
+                        <label for="password">Password <span class="required">* Required</span></label>
+                        <input type="password" id="password" name="password" placeholder="Password" required
+                            minlength="8" autocomplete="new-password">
+                        <span id="password-status" class="username-status"></span>
+                        <span class="info">Password must have a minimum of 8 characters and include mixed case, numbers,
+                            and symbols for strong protection.</span>
+                    </div>
+                    <div class="input-cont">
+                        <span class="material-symbols-rounded">
+                            check_alert
+                        </span>
+                        <label for="confirm-password">Confirm Password <span class="required">* Required</span></label>
+                        <input type="password" id="confirm-password" name="confirm-password"
+                            placeholder="Confirm Password" required minlength="8" autocomplete="new-password">
+                    </div>
+                    <div class="btn-cont">
+                        <button class="submit-btn" id="submit-btn" type="submit">Sign up</button>
+                    </div>
+                </form>
+            </section>
+            <div class="bottom-links">Have an account? <a href="../login/index.html">Log In</a> | <a href="">Help</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div style="grid-area: left;">
+            <b style="font-family: 'Special Gothic Expanded One';"> © 2026 Bluebird IPE by Bryant</b>
+            <hr>
+            <b>
+                "I love minimalism, of course."
+            </b>
+            <blockquote>
+                It’s not just about having fewer things — it’s about giving every element a purpose.
+                Minimalism is clarity disguised as simplicity. It’s the discipline of removing noise so the essentials
+                can breathe.
+
+                When you strip away the unnecessary, what’s left becomes sharper, more intentional, more honest.
+
+                Minimalism isn’t empty. It’s focused.
+                It’s the confidence to let a single detail carry the moment.
+
+                And once you start seeing the beauty in restraint, it becomes second nature — almost inevitable.
+
+                That’s why I say I love minimalism of course — because once you understand it, it stops being a style
+                and becomes a mindset.
+            </blockquote>
+            <p>Quote info expanded by AI, while the quote is made by me.</p>
+        </div>
+        <div style="grid-area: right;"></div>
+        <div style="grid-area: bottom;" class="socialize">
+            <div id="socialize-message">
+                <h3>Let's get social</h3>
+                <p>You know, it never hurts to talk</p>
+            </div>
+            <div>
+                <a class="instagram-link-bio" href="https://instagram.com/bryant_san230" target="_blank"
+                    rel="noopener noreferrer">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a class="threads-link-bio" href="https://threads.com/bryant_san230" target="_blank"
+                    rel="noopener noreferrer">
+                    <i class="fa-brands fa-threads"></i>
+                </a>
+                <a class="tiktok-link-bio" href="https://tiktok.com/@bryant230sacramento" target="_blank"
+                    rel="noopener noreferrer">
+                    <i class="fa-brands fa-tiktok"></i>
+                </a>
+                <a class="x-link-bio" href="https://x.com/bryant_san230" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-brands fa-x-twitter"></i>
+                </a>
+                <a class="github-link-bio" href="https://github.com/coder230_dev" target="_blank"
+                    rel="noopener noreferrer">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="../databaseInfo.js"></script>
+    <script src="script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Super Blackjack 21</title>
+  <link rel="shortcut icon" href="https://www.calculatorsoup.com/images/deck_new/poker_deck/2S.svg" type="image/x-icon">
+  <style>
+    /* Basic Styles */
+    body { margin: 0; font-family: Arial, sans-serif; background-color: #006400; color: #fff; display: flex; flex-direction: column; min-height: 100vh; }
+    button, select, input { padding: 12px 22px; margin: 5px; cursor: pointer; border: none; border-radius: 5px; background-color: #555; color: #fff; font-family: "Confortaa"; }
+    button:hover { background-color: #777; }
+    nav { background-color: #333; padding: 10px; display: flex; justify-content: space-between; align-items: center; color: #fff; }
+    nav h1 { margin: 0; }
+    #enable-betting { background-color: cyan; width: 2rem; scale: 2; border-radius: 90px; }
+    #navbar-links { display: flex; justify-content: center; width: fit-content; }
+    #navbar-links button { margin-left: 10px; background-color: #555; color: #fff; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+    #navbar-links button:hover { background-color: #777; }
+    #popup { display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #444; color: #fff; padding: 15px 30px; border-radius: 5px; z-index: 1000; }
+    .container { flex-grow: 1; text-align: center; padding: 20px; }
+    .hand { display: flex; justify-content: center; flex-wrap: wrap; margin: 10px 0; }
+    .card { width: 80px; height: 120px; background-color: #fff; color: #000; border: 1px solid #000; border-radius: 5px; margin: 5px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 5px; }
+    .suit { scale: 3; }
+    .card:hover { backdrop-filter: contrast(100); }
+    .card.hidden { background-color: #444; filter: blur(20px); border: 1px solid #222; }
+    .card.suit-hearts .suit, .card.suit-diamonds .suit { color: red; }
+    .card-value { font-size: 1.5em; }
+    .controls { margin: 20px; }
+    .controls button { margin: 0 10px; }
+    #start-screen, #end-screen, #mode-selection, #betting-options, #name-inputs { margin-top: 10%; text-align: center; }
+    .footer { text-align: center; padding: 10px; font-size: 0.8em; }
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      .card { width: 60px; height: 90px; }
+      .card-value { font-size: 1.2em; }
+    }
+    /* Dark Mode Styles */
+    body.dark-mode { background-color: #2b2b2b; color: #fff; }
+    body.dark-mode nav { background-color: #555; }
+    body.dark-mode #navbar-links button { background-color: #777; }
+    body.dark-mode #navbar-links button:hover { background-color: #999; }
+    body.dark-mode button { background-color: #777; color: #fff; }
+    body.dark-mode button:hover { background-color: #999; }
+    body.dark-mode #popup { background-color: #555; }
+    #xp-info { text-align: left !important; align-items: left; background-color: rgba(0, 0, 0, 0.168); backdrop-filter: blur(20px); aspect-ratio: 16/ 9; width: 300px; padding: 12px; border: 1px solid white; border-radius: 15px; transform: translate(-50%); position: absolute; left: 50%; }
+    #level-bar { display: flex; height: 10px; align-items: center; }
+    #xp-info progress { display: block; width: 100%; height: 20px; }
+    progress::-webkit-progress-bar { background-color: #ffdede; }
+    progress::-webkit-progress-value { background-color: #2934ff; }
+    progress::-moz-progress-bar { background-color: #2934ff; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav id="navbar">
+    <h1 id="navbar-title">Super Blackjack 21</h1>
+    <div id="navbar-links">
+      <button onclick="location.reload()">New Game</button>
+      <button id="toggle-theme-button">Toggle Theme</button>
+      <div id="google_translate_element"></div>
+      <button id="fullscreen-button">Go Fullscreen</button>
+    </div>
+  </nav>
+
+  <!-- Popup Message -->
+  <div id="popup"></div>
+
+  <!-- Start Screen -->
+  <div id="start-screen" class="container">
+    <img src="https://www.calculatorsoup.com/images/deck_new/poker_deck/2S.svg" alt="">
+    <h1>Welcome to Super Blackjack</h1>
+    <button id="start-button">Start Game</button>
+    <div id="xp-info"></div>
+  </div>
+
+  <!-- Game Mode Selection -->
+  <div id="mode-selection" class="container" style="display: none;">
+    <h2>Select Game Mode</h2>
+    <button id="single-player-button">Single Player</button>
+    <button id="two-player-button">Two Players</button>
+  </div>
+
+  <!-- Name Inputs -->
+  <div id="name-inputs" class="container" style="display: none;">
+    <h2>Enter Player Names</h2>
+    <div>
+      <label>Player 1 Name: <input type="text" id="player1-name-input" value="Player 1"></label>
+    </div>
+    <div>
+      <label>Player 2 Name: <input type="text" id="player2-name-input" value="Player 2"></label>
+    </div>
+    <button id="name-proceed-button">Proceed</button>
+  </div>
+
+  <!-- Betting Options -->
+  <div id="betting-options" class="container" style="display: none;">
+    <h2>Betting Options</h2>
+    <label><input type="checkbox" id="enable-betting"> Enable Betting</label><br><br>
+    <button id="proceed-button">Proceed</button>
+  </div>
+
+  <!-- Game Interface -->
+  <div id="game-interface" class="container" style="display: none;">
+    <h2 id="game-status">Place Your Bets!</h2>
+
+    <div id="betting-area" style="display: none;">
+      <h3 id="player-name">Player's Bankroll: $<span id="player-bankroll">1000</span></h3>
+      <label for="bet-amount">Bet Amount: $</label>
+      <input type="number" id="bet-amount" min="1" value="10" style="width: 80px;"><br><br>
+      <button id="place-bet-button">Place Bet</button>
+    </div>
+
+    <div>
+      <h3>Dealer's Hand (<span id="dealer-score">?</span>)</h3>
+      <div id="dealer-hand" class="hand"></div>
+    </div>
+
+    <div>
+      <h3 id="player-name-display">Player's Hand (<span id="player-score">0</span>)</h3>
+      <div id="player-hand" class="hand"></div>
+    </div>
+
+    <div id="split-hand-container" style="display: none;">
+      <h3>Split Hand (<span id="split-score">0</span>)</h3>
+      <div id="split-hand" class="hand"></div>
+    </div>
+
+    <div class="controls" id="controls" style="display: none;">
+      <button id="draw-button">Draw Card</button>
+      <button id="hold-button">Hold</button>
+      <button id="double-button">Double Down</button>
+      <button id="split-button" style="display: none;">Split</button>
+      <button id="surrender-button">Surrender</button>
+    </div>
+
+    <div id="insurance-area" style="display: none;">
+      <p>Dealer shows an Ace. Would you like to buy insurance?</p>
+      <button id="insurance-yes-button">Yes</button>
+      <button id="insurance-no-button">No</button>
+    </div>
+  </div>
+
+  <!-- End Screen -->
+  <div id="end-screen" class="container" style="display: none;">
+    <h1 id="end-message"></h1>
+    <button id="play-again-button">Play Again</button>
+    <button id="close-page-button">Close Page</button>
+  </div>
+
+  <div class="footer">2025 Bluebird IPE. Bluebird Games. <a href="index.html">Back to all games.</a> <div id="level-bar"></div></div>
+
+  <audio id="click-sound" src="https://freesound.org/data/previews/256/256113_3263906-lq.mp3"></audio>
+  <audio id="shuffle-sound" src="https://freesound.org/data/previews/130/130657_2337295-lq.mp3"></audio>
+  <audio id="win-sound" src="https://freesound.org/data/previews/198/198841_2859979-lq.mp3"></audio>
+  <audio id="lose-sound" src="https://freesound.org/data/previews/353/353497_2256123-lq.mp3"></audio>
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+    }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <script>
+
+const fullscreenButton = document.getElementById('fullscreen-button');
+
+fullscreenButton.addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(err => {
+      alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+    });
+  } else {
+    document.exitFullscreen();
+  }
+});
+
+var currentUser = localStorage.getItem('currentUser');
+if (currentUser) {
+    try {
+        currentUser = JSON.parse(currentUser);
+        if (!currentUser['xpLevel'] && !currentUser['level']) {
+          currentUser = { xpLevel: 0, level: 1, username: currentUser['username'] };
+        }
+    } catch (error) {
+        console.error('Error parsing currentUser JSON:', error);
+        currentUser = { xpLevel: 0, level: 1, username: 'Guest' };
+    }
+} else {
+    currentUser = { xpLevel: 0, level: 1, username: 'Guest' }; // Initialize default values
+}
+
+function getMultiplier() {
+  var day = new Date().getDay();
+  if (new Date().getHours() < 18 && new Date().getHours() > 16) {
+      extraMult = 2.2
+    }
+    else {
+      extraMult = 1
+    }
+  if (day > 5 || day == 0) {
+      return 1.8 * 1;
+    }
+    else if (day == 5) {
+      return 1.5 * 1
+    }
+    else if (day == 2) {
+      console.log("It's Tuesday");
+      return 1.2 * 1
+    }
+     else {
+      return 1 * 1;
+    }
+}
+
+let multiplier = getMultiplier()
+
+loadLevelElement()
+
+function giveXP(amount) {
+    let xpLevel = currentUser.xpLevel;
+    let level = currentUser.level;
+
+    xpLevel += amount * multiplier;
+    if (xpLevel >= 100) {
+        xpLevel = 0;
+        level += 1; // Level up when XP reaches 100
+        popupMessage(`${currentUser.username} leveled up to level ${level}!`, 4000)
+    }
+
+    currentUser.xpLevel = xpLevel;
+    currentUser.level = level;
+
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    const userIndex = users.findIndex(user => user.username === currentUser.username);
+    if (userIndex !== -1) {
+        users[userIndex].xpLevel = xpLevel;
+        users[userIndex].level = level;
+    } else {
+        users.push(currentUser);
+    }
+
+    localStorage.setItem('users', JSON.stringify(users));
+
+    loadLevelElement()
+}
+
+function loadLevelElement() {
+  let xpLevel = Math.round(currentUser.xpLevel)
+    let level = currentUser.level;
+
+  document.querySelectorAll('#xp-info').forEach(element => {
+    // Update the innerHTML for the XP display
+    element.innerHTML = `
+        <h3>${currentUser.username || 'Guest'}</h3>
+        <h4>Level ${level}</h4>
+        <progress max="100" value="${xpLevel}"></progress>
+        <p>${xpLevel}XP / 100XP</p>
+        <h5>${100 - xpLevel}XP to next level</h5>
+        <h6>Today's Multiplier: ${multiplier}</h6>
+        <details>
+          <summary>Bonus XP Days</summary>
+          <p>Fri: 1.5x</p>
+          <p>Sat-Sun: 1.8x</p>
+          <p>Tues: 1.2x</p>
+          <p>Mon, Wed, Thurs: 1x</p>
+        </details>
+        <p>Not you. Switch Accounts <a href="../account/index.html?redirect=true">here</a>.</p>
+    `;
+});
+document.getElementById('level-bar').innerHTML = `
+        <h4>Level ${level}</h4>
+        <progress max="100" value="${xpLevel}"></progress>
+        <p>${xpLevel}XP / 100XP; Multiplier: ${multiplier}</p>
+    `;
+}
+
+    // DOM Elements
+    const toggleThemeButton = document.getElementById('toggle-theme-button');
+    const startButton = document.getElementById('start-button');
+    const proceedButton = document.getElementById('proceed-button');
+    const singlePlayerButton = document.getElementById('single-player-button');
+    const twoPlayerButton = document.getElementById('two-player-button');
+    const nameInputs = document.getElementById('name-inputs');
+    const player1NameInput = document.getElementById('player1-name-input');
+    const player2NameInput = document.getElementById('player2-name-input');
+    const nameProceedButton = document.getElementById('name-proceed-button');
+    const gameInterface = document.getElementById('game-interface');
+    const startScreen = document.getElementById('start-screen');
+    const modeSelection = document.getElementById('mode-selection');
+    const bettingOptions = document.getElementById('betting-options');
+    const enableBettingCheckbox = document.getElementById('enable-betting');
+    const bettingArea = document.getElementById('betting-area');
+    const betAmountInput = document.getElementById('bet-amount');
+    const placeBetButton = document.getElementById('place-bet-button');
+    const gameStatus = document.getElementById('game-status');
+    const dealerHandDiv = document.getElementById('dealer-hand');
+    const playerHandDiv = document.getElementById('player-hand');
+    const splitHandDiv = document.getElementById('split-hand');
+    const splitHandContainer = document.getElementById('split-hand-container');
+    const dealerScoreSpan = document.getElementById('dealer-score');
+    const playerScoreSpan = document.getElementById('player-score');
+    const splitScoreSpan = document.getElementById('split-score');
+    const playerNameDisplay = document.getElementById('player-name-display');
+    const playerBankrollSpan = document.getElementById('player-bankroll');
+    const drawButton = document.getElementById('draw-button');
+    const holdButton = document.getElementById('hold-button');
+    const doubleButton = document.getElementById('double-button');
+    const splitButton = document.getElementById('split-button');
+    const surrenderButton = document.getElementById('surrender-button');
+    const controlsDiv = document.getElementById('controls');
+    const insuranceArea = document.getElementById('insurance-area');
+    const insuranceYesButton = document.getElementById('insurance-yes-button');
+    const insuranceNoButton = document.getElementById('insurance-no-button');
+    const endScreen = document.getElementById('end-screen');
+    const endMessage = document.getElementById('end-message');
+    const playAgainButton = document.getElementById('play-again-button');
+    const closePageButton = document.getElementById('close-page-button');
+    const popup = document.getElementById('popup');
+
+    // Game Variables
+    let deck = [];
+    let dealerHand = [];
+    let players = [];
+    let currentPlayerIndex = 0;
+    let isGameActive = false;
+    let isDealerTurn = false;
+    let isDoubleDown = false;
+    let isInsuranceOffered = false;
+    let isBettingEnabled = false;
+    let insuranceBet = 0;
+
+    // Event Listeners
+    toggleThemeButton.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+    });
+
+    startButton.addEventListener('click', () => {
+      startScreen.style.display = 'none';
+      modeSelection.style.display = 'block';
+    });
+
+    singlePlayerButton.addEventListener('click', () => {
+      modeSelection.style.display = 'none';
+      setupPlayers(1);
+      startGame();
+    });
+
+    twoPlayerButton.addEventListener('click', () => {
+      modeSelection.style.display = 'none';
+      nameInputs.style.display = 'block';
+    });
+
+    nameProceedButton.addEventListener('click', () => {
+      nameInputs.style.display = 'none';
+      const player1Name = player1NameInput.value || 'Player 1';
+      const player2Name = player2NameInput.value || 'Player 2';
+      setupPlayers(2, [player1Name, player2Name]);
+      startGame();
+    });
+
+    proceedButton.addEventListener('click', () => {
+      bettingOptions.style.display = 'none';
+      isBettingEnabled = enableBettingCheckbox.checked;
+      if (isBettingEnabled) {
+        bettingArea.style.display = 'block';
+        currentPlayerIndex = 0; // Reset player index for betting
+        updateBettingArea();
+      } else {
+        bettingArea.style.display = 'none';
+        currentPlayerIndex = 0;
+        startGame();
+      }
+    });
+
+    placeBetButton.addEventListener('click', () => {
+      const bet = parseInt(betAmountInput.value);
+      const currentPlayer = players[currentPlayerIndex];
+      if (bet > currentPlayer.bankroll || bet <= 0) {
+        popupMessage('Invalid bet amount!', 2000);
+        return;
+      }
+      currentPlayer.currentBet = bet;
+      currentPlayer.bankroll -= bet;
+      updateBankrollDisplay();
+      currentPlayerIndex++;
+      if (currentPlayerIndex < players.length) {
+        betAmountInput.value = 10;
+        updateBettingArea();
+      } else {
+        bettingArea.style.display = 'none';
+        currentPlayerIndex = 0;
+        startGame();
+      }
+    });
+
+    drawButton.addEventListener('click', playerHit);
+    holdButton.addEventListener('click', playerStand);
+    doubleButton.addEventListener('click', playerDoubleDown);
+    splitButton.addEventListener('click', playerSplit);
+    surrenderButton.addEventListener('click', playerSurrender);
+    insuranceYesButton.addEventListener('click', buyInsurance);
+    insuranceNoButton.addEventListener('click', declineInsurance);
+    playAgainButton.addEventListener('click', () => {
+      endScreen.style.display = 'none';
+      if (players.some(p => p.bankroll > 0)) {
+        if (isBettingEnabled) {
+          currentPlayerIndex = 0;
+          bettingArea.style.display = 'block';
+          updateBettingArea();
+        } else {
+          currentPlayerIndex = 0;
+          startGame();
+        }
+      } else {
+        popupMessage('Players have run out of bankroll!', 3000);
+        startScreen.style.display = 'block';
+      }
+    });
+
+    // Close Page Button
+    closePageButton.addEventListener('click', () => {
+      if (confirm('Are you sure you want to close the page?')) {
+        window.close();
+      }
+    });
+
+    // Game Functions
+    function setupPlayers(numPlayers, names = []) {
+      players = [];
+      for (let i = 0; i < numPlayers; i++) {
+        players.push({
+          name: names[i] || `Player ${i + 1}`,
+          hand: [],
+          bankroll: 1000,
+          currentBet: 0,
+          isActive: true,
+          hasPlayed: false,
+          insuranceBet: 0,
+        });
+        updateScores();
+      }
+    }
+
+    function updateBettingArea() {
+      const currentPlayer = players[currentPlayerIndex];
+      playerBankrollSpan.textContent = currentPlayer.bankroll;
+      document.getElementById('player-name').textContent = `${currentPlayer.name}'s Bankroll: $`;
+      gameStatus.textContent = `${currentPlayer.name}, place your bet!`;
+    }
+
+    function updateBankrollDisplay() {
+      const currentPlayer = players[currentPlayerIndex];
+      playerBankrollSpan.textContent = currentPlayer.bankroll;
+    }
+
+    function startGame() {
+      resetGame();
+      createDeck();
+      shuffleDeck();
+      initialDeal();
+      isGameActive = true;
+      controlsDiv.style.display = 'block';
+      const currentPlayer = players[currentPlayerIndex];
+      gameStatus.textContent = `${currentPlayer.name}'s Turn`;
+      playerNameDisplay.textContent = `${currentPlayer.name}'s Hand (`;
+      updateBankrollDisplay();
+      checkForInsurance();
+      checkForSplitOption();
+      updateScores();
+    }
+
+    function resetGame() {
+      deck = [];
+      dealerHand = [];
+      players.forEach(player => {
+        player.hand = [];
+        player.hasPlayed = false;
+        player.currentBet = player.currentBet || 0;
+        player.isActive = player.bankroll > 0;
+        player.insuranceBet = 0;
+      });
+      currentPlayerIndex = 0;
+      isGameActive = false;
+      isDealerTurn = false;
+      isDoubleDown = false;
+      isInsuranceOffered = false;
+      insuranceBet = 0;
+      dealerHandDiv.innerHTML = '';
+      playerHandDiv.innerHTML = '';
+      splitHandDiv.innerHTML = '';
+      splitHandContainer.style.display = 'none';
+      dealerScoreSpan.textContent = '?';
+      playerScoreSpan.textContent = '0';
+      splitScoreSpan.textContent = '0';
+      controlsDiv.style.display = 'none';
+      gameStatus.textContent = 'Welcome to Blackjack!';
+      insuranceArea.style.display = 'none';
+      surrenderButton.disabled = false;
+      doubleButton.disabled = false;
+      splitButton.style.display = 'none';
+      endScreen.style.display = 'none';
+      gameInterface.style.display = 'block';
+    }
+
+    function createDeck() {
+      const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
+      const values = [
+        { name: 'A', value: 11 },
+        { name: '2', value: 2 },
+        { name: '3', value: 3 },
+        { name: '4', value: 4 },
+        { name: '5', value: 5 },
+        { name: '6', value: 6 },
+        { name: '7', value: 7 },
+        { name: '8', value: 8 },
+        { name: '9', value: 9 },
+        { name: '10', value: 10 },
+        { name: 'J', value: 10 },
+        { name: 'Q', value: 10 },
+        { name: 'K', value: 10 },
+      ];
+      deck = [];
+      for (let suit of suits) {
+        for (let val of values) {
+          deck.push({ suit: suit, value: val.value, name: val.name });
+        }
+      }
+    }
+
+    function shuffleDeck() {
+      deck.sort(() => Math.random() - 0.5);
+    }
+
+    function initialDeal() {
+      players.forEach(player => {
+        player.hand.push(drawCard());
+        player.hand.push(drawCard());
+      });
+      dealerHand.push(drawCard());
+      dealerHand.push(drawCard());
+      renderHands();
+      updateScores();
+      checkForBlackjack();
+    }
+
+    function drawCard() {
+      return deck.pop();
+    }
+
+    function renderHands() {
+        dealerHandDiv.innerHTML = '';
+        playerHandDiv.innerHTML = '';
+        splitHandDiv.innerHTML = '';
+
+        // Render Dealer's Hand
+        dealerHand.forEach((card, index) => {
+        const cardElem = createCardElement(card);
+        if (!isDealerTurn && index === 0) {
+            cardElem.classList.add('hidden');
+        }
+        dealerHandDiv.appendChild(cardElem);
+    });
+
+    // Render Current Player's Hand
+    const currentPlayer = players[currentPlayerIndex];
+
+    if (currentPlayer) {
+        playerHandDiv.innerHTML = '';
+        if (currentPlayer.hand.length > 0) {
+            currentPlayer.hand.forEach(card => {
+            const cardElem = createCardElement(card);
+            playerHandDiv.appendChild(cardElem);
+        });
+        } else {
+            playerHandDiv.innerHTML = '<p>No cards.</p>';
+        }
+        }
+    }
+
+
+    // **Missing createCardElement Function Definition**
+    function createCardElement(card) {
+      const cardElem = document.createElement('div');
+      cardElem.classList.add('card', `suit-${card.suit}`);
+      if (card.name === 'A') {
+        cardElem.classList.add('card-ace');
+      }
+      if (card.value === 10 && ['J', 'Q', 'K'].includes(card.name)) {
+        cardElem.classList.add('card-face');
+      }
+      cardElem.innerHTML = `
+        <div class="card-value">${card.name}</div>
+        <div class="suit">${getSuitSymbol(card.suit)}</div>
+        <div class="card-value upside-down">${card.name}</div>
+      `;
+      return cardElem;
+    }
+
+    function getSuitSymbol(suit) {
+      switch (suit) {
+        case 'hearts':
+          return '&hearts;';
+        case 'diamonds':
+          return '&diams;';
+        case 'clubs':
+          return '&clubs;';
+        case 'spades':
+          return '&spades;';
+      }
+    }
+
+    function updateScores() {
+        const currentPlayer = players[currentPlayerIndex];
+
+        if (currentPlayer) {
+            const playerScore = calculateHandValue(currentPlayer.hand);
+            playerScoreSpan.textContent = playerScore;
+            playerNameDisplay.textContent = `${currentPlayer.name}'s Hand (${playerScore})`;
+        } else {
+            playerScoreSpan.textContent = '0';
+            playerNameDisplay.textContent = `Player's Hand (0)`;
+        }
+
+        if (isDealerTurn) {
+            const dealerScore = calculateHandValue(dealerHand);
+            dealerScoreSpan.textContent = dealerScore;
+        } else {
+            dealerScoreSpan.textContent = '?';
+        }
+    }
+
+
+    function calculateHandValue(hand) {
+        let value = 0;
+        let aceCount = 0;
+
+        hand.forEach(card => {
+            value += card.value;
+        if (card.name === 'A') {
+            aceCount++;
+        }
+    });
+
+    while (value > 21 && aceCount > 0) {
+        value -= 10;
+        aceCount--;
+    }
+
+        return value;
+    }
+
+
+    function playerHit() {
+      const currentPlayer = players[currentPlayerIndex];
+      currentPlayer.hand.push(drawCard());
+      renderHands();
+      updateScores();
+
+      const playerScore = calculateHandValue(currentPlayer.hand);
+      if (playerScore > 21) {
+        popupMessage(`${currentPlayer.name} busts!`, 3000);
+        currentPlayer.isActive = false;
+        currentPlayer.hasPlayed = true;
+        setTimeout(function() {
+            nextPlayerOrDealer();
+        }, 2500)
+      }
+      surrenderButton.disabled = true;
+      doubleButton.disabled = true;
+      splitButton.style.display = 'none';
+    }
+
+    function playerStand() {
+      const currentPlayer = players[currentPlayerIndex];
+      currentPlayer.hasPlayed = true;
+      currentPlayer.isActive = true;
+      nextPlayerOrDealer();
+    }
+
+    function playerDoubleDown() {
+      const currentPlayer = players[currentPlayerIndex];
+      if (currentPlayer.bankroll < currentPlayer.currentBet) {
+        popupMessage('Insufficient bankroll to double down.', 3000);
+        return;
+      }
+      currentPlayer.bankroll -= currentPlayer.currentBet;
+      currentPlayer.currentBet *= 2;
+      updateBankrollDisplay();
+      currentPlayer.hand.push(drawCard());
+      renderHands();
+      updateScores();
+
+      const playerScore = calculateHandValue(currentPlayer.hand);
+      if (playerScore > 21) {
+        popupMessage(`${currentPlayer.name} busts!`, 3000);
+        currentPlayer.isActive = false;
+        currentPlayer.hasPlayed = true;
+        nextPlayerOrDealer();
+      } else {
+        playerStand();
+      }
+      surrenderButton.disabled = true;
+      doubleButton.disabled = true;
+      splitButton.style.display = 'none';
+    }
+
+    function playerSplit() {
+      // Splitting logic can be added here
+      popupMessage('Splitting is currently not supported in two-player mode.', 3000);
+    }
+
+    function playerSurrender() {
+      const currentPlayer = players[currentPlayerIndex];
+      currentPlayer.bankroll += currentPlayer.currentBet / 2;
+      updateBankrollDisplay();
+      popupMessage(`${currentPlayer.name} surrendered. Half bet returned.`, 3000);
+      currentPlayer.isActive = false;
+      currentPlayer.hasPlayed = true;
+      nextPlayerOrDealer();
+    }
+
+    function checkForInsurance() {
+      if (dealerHand[1].name === 'A') {
+        if (isBettingEnabled) {
+          isInsuranceOffered = true;
+          insuranceArea.style.display = 'block';
+        }
+      }
+    }
+
+    function buyInsurance() {
+      const currentPlayer = players[currentPlayerIndex];
+      if (currentPlayer.bankroll < currentPlayer.currentBet / 2) {
+        popupMessage('Insufficient bankroll for insurance.', 3000);
+        return;
+      }
+      const insuranceBet = currentPlayer.currentBet / 2;
+      currentPlayer.bankroll -= insuranceBet;
+      currentPlayer.insuranceBet = insuranceBet;
+      updateBankrollDisplay();
+      insuranceArea.style.display = 'none';
+      checkDealerBlackjack();
+    }
+
+    function declineInsurance() {
+      insuranceArea.style.display = 'none';
+      checkDealerBlackjack();
+    }
+
+    function checkDealerBlackjack() {
+      if (calculateHandValue(dealerHand) === 21) {
+        isDealerTurn = true;
+        renderHands();
+        updateScores();
+        popupMessage('Dealer has Blackjack!', 3000);
+        players.forEach(player => {
+          if (player.insuranceBet > 0) {
+            player.bankroll += player.insuranceBet * 2;
+          }
+          endGame('Dealer wins!');
+        });
+      } else {
+        popupMessage('Dealer does not have Blackjack.', 3000);
+      }
+    }
+
+    function checkForSplitOption() {
+      // Splitting currently not supported in two-player mode
+    }
+
+    function checkForBlackjack() {
+        setTimeout(function() {
+      const currentPlayer = players[currentPlayerIndex];
+      const playerScore = calculateHandValue(currentPlayer.hand);
+      const dealerScore = calculateHandValue(dealerHand);
+      if (playerScore === 21 && dealerScore !== 21) {
+        popupMessage(`${currentPlayer.name} has Blackjack!`, 3000);
+        payOut(currentPlayer, true);
+        currentPlayer.hasPlayed = true;
+        nextPlayerOrDealer();
+      } else if (playerScore === 21 && dealerScore === 21) {
+        popupMessage(`Both have Blackjack! Push.`, 3000);
+        pushBet(currentPlayer);
+        currentPlayer.hasPlayed = true;
+        nextPlayerOrDealer();
+      }
+    }, 1000)
+    }
+
+    function nextPlayerOrDealer() {
+      // Ensure currentPlayerIndex does not exceed array length
+      currentPlayerIndex++;
+      if (currentPlayerIndex < players.length) {
+        const nextPlayer = players[currentPlayerIndex];
+        if (!nextPlayer.isActive || nextPlayer.hasPlayed) {
+          nextPlayerOrDealer(); // Skip inactive or already played players
+          return;
+        }
+        controlsDiv.style.display = 'block';
+        renderHands();
+        updateScores();
+        gameStatus.textContent = `${nextPlayer.name}'s Turn`;
+        playerNameDisplay.textContent = `${nextPlayer.name}'s Hand (`;
+        updateBankrollDisplay();
+        surrenderButton.disabled = false;
+        doubleButton.disabled = false;
+      } else {
+        isDealerTurn = true;
+        renderHands(); // Show dealer's hand
+        dealerPlay();
+      }
+    }
+
+    function dealerPlay() {
+        isDealerTurn = true;
+        renderHands();
+        updateScores();
+
+        let dealerScore = calculateHandValue(dealerHand);
+
+        if (dealerScore >= 17) {
+            determineWinners();
+        } else {
+            dealerHand.push(drawCard());
+        setTimeout(dealerPlay, 1000);
+        }
+    }
+
+
+    function determineWinners() {
+        isDealerTurn = true;  // Reveal hidden dealer card
+        renderHands();  // Re-render hands to show all dealer cards
+        updateScores();
+
+        const dealerScore = calculateHandValue(dealerHand);
+
+        endGame('Game Over')
+
+        players.forEach(player => {
+            const playerScore = calculateHandValue(player.hand);
+            if (!player.isActive) {
+                // Player already bust or surrendered
+            return;
+        }
+        if (dealerScore > 21) {
+            popupMessage(`${player.name} wins! Dealer busts.`, 3000);
+            payOut(player, true);
+            endGame(`${player.name} wins. Dealer busts.`);
+        } else if (dealerScore > playerScore) {
+            popupMessage(`${player.name} loses. Dealer wins.`, 3000);
+            endGame(`Dealer wins! ${player.name} busts.`);
+        } else if (dealerScore < playerScore) {
+            popupMessage(`${player.name} wins!`, 3000);
+            payOut(player, true);
+            endGame(`${player.name} wins!`);
+        } else {
+            popupMessage(`${player.name} pushes. It's a tie.`, 3000);
+            pushBet(player);
+            endGame('It is a tie.');
+        }
+        });
+    }
+
+
+    function endGame(message) {
+        setTimeout(function() {
+            isGameActive = false;
+            isDealerTurn = true;
+            renderHands();
+            updateScores();
+            gameStatus.textContent = message;
+            controlsDiv.style.display = 'none';
+            gameInterface.style.display = 'none';
+            endScreen.style.display = 'block';
+            endMessage.textContent = message;
+        }, 2500);
+    }
+
+    function payOut(player, isWin) {
+      if (isBettingEnabled) {
+        let payout = player.currentBet;
+        if (isWin) {
+          payout *= 2;
+        }
+        player.bankroll += payout;
+      }
+    }
+
+    function pushBet(player) {
+      if (isBettingEnabled) {
+        player.bankroll += player.currentBet;
+      }
+    }
+
+    // Popup Message Function
+    function popupMessage(message, seconds) {
+      if (!seconds) seconds = 3000;
+      popup.style.display = 'block';
+      popup.innerHTML = message;
+      setTimeout(function() {
+          popup.style.display = 'none';
+          popup.innerHTML = '';
+      }, seconds);
+    }
+
+  </script>
+</body>
+</html>

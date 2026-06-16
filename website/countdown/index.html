@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown - Inspire</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.css" integrity="sha512-GmZYQ9SKTnOea030Tbiat0Y+jhnYLIpsGAe6QTnToi8hI2nNbVMETHeK4wm4MuYMQdrc38x+sX77+kVD01eNsQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="main">
+        <h1>Countdown</h1>
+        <div class="countdown-section">
+            <nav class="action-bar">
+                <h2>Countdowns</h2>
+                <span>
+                    <button><i class="fa-solid fa-bars-progress"></i></button>
+                    <button onclick="popup('add-countdown', true)"><i class="fa-solid fa-plus"></i></button>
+                </span>
+            </nav>
+            <div id="countdowns">
+                <i style="font-size: 4rem;" class="fa-solid fa-warning"></i>
+                <h1>Couldn't Load Countdowns</h1>
+                <p>Try reloading it again. Otherwise, check Inspire's servers.</p>
+            </div>
+        </div>
+    </div>
+    <popup id="add-countdown">
+        <form id="countdownForm">
+            <h1>Add Countdown</h1>
+            <p>Icon</p>
+            <section class="bg-container">
+                <p>Choose an emoji, letter, or symbol.</p>
+                <div class="flex-container-bg" style="justify-content: center;">
+                    <input type="text" id="countdown-icon" style="width: 100px; height: 100px; font-size: 90px; text-align: center;" maxlength="1">
+                </div>
+            </section>
+            <p>Name:</p>
+            <input type="text" id="countdown-name" placeholder="Countdown Name" required>
+            <div class="flex-container-bg">
+                <p>End Date:</p>
+                <input type="datetime-local" id="countdown-end-date" required placeholder="Countdown End Date" style="width: fit-content;">
+            </div>
+            <p>Description:</p>
+            <textarea id="countdown-description" placeholder="Description (optional). What is it about?"></textarea>
+            <p>Countdown Color:</p>
+            <input type="color" id="countdown-bgColor">
+            <div class="bottom-btn">
+                <button type="reset" onclick="popup('add-countdown')">Cancel</button>
+                <button type="submit">Add</button>
+            </div>
+        </form>
+    </popup>
+    <script src="script.js"></script>
+</body>
+</html>

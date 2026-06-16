@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viewer - Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="../Images/search_40dp_FILL1_wght700_GRAD0_opsz40.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.css" integrity="sha512-GmZYQ9SKTnOea030Tbiat0Y+jhnYLIpsGAe6QTnToi8hI2nNbVMETHeK4wm4MuYMQdrc38x+sX77+kVD01eNsQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body>
+    <preloader>
+        <div>
+            <svg viewBox="25 25 50 50">
+                <circle r="20" cy="50" cx="50"></circle>
+            </svg>
+        </div>
+    </preloader>
+    <section id="files-preview-sec">
+        <div id="preview"></div>
+    </section>
+    <section class="main">
+        <div class="container" id="home-main" style="display: block; z-index: 0; background: black; transform: translate(-50%, -50%); opacity: 1;">
+            <nav>
+                <h1>File Viewer</h1>
+                <div>
+                    <button onclick="displayContainer('main-container', true)"><i class="fa-solid fa-plus"></i> New File</button>
+                    <button onclick="displayContainer('main-container', true)"><i class="fa-solid fa-user"></i> View Account</button>
+                </div>
+            </nav>
+            <h1 style="font-size: 2rem; text-align: center;" id="greeter">Hello!</h1>
+            <div class="box">
+                <h1 style="text-align: left;">My Files</h1>
+                <p style="text-align: left;">(Saved in Session Only)</p>
+                <div id="saved-files">
+                    <div class="box" id="no-uploads" style="aspect-ratio: 16/9;">
+                        <h1>You have nothing saved.</h1>
+                        <p>Start uploading files to see them here. They are saved in this session only.</p>
+                        <button onclick="displayContainer('main-container', true)">Upload</button>
+                    </div>
+                </div>
+            </div>
+            <section class="box">
+                <h2>Get Started</h2>
+                <p>Start by uploading file or using a url. Click the button below to get started!</p>
+                <button onclick="displayContainer('main-container', true)" style="font-size: 1.4rem;">Upload</button>
+            </section>
+            <section class="box">
+                <h1>View Multiple Files</h1>
+                
+            </section>
+        </div>
+        <div class="container" id="main-container">
+            <h1 style="text-align: center;">New File</h1>
+            <p>View files, embeded YouTube videos and websites, and images and videos as links from the web.</p>
+            <h2>Upload File</h2>
+            <dragbox id="drag-box">
+                <div style="text-align: center;">
+                    <i style="font-size: 3.3rem;" class="fa-solid fa-file"></i>
+                    <h2>Drag Files to Upload</h2>
+                    <h4>or click to upload file.</h4>
+                </div>
+            </dragbox>
+            <p class="lined-text">or</p>
+            <h2>Paste Text Link</h2>
+            <input type="url" id="pathToUrl" placeholder="Put your URL here.">
+            <div class="bottom-btns">
+                <button class="action-ele" onclick="displayContainer('main-container')">Cancel</button>
+                <button class="action-ele" onclick="handleFileUpload(document.getElementById('pathToUrl').value.trim())">Next <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
+        <div class="container" id="file-type-url">
+            <h1 style="text-align: center;">Select File Type</h1>
+            <p>Since you entered a link, we cannot tell what type of file it has inside. Select a file type that you want to preview in.</p>
+            <form id="file-type">
+                <label><input type="radio" value="html" name="typeFile-url">HTML</label>
+                <label><input type="radio" value="css" name="typeFile-url">CSS</label>
+                <label><input type="radio" value="javascript" name="typeFile-url">JavaScript</label>
+                <label><input type="radio" value="json" name="typeFile-url">JSON</label>
+                <label><input type="radio" value="text" name="typeFile-url">Text</label>
+                <label> <input type="radio" value="image" name="typeFile-url">Image</label>
+                <label> <input type="radio" value="video" name="typeFile-url">Video</label>
+                <label> <input type="radio" value="audio" name="typeFile-url">Audio</label>
+                <label><input type="radio" value="iframe" name="typeFile-url">HTML Iframe</label>
+            </form>
+            <button-c class="bottom-btns">
+                <button class="action-ele" onclick="displayContainer('main-container', true)">Back</button>
+                <button class="action-ele" id="url-type-next">Next</button>
+            </button-c>
+        </div>
+    </section>
+    <script src="script.js"></script>
+</body>
+</html>

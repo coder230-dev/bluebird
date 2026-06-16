@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ultimate Pool Game</title>
+  <style>
+    /* Global Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      background: #222;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: #eee;
+      text-align: center;
+      overflow-x: hidden;
+    }
+    #container {
+      max-width: 1200px;
+      margin: auto;
+      position: relative;
+    }
+    .screen {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .screen.visible {
+      display: block;
+      opacity: 1;
+    }
+    h1, h2 {
+      margin: 20px;
+      font-weight: normal;
+    }
+    p {
+      margin: 20px;
+    }
+    button {
+      margin: 10px 10px;
+      padding: 15px 25px;
+      font-size: 18px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #444;
+      color: #eee;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0084ff;
+    }
+    input[type="range"] {
+      width: 250px;
+      margin: 10px;
+    }
+    /* Pool Table (Canvas) */
+    canvas {
+      background: linear-gradient(145deg, #0a4d1c, #0e6327);
+      border: 10px solid #8b5a2b;
+      border-radius: 10px;
+      margin: 20px auto;
+      display: block;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+    #install-button {
+      display: none;
+      margin-top: 10px;
+    }
+    /* Overlay for mode selection in game screen */
+    #mode-overlay {
+      background: rgba(0, 0, 0, 0.85);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    /* Confetti for celebrations */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: red;
+      opacity: 0.9;
+      animation: fall 3s linear forwards;
+    }
+    @keyframes fall {
+      0% { top: -20px; transform: rotate(0deg); }
+      100% { top: 100vh; transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <!-- Start Screen -->
+    <div id="start-screen" class="screen visible">
+      <h1>Ultimate Pool Game</h1>
+      <p>The best pool game ever on desktop and mobile!</p>
+      <button id="start-play-button">Play</button>
+      <button id="settings-button">Settings</button>
+      <button id="install-button">Add to Home Screen</button>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settings-screen" class="screen">
+      <h2>Settings</h2>
+      <div>
+        <p>Difficulty:</p>
+        <button id="diff-easy">Easy</button>
+        <button id="diff-medium">Medium</button>
+        <button id="diff-hard">Hard</button>
+      </div>
+      <div>
+        <p>Sound Volume:</p>
+        <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" />
+      </div>
+      <div>
+        <p>Graphics:</p>
+        <button id="toggle-fullscreen">Toggle Fullscreen</button>
+      </div>
+      <br>
+      <button id="back-from-settings">Back</button>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen">
+      <!-- Mode Selection Overlay -->
+      <div id="mode-overlay">
+        <h2>Select Game Mode</h2>
+        <div id="mode-selection">
+          <button id="two-player">Two Player</button>
+          <button id="cpu-easy">CPU Easy</button>
+          <button id="cpu-hard">CPU Hard</button>
+        </div>
+        <h2>Select Pool Type</h2>
+        <div id="pool-selection">
+          <button id="pool8">8‑Ball (US)</button>
+          <button id="pool9">9‑Ball</button>
+        </div>
+        <br>
+        <button id="begin-game">Begin Game</button>
+      </div>
+      <!-- Actual game canvas and status -->
+      <canvas id="gameCanvas" width="1200" height="600"></canvas>
+      <div id="status"></div>
+      <button id="restart-game">Restart Game</button>
+    </div>
+
+    <!-- End Screen -->
+    <div id="end-screen" class="screen">
+      <h2 id="end-message"></h2>
+      <button id="play-again">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * DOM Elements
+     ***********************/
+    const startScreen       = document.getElementById('start-screen');
+    const settingsScreen    = document.getElementById('settings-screen');
+    const gameScreen        = document.getElementById('game-screen');
+    const endScreen         = document.getElementById('end-screen');
+    const modeOverlay       = document.getElementById('mode-overlay');
+    const statusDiv         = document.getElementById('status');
+    const endMessage        = document.getElementById('end-message');
+    const canvas            = document.getElementById('gameCanvas');
+    const ctx               = canvas.getContext('2d');
+
+    // Start Screen Buttons
+    const startPlayButton   = document.getElementById('start-play-button');
+    const settingsButton    = document.getElementById('settings-button');
+    const installButton     = document.getElementById('install-button');
+
+    // Settings Screen Buttons & Controls
+    const diffEasyBtn       = document.getElementById('diff-easy');
+    const diffMediumBtn     = document.getElementById('diff-medium');
+    const diffHardBtn       = document.getElementById('diff-hard');
+    const volumeSlider      = document.getElementById('volume-slider');
+    const fullscreenBtn     = document.getElementById('toggle-fullscreen');
+    const backFromSettings  = document.getElementById('back-from-settings');
+
+    // Mode Selection (inside game screen overlay)
+    const twoPlayerBtn      = document.getElementById('two-player');
+    const cpuEasyBtn        = document.getElementById('cpu-easy');
+    const cpuHardBtn        = document.getElementById('cpu-hard');
+    const pool8Btn          = document.getElementById('pool8');
+    const pool9Btn          = document.getElementById('pool9');
+    const beginGameBtn      = document.getElementById('begin-game');
+
+    // Game Screen Buttons
+    const restartGameBtn    = document.getElementById('restart-game');
+
+    // End Screen Button
+    const playAgainBtn      = document.getElementById('play-again');
+
+    /***********************
+     * Global Arrays for Colors
+     ***********************/
+    const solids = ["yellow", "blue", "red", "purple", "orange", "green", "maroon"];
+    const gradientMap = {
+      "yellow": { inner: "#ffff99", outer: "#ffeb3b" },
+      "blue": { inner: "#99ccff", outer: "#2196f3" },
+      "red": { inner: "#ff9999", outer: "#f44336" },
+      "purple": { inner: "#e1bee7", outer: "#9c27b0" },
+      "orange": { inner: "#ffcc80", outer: "#ff9800" },
+      "green": { inner: "#a5d6a7", outer: "#4caf50" },
+      "maroon": { inner: "#d7a1a1", outer: "#800000" },
+      "black": { inner: "#444", outer: "#000" }
+    };
+
+    /***********************
+     * Game Variables & Settings
+     ***********************/
+    let balls = [];
+    let cueBall;
+    let currentPlayer = 1;
+    let gameActive = false;
+    let gameMode = "";
+    let poolType = "";
+    let turn = "player";
+    let difficulty = "medium";
+    const baseBallRadius = 20;      // Increased from 10 to 20 for larger balls
+    const friction = 0.99;
+    const tableWidth = canvas.width, tableHeight = canvas.height;
+    let pockets = [];
+    let animationFrameId;
+    const audioVolume = parseFloat(volumeSlider.value);
+
+    /***********************
+     * Pocket Setup
+     ***********************/
+    function setupPockets() {
+      const pocketRadius = 36;      // Increased proportionately
+      pockets = [
+        { x: 0, y: 0, r: pocketRadius },
+        { x: tableWidth / 2, y: 0, r: pocketRadius },
+        { x: tableWidth, y: 0, r: pocketRadius },
+        { x: 0, y: tableHeight, r: pocketRadius },
+        { x: tableWidth / 2, y: tableHeight, r: pocketRadius },
+        { x: tableWidth, y: tableHeight, r: pocketRadius }
+      ];
+    }
+
+    /***********************
+     * Ball Object Constructor
+     ***********************/
+    function Ball(x, y, number, color) {
+      this.x = x;
+      this.y = y;
+      this.vx = 0;
+      this.vy = 0;
+      this.number = number;
+      this.color = color;
+      this.inPocket = false;
+      this.currentRadius = baseBallRadius;
+    }
+
+    /***********************
+     * Helper: Get Ball Color Based on Number and Pool Type
+     ***********************/
+    function getBallColor(ball) {
+      if (ball.number === 0) return "white";
+      if (poolType === "8Ball") {
+        if (ball.number >= 1 && ball.number <= 7) {
+          return solids[ball.number - 1];
+        } else if (ball.number === 8) {
+          return "black";
+        } else {
+          return solids[ball.number - 9];
+        }
+      } else if (poolType === "9Ball") {
+        if (ball.number >= 1 && ball.number <= 8) {
+          return solids[ball.number - 1];
+        } else if (ball.number === 9) {
+          return solids[0];
+        }
+      }
+    }
+
+    /***********************
+     * Game Initialization
+     ***********************/
+    function initGame() {
+      balls = [];
+      setupPockets();
+      // Create cue ball at left quarter.
+      cueBall = new Ball(tableWidth * 0.25, tableHeight / 2, 0, "white");
+      balls.push(cueBall);
+      
+      if (poolType === "8Ball") {
+        let startX = tableWidth * 0.75, startY = tableHeight / 2, ballNum = 1, rows = 5;
+        for (let row = 0; row < rows; row++) {
+          for (let i = 0; i <= row; i++) {
+            let offsetX = row * (baseBallRadius * 2 * 0.9);
+            let offsetY = (i - row / 2) * (baseBallRadius * 2 * 1.1);
+            let col;
+            if (ballNum >= 1 && ballNum <= 7) {
+              col = solids[ballNum - 1];
+            } else if (ballNum === 8) {
+              col = "black";
+            } else {
+              col = solids[ballNum - 9];
+            }
+            balls.push(new Ball(startX + offsetX, startY + offsetY, ballNum, col));
+            ballNum++;
+          }
+        }
+      } else if (poolType === "9Ball") {
+        let centerX = tableWidth * 0.75, centerY = tableHeight / 2;
+        const positions = [
+          { x: centerX, y: centerY },
+          { x: centerX - baseBallRadius * 2, y: centerY - baseBallRadius * 2 },
+          { x: centerX + baseBallRadius * 2, y: centerY - baseBallRadius * 2 },
+          { x: centerX - baseBallRadius * 2, y: centerY + baseBallRadius * 2 },
+          { x: centerX + baseBallRadius * 2, y: centerY + baseBallRadius * 2 },
+          { x: centerX, y: centerY - baseBallRadius * 4 },
+          { x: centerX, y: centerY + baseBallRadius * 4 },
+          { x: centerX - baseBallRadius * 4, y: centerY },
+          { x: centerX + baseBallRadius * 4, y: centerY }
+        ];
+        for (let i = 0; i < positions.length; i++) {
+          let pos = positions[i];
+          let col = (i < 8) ? solids[i] : solids[0];
+          balls.push(new Ball(pos.x, pos.y, i + 1, col));
+        }
+      }
+      gameActive = true;
+      currentPlayer = 1;
+      turn = "player";
+      statusDiv.textContent = "Player 1's turn. Click/touch and drag on the cue ball to shoot.";
+    }
+
+    /***********************
+     * Drawing & Realistic Shading
+     ***********************/
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let tableGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      tableGradient.addColorStop(0, "#0a4d1c");
+      tableGradient.addColorStop(1, "#0e6327");
+      ctx.fillStyle = tableGradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      pockets.forEach(pocket => {
+        ctx.beginPath();
+        ctx.arc(pocket.x, pocket.y, pocket.r, 0, Math.PI * 2);
+        ctx.fillStyle = "#000";
+        ctx.fill();
+      });
+      balls.forEach(ball => {
+        if (!ball.inPocket || ball.currentRadius > 1) {
+          ctx.beginPath();
+          let radius = ball.inPocket ? ball.currentRadius : baseBallRadius;
+          let grad = ctx.createRadialGradient(ball.x - radius/3, ball.y - radius/3, radius * 0.3, ball.x, ball.y, radius);
+          if (ball.number === 0) {
+            grad.addColorStop(0, "#f8f8f8");
+            grad.addColorStop(1, "#ddd");
+          } else {
+            let baseColor = getBallColor(ball);
+            if (gradientMap[baseColor]) {
+              grad.addColorStop(0, gradientMap[baseColor].inner);
+              grad.addColorStop(1, gradientMap[baseColor].outer);
+            } else {
+              grad.addColorStop(0, baseColor);
+              grad.addColorStop(1, baseColor);
+            }
+          }
+          ctx.fillStyle = grad;
+          ctx.arc(ball.x, ball.y, radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#222";
+          ctx.stroke();
+          if (ball.number !== 0 && !ball.inPocket) {
+            ctx.fillStyle = "#eee";
+            ctx.font = "bold 14px sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(ball.number, ball.x, ball.y);
+          }
+          if ((poolType === "8Ball" && ball.number >= 9) || (poolType === "9Ball" && ball.number === 9)) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, radius, Math.PI/2, Math.PI*3/2, false);
+            ctx.clip();
+            ctx.fillStyle = "rgba(255,255,255,0.8)";
+            ctx.fillRect(ball.x - radius, ball.y - radius, radius * 2, radius * 2);
+            ctx.restore();
+          }
+        }
+      });
+      // Draw aiming line and power gauge if aiming.
+      if (isAiming && aimEnd) {
+        ctx.beginPath();
+        ctx.moveTo(cueBall.x, cueBall.y);
+        ctx.lineTo(aimEnd.x, aimEnd.y);
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        let dx = aimStart.x - aimEnd.x;
+        let dy = aimStart.y - aimEnd.y;
+        // Lower multiplier and maximum force to avoid excessive speed
+        let force = Math.min(Math.sqrt(dx * dx + dy * dy) * 0.03, 7);
+        ctx.beginPath();
+        ctx.arc(cueBall.x, cueBall.y, force * 2, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(255,255,255,0.5)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    }
+
+    /***********************
+     * Physics & Collision
+     ***********************/
+    function update() {
+      if (!gameActive) return;
+      balls.forEach(ball => {
+        if (ball.inPocket) {
+          ball.currentRadius *= 0.97;
+          return;
+        }
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+        ball.vx *= friction;
+        ball.vy *= friction;
+        if (Math.abs(ball.vx) < 0.01) ball.vx = 0;
+        if (Math.abs(ball.vy) < 0.01) ball.vy = 0;
+        if (ball.x - baseBallRadius < 0 || ball.x + baseBallRadius > tableWidth) {
+          ball.vx *= -1;
+          ball.x = Math.max(baseBallRadius, Math.min(ball.x, tableWidth - baseBallRadius));
+        }
+        if (ball.y - baseBallRadius < 0 || ball.y + baseBallRadius > tableHeight) {
+          ball.vy *= -1;
+          ball.y = Math.max(baseBallRadius, Math.min(ball.y, tableHeight - baseBallRadius));
+        }
+        pockets.forEach(pocket => {
+          let dx = ball.x - pocket.x;
+          let dy = ball.y - pocket.y;
+          if (!ball.inPocket && Math.hypot(dx, dy) < pocket.r) {
+            ball.inPocket = true;
+            ball.vx = ball.vy = 0;
+            if (ball === cueBall) {
+              setTimeout(() => {
+                ball.inPocket = false;
+                ball.currentRadius = baseBallRadius;
+                ball.x = tableWidth * 0.25;
+                ball.y = tableHeight / 2;
+              }, 1000);
+            }
+          }
+        });
+      });
+      for (let i = 0; i < balls.length; i++) {
+        for (let j = i + 1; j < balls.length; j++) {
+          resolveCollision(balls[i], balls[j]);
+        }
+      }
+      draw();
+    }
+
+    function resolveCollision(ball1, ball2) {
+      if (ball1.inPocket || ball2.inPocket) return;
+      const dx = ball2.x - ball1.x;
+      const dy = ball2.y - ball1.y;
+      const distance = Math.hypot(dx, dy);
+      if (distance < baseBallRadius * 2) {
+        const overlap = baseBallRadius * 2 - distance;
+        const nx = dx / distance;
+        const ny = dy / distance;
+        ball1.x -= (overlap / 2) * nx;
+        ball1.y -= (overlap / 2) * ny;
+        ball2.x += (overlap / 2) * nx;
+        ball2.y += (overlap / 2) * ny;
+        const dvx = ball2.vx - ball1.vx;
+        const dvy = ball2.vy - ball1.vy;
+        const impulse = (dvx * nx + dvy * ny);
+        ball1.vx -= impulse * nx;
+        ball1.vy -= impulse * ny;
+        ball2.vx += impulse * nx;
+        ball2.vy += impulse * ny;
+      }
+    }
+
+    /***********************
+     * Aiming & Touch Controls
+     ***********************/
+    let isAiming = false;
+    let aimStart = null;
+    let aimEnd = null;
+    function getPointerPos(evt) {
+      let clientX, clientY;
+      if (evt.touches && evt.touches.length > 0) {
+        clientX = evt.touches[0].clientX;
+        clientY = evt.touches[0].clientY;
+      } else {
+        clientX = evt.clientX;
+        clientY = evt.clientY;
+      }
+      const rect = canvas.getBoundingClientRect();
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+    canvas.addEventListener("mousedown", startAim);
+    canvas.addEventListener("touchstart", startAim, { passive: true });
+    function startAim(evt) {
+      if (!gameActive) return;
+      if (cueBall.vx !== 0 || cueBall.vy !== 0 || cueBall.inPocket) return;
+      if ((gameMode === "cpuEasy" || gameMode === "cpuHard") && turn !== "player") return;
+      isAiming = true;
+      aimStart = getPointerPos(evt);
+    }
+    canvas.addEventListener("mousemove", updateAim);
+    canvas.addEventListener("touchmove", updateAim, { passive: true });
+    function updateAim(evt) {
+      if (!isAiming) return;
+      aimEnd = getPointerPos(evt);
+      draw();
+    }
+    canvas.addEventListener("mouseup", endAim);
+    canvas.addEventListener("touchend", endAim, { passive: true });
+    function endAim(evt) {
+      if (!isAiming) return;
+      aimEnd = getPointerPos(evt);
+      let dx = aimStart.x - aimEnd.x;
+      let dy = aimStart.y - aimEnd.y;
+      // Lower multiplier and cap force for less speed.
+      let force = Math.min(Math.sqrt(dx * dx + dy * dy) * 0.03, 7);
+      let norm = Math.hypot(dx, dy);
+      cueBall.vx = (dx / norm) * force;
+      cueBall.vy = (dy / norm) * force;
+      isAiming = false;
+      aimStart = null;
+      aimEnd = null;
+      if (gameMode === "twoPlayer") {
+        currentPlayer = currentPlayer === 1 ? 2 : 1;
+        statusDiv.textContent = `Player ${currentPlayer}'s turn.`;
+      }
+      if (gameMode === "cpuEasy" || gameMode === "cpuHard") {
+        turn = "cpu";
+      }
+    }
+
+    /***********************
+     * CPU Logic
+     ***********************/
+    function cpuTakeShot() {
+      if (!gameActive) return;
+      if (cueBall.vx !== 0 || cueBall.vy !== 0) return;
+      if (gameMode === "cpuEasy") {
+        let angle = Math.random() * 2 * Math.PI;
+        let force = 5 + Math.random() * 5;
+        cueBall.vx = Math.cos(angle) * force;
+        cueBall.vy = Math.sin(angle) * force;
+      } else if (gameMode === "cpuHard") {
+        let target = null;
+        let minDistance = Infinity;
+        balls.forEach(ball => {
+          if (ball === cueBall || ball.inPocket) return;
+          let d = Math.hypot(ball.x - cueBall.x, ball.y - cueBall.y);
+          if (d < minDistance) { minDistance = d; target = ball; }
+        });
+        if (target) {
+          let dx = target.x - cueBall.x;
+          let dy = target.y - cueBall.y;
+          let force = 8;
+          let dist = Math.hypot(dx, dy);
+          cueBall.vx = (dx / dist) * force;
+          cueBall.vy = (dy / dist) * force;
+        }
+      }
+      turn = "player";
+    }
+
+    /***********************
+     * Game Loop & End Check
+     ***********************/
+    function gameLoop() {
+      update();
+      const objectBalls = balls.filter(ball => ball.number !== 0 && !ball.inPocket);
+      if (objectBalls.length === 0) {
+        endGame();
+        return;
+      }
+      if ((gameMode === "cpuEasy" || gameMode === "cpuHard") && turn === "cpu") {
+        const moving = balls.some(ball => Math.abs(ball.vx) > 0.1 || Math.abs(ball.vy) > 0.1);
+        if (!moving) setTimeout(cpuTakeShot, 500);
+      }
+      animationFrameId = requestAnimationFrame(gameLoop);
+    }
+    function animate() {
+      gameLoop();
+    }
+
+    /***********************
+     * Screen Transition Helper
+     ***********************/
+    function showScreen(screen) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('visible'));
+      screen.classList.add('visible');
+    }
+
+    /***********************
+     * End Game & Confetti Celebration
+     ***********************/
+    function launchConfetti() {
+      for (let i = 0; i < 100; i++) {
+        let confetto = document.createElement('div');
+        confetto.classList.add('confetti');
+        confetto.style.left = Math.random() * window.innerWidth + 'px';
+        confetto.style.backgroundColor = 'hsl(' + Math.random() * 360 + ',100%,50%)';
+        document.body.appendChild(confetto);
+        setTimeout(() => confetto.remove(), 3000);
+      }
+    }
+    function endGame() {
+      gameActive = false;
+      showScreen(endScreen);
+      endMessage.textContent = "Game Over!";
+      launchConfetti();
+      cancelAnimationFrame(animationFrameId);
+    }
+
+    /***********************
+     * Progressive Web App: Add to Home Screen
+     ***********************/
+    let deferredPrompt;
+    if ('onbeforeinstallprompt' in window) {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installButton.style.display = 'block';
+      });
+      installButton.addEventListener('click', async () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          console.log(`User response: ${outcome}`);
+          deferredPrompt = null;
+          installButton.style.display = 'none';
+        }
+      });
+    } else {
+      installButton.style.display = 'none';
+      console.log('PWA install prompt not supported.');
+    }
+
+    /***********************
+     * Settings & Fullscreen Functions
+     ***********************/
+    diffEasyBtn.addEventListener("click", () => {
+      difficulty = "easy";
+      diffEasyBtn.style.backgroundColor = "#0084ff";
+      diffMediumBtn.style.backgroundColor = "";
+      diffHardBtn.style.backgroundColor = "";
+    });
+    diffMediumBtn.addEventListener("click", () => {
+      difficulty = "medium";
+      diffMediumBtn.style.backgroundColor = "#0084ff";
+      diffEasyBtn.style.backgroundColor = "";
+      diffHardBtn.style.backgroundColor = "";
+    });
+    diffHardBtn.addEventListener("click", () => {
+      difficulty = "hard";
+      diffHardBtn.style.backgroundColor = "#0084ff";
+      diffEasyBtn.style.backgroundColor = "";
+      diffMediumBtn.style.backgroundColor = "";
+    });
+    volumeSlider.addEventListener("input", (evt) => {
+      console.log("Volume set to", evt.target.value);
+    });
+    fullscreenBtn.addEventListener("click", () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    /***********************
+     * Navigation/Screen Events
+     ***********************/
+    // Start Screen
+    startPlayButton.addEventListener("click", () => {
+      showScreen(gameScreen);
+      modeOverlay.style.display = "flex";
+    });
+    settingsButton.addEventListener("click", () => {
+      showScreen(settingsScreen);
+    });
+    backFromSettings.addEventListener("click", () => {
+      showScreen(startScreen);
+    });
+    // Mode selection overlay events
+    twoPlayerBtn.addEventListener("click", () => {
+      gameMode = "twoPlayer";
+      twoPlayerBtn.style.backgroundColor = "#0084ff";
+      cpuEasyBtn.style.backgroundColor = "";
+      cpuHardBtn.style.backgroundColor = "";
+    });
+    cpuEasyBtn.addEventListener("click", () => {
+      gameMode = "cpuEasy";
+      cpuEasyBtn.style.backgroundColor = "#0084ff";
+      twoPlayerBtn.style.backgroundColor = "";
+      cpuHardBtn.style.backgroundColor = "";
+    });
+    cpuHardBtn.addEventListener("click", () => {
+      gameMode = "cpuHard";
+      cpuHardBtn.style.backgroundColor = "#0084ff";
+      twoPlayerBtn.style.backgroundColor = "";
+      cpuEasyBtn.style.backgroundColor = "";
+    });
+    pool8Btn.addEventListener("click", () => {
+      poolType = "8Ball";
+      pool8Btn.style.backgroundColor = "#0084ff";
+      pool9Btn.style.backgroundColor = "";
+    });
+    pool9Btn.addEventListener("click", () => {
+      poolType = "9Ball";
+      pool9Btn.style.backgroundColor = "#0084ff";
+      pool8Btn.style.backgroundColor = "";
+    });
+    beginGameBtn.addEventListener("click", () => {
+      if (!gameMode || !poolType) {
+        alert("Please select both a game mode and pool type.");
+        return;
+      }
+      modeOverlay.style.display = "none";
+      initGame();
+      cancelAnimationFrame(animationFrameId);
+      animate();
+    });
+    // In-game restart
+    restartGameBtn.addEventListener("click", () => {
+      cancelAnimationFrame(animationFrameId);
+      initGame();
+    });
+    // End screen play again
+    playAgainBtn.addEventListener("click", () => {
+      showScreen(startScreen);
+    });
+  </script>
+</body>
+</html>

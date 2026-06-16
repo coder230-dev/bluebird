@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Over or Under - Inspire Games</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Special+Gothic+Expanded+One&display=swap');
+        html { min-height: 100vh; }
+        body { font-family: "Poppins"; min-height: 100vh; background: black; color: white; }
+        h1 { font-family: "Special Gothic Expanded One"; }
+        button { padding: 12px 20px; border-radius: 90px; border: 1px solid blue; background: rgba(255, 255, 255, 0.123); backdrop-filter: blur(20px); color: white; font-family: "Montserrat"; cursor: pointer; }
+        button:hover { background: rgba(255, 255, 255, 0.484); transform: translateY(-5px); transition: 0.4s; }
+        .screen { text-align: center; }
+        .wrapper { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div id="start-screen" class="screen">
+            <h1>Over or Under</h1>
+            <p>This game was inspired from the other games out there.</p>
+            <fieldset>
+                <legend>Set Game Conditions</legend>
+                Min Number: <input type="number" id="min-num"><br>
+                Max Number: <input type="number" id="max-max"><br>
+                Max Attempts: <input type="number" id="max-attempts"><br>
+
+            </fieldset>
+            <button>Play</button>
+            <button>Learn the Rules</button>
+        </div>
+        <div>
+
+        </div>
+    </div>
+
+<script>
+  const players = [
+    { name: 'Player 1', attempts: 0 },
+    { name: 'Player 2', attempts: 0 }
+  ];
+
+  let secretNumber, min, max, maxAttempts;
+  let currentPlayer = 0;
+
+  function startGame() {
+    min = parseInt(document.getElementById('min-num').value);
+    max = parseInt(document.getElementById('max-max').value);
+    maxAttempts = parseInt(document.getElementById('max-attempts').value);
+
+    if (isNaN(min) || isNaN(max) || isNaN(maxAttempts) || min >= max) {
+      alert("Please enter valid game settings.");
+      return;
+    }
+
+    secretNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+    players[0].attempts = maxAttempts;
+    players[1].attempts = maxAttempts;
+
+    renderGameScreen();
+  }
+
+  function renderGameScreen() {
+    document.querySelector('.wrapper').innerHTML = `
+      <div class="screen">
+        <h1>${players[currentPlayer].name}'s Turn</h1>
+        <p>Guess a number between ${min} and ${max}</p>
+        <input id="guess-input" type="number" placeholder="Your Guess">
+        <br><br>
+        <button onclick="submitGuess()">Guess</button>
+        <p id="feedback"></p>
+        <p>Remaining Attempts: <span id="attempt-count">${players[currentPlayer].attempts}</span></p>
+      </div>
+    `;
+  }
+
+  function submitGuess() {
+    const guess = parseInt(document.getElementById('guess-input').value);
+    const feedback = document.getElementById('feedback');
+    const player = players[currentPlayer];
+
+    if (isNaN(guess)) {
+      feedback.textContent = "Please enter a number.";
+      return;
+    }
+
+    player.attempts--;
+    document.getElementById('attempt-count').textContent = player.attempts;
+
+    if (guess === secretNumber) {
+      feedback.textContent = `${player.name} guessed correctly! 🎉`;
+      endGame(`${player.name} wins!`);
+    } else if (player.attempts <= 0) {
+      feedback.textContent = `No attempts left!`;
+      switchTurn();
+    } else {
+      feedback.textContent = guess > secretNumber ? "Too high!" : "Too low!";
+    }
+  }
+
+  function switchTurn() {
+    const otherPlayer = (currentPlayer + 1) % 2;
+    if (players[otherPlayer].attempts <= 0) {
+      endGame("No one guessed correctly. Game over!");
+    } else {
+      currentPlayer = otherPlayer;
+      renderGameScreen();
+    }
+  }
+
+  function endGame(message) {
+    document.querySelector('.wrapper').innerHTML = `
+      <div class="screen">
+        <h1>Game Over</h1>
+        <p>${message}</p>
+        <button onclick="location.reload()">Play Again</button>
+      </div>
+    `;
+  }
+
+  document.querySelector('button').onclick = startGame;
+</script>
+</body>
+</html>

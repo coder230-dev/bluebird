@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: grid !important;
+            grid-template-areas: 
+            'sidebar body';
+            grid-template-columns: 100px 1fr;
+            background-color: #111;
+            color: #fff;
+            font-family: 'Poppins' !important;
+        }
+        aside {
+            grid-area: sidebar;
+            position: sticky;
+            top: 0;
+            a {
+                display: block;
+                font-family: Josefin Sans;
+                padding: 12px;
+                border-radius: 40px;
+                color: cyan;
+            }
+            a:hover {
+                background-color: rgb(200, 200, 200);
+            }
+        }
+        .content {
+            grid-area: body;
+        }
+        input, button, select {
+            background: none;
+            padding: 12px;
+            border-radius: 90px;
+            color: white;
+            display: block;
+            border: 2px solid white;
+            font-family: Josefin Sans;
+            font-weight: 700;
+        }
+        input[type='color'] {
+            padding: 0;
+        }
+        label div {
+            width: 200px;
+            height: 200px;
+            border: 3px solid cyan;
+        }
+        input[type='radio']:checked {
+            border: 1px solid cyan;
+            font-weight: 900;
+            color: green;
+        }
+        table {
+            padding: 12px;
+            border-radius: 10px;
+            background-color: #1111114e;
+        }
+        td {
+            width: 300px;
+            border-bottom: 1px solid white;
+        }
+        td select {
+            padding: 12px;
+            background: none;
+            font-family: 'Josefin Sans';
+            border-radius: 90px;
+            background-color: #ffffffa7;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <aside>
+        <h1>Jump to</h1>
+        <a href="#general">General</a>
+        <a href="#version">Version</a>
+    </aside>
+    <section class="content">
+        <fieldset>
+            <legend><h3>Done with your settings?</h3></legend>
+            <p>Reload the page for the settings to take effect. You might lose some unsaved data, so it might be a good idea to save it.</p>
+        </fieldset>
+        <fieldset>
+            <legend><h2 id="general">General</h2></legend>
+            <h3>Theme</h3>
+            <p>Light or Dark mode</p>
+            <select id="theme" onchange="updateSettings('theme', 'theme')">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+            </select>
+            <h3>Language</h3>
+            <p>Change the language of the whole Inspire website, including the OS.</p>
+            <div id="google_translate_element"></div>
+            <h3>Show Clock</h3>
+            <label for="showClockSetting">Show the clock on desktop? <p>* Will make the OS smoother.</p>
+            </label>
+            <select name="" id="showClockSetting" onchange="updateSettings('showClockSetting', 'showClock')"">
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </select>
+        </fieldset>
+        <fieldset>
+            <legend><h2 id="window">Window</h2></legend>
+            <h3>Double Click on Header</h3>
+            <p>Choose the option to do when doubled click on the winder header.</p>
+            <select id="dblWindowHead" onchange="updateSettings('dblWindowHead', 'DblClickAction')">
+                <option value="fit">Fit to Screen</option>
+                <option value="maximize">Maximize Window</option>
+                <option value="showActions">Show Resize Actions</option>
+                <option value="close">Quit Window</option>
+                <option value="minimize">Minimize</option>
+                <option value="nothing">Nothing</option>
+            </select>
+        </fieldset>
+        <fieldset>
+            <legend><h3 id="versionSide">Version</h3></legend>
+            <p id="version">Version </p>
+            <p>Check for updates in you OS Notifications Panel. You can access it by clicking the time or the last button on the taskbar.</p>
+        </fieldset>
+    </section>
+    <script src="os.js"></script>
+    <script>
+        var settings = localStorage.getItem('OSsettings');
+        if (settings) {
+            settings = JSON.parse(settings);
+        } else {
+            settings = {};
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById('version').innerHTML = `Version ${settings['version']}<br>Build: ${settings['buildNumber']}`;
+            document.getElementById('theme').value = settings['theme'];
+            document.getElementById('showClockSetting').value = settings['showClock'];
+            document.getElementById('dblWindowHead').value = settings['DblClickAction']
+        })
+function updateSettings(element, setting) {
+    let value = document.getElementById(element).value;
+
+    settings[setting] = value;
+
+    localStorage.setItem('OSsettings', JSON.stringify(settings));
+}
+    </script>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+        }
+        </script>
+        
+        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

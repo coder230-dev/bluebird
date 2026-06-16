@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal App</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.css" integrity="sha512-xWIcG98IArXxegzS8Vo9iYMKuPgbXOG8O1mlHrj4MmNFxsBDltGxHJGg4JK80MVEmLRpdbWtphhm+S6Wx9o73g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="shortcut icon" href="Copilot_20250831_172233.png" type="image/x-icon">
+</head>
+<body>
+    <div id="search-dialogue">
+        <input type="search" id="search-port" placeholder="Search for apps...">
+        <button onclick="closeSearch() "><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="popup"></div>
+    <div id="notification"></div>
+    <div id="context-menu"></div>
+    <div id="from-nav-pop"></div>
+    <nav id="sidebar" style="text-align: center;">
+        <img src="Copilot_20250831_172233.png" alt="Portal Logo" width="45px">
+        <button title="Add App" onclick="setUpAndOpenContextMenu('addItem', this)"><i class="material-symbols-rounded">add</i></button>
+        <button title="Search" onclick="document.getElementById('search-dialogue').classList.add('open'); document.getElementById('search-port').focus()"><i class="material-symbols-rounded">search</i></button>
+        <hr>
+        <div id="app-cat-cont">
+            <a onclick="removeParam('app-category')" href="#" title="Home" id="showAllAppsBtn" class="active"><i class="material-symbols-rounded">home</i></a>
+            <div id="app-cats"></div>
+        </div>
+        <hr>
+        <button title="Settings" onclick="openFromNavPopup('Settings')"><i class="material-symbols-rounded">settings</i></button>
+        <button title="Account" onclick="setUpAndOpenContextMenu('account', this, '', true)"><i class="material-symbols-rounded">account_circle</i></button>
+    </nav>
+    <main id="main-content">
+        <nav id="app-navbar"></nav>
+        <div id="main-cont-for-apps">
+            <div id="apps" class="open"></div>
+        </div>
+    </main>
+</body>
+<script src="script.js"></script>
+<script src="../website/account-v2/script.js"></script>
+<script src="../website/account/authFunction.js"></script>
+</html>
