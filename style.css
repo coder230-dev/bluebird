@@ -738,13 +738,18 @@ footer {
     }
 
     div {
-        width: 50vh;
-        max-width: 50vh;
+        width: 100%;
+        max-width: 1fr;
         position: relative;
     }
 
+    .container-2 {
+        width: 80%;
+        max-width: 40%;
+    }
+
     .scrollable-section {
-        max-width: calc(100% - 40px);
+        max-width: 100%;
     }
 }
 
@@ -784,11 +789,13 @@ footer {
         padding: 12px;
         background: color-mix(in srgb, black 40%, transparent);
         color: cyan;
-        width: 400px;
+        width: 100%;
+        max-width: 300px;
         height: 100px;
         border-radius: var(--blur-md);
         text-decoration: none;
         cursor: pointer;
+        flex-shrink: 0;
 
         .link-desc {
             display: flex;
@@ -974,7 +981,8 @@ footer {
     display: flex;
     gap: 0.75rem;
     align-items: center;
-    background: var(--scheme-4);
+    background: var(--scheme-6);
+    outline: 1px solid rgba(255, 255, 255, 0.496);
     backdrop-filter: blur(var(--blur-md));
     padding: 0.5rem 1rem;
     border-radius: var(--radius-pill);

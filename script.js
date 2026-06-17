@@ -296,6 +296,7 @@ function createSlide(item) {
     cont.appendChild(p);
 
     const cont2 = document.createElement('div');
+    cont2.classList.add('container-2')
     slide.appendChild(cont2);
 
     if (Array.isArray(item.tags) && item.tags.length > 0) {
