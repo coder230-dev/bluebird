@@ -2,40 +2,190 @@ html,
 body {
     padding: 0;
     margin: 0;
+    background: var(--scheme-1);
+    color: var(--scheme-10);
 }
 
 :root {
-    /* NAVY CORE — 1 to 10 */
-    --scheme-1: #0A0F17;
-    /* deep navy-black */
-    --scheme-2: #0F1622;
-    /* cold dark navy */
-    --scheme-3: #132038;
-    /* true navy */
-    --scheme-4: #182A47;
-    /* muted navy-blue */
-    --scheme-5: #1D3557;
-    /* classic navy */
-    --scheme-6: #1F4168;
-    /* navy w/ teal lift */
-    --scheme-7: #25527C;
-    /* vibrant navy-blue */
-    --scheme-8: #5E86B0;
-    /* soft blue-teal */
-    --scheme-9: #AFCBE6;
-    /* light airy blue */
-    --scheme-10: #F3F8FF;
-    /* near-white w/ blue tint */
+    /* NAVY CORE — 1 to 10 (dark → light) */
+    --scheme-1: light-dark(#f3f8ff, #0a0f17);
+    --scheme-2: light-dark(#afcbe6, #0f1622);
+    --scheme-3: light-dark(#5e86b0, #132038);
+    --scheme-4: light-dark(#25527c, #182a47);
+    --scheme-5: light-dark(#1f4168, #1d3557);
+    --scheme-6: light-dark(#1d3557, #1f4168);
+    --scheme-7: light-dark(#182a47, #25527c);
+    --scheme-8: light-dark(#132038, #5e86b0);
+    --scheme-9: light-dark(#0f1622, #afcbe6);
+    --scheme-10: light-dark(#0a0f17, #f3f8ff);
 
     /* ACCENTS — 11 to 15 */
-    --scheme-11: #FFB86C;
-    /* warm amber */
-    --scheme-12: #FF6F61;
-    /* muted coral */
-    --scheme-13: #6CE0C3;
-    /* mint-teal */
-    --scheme-14: #C792EA;
-    /* soft lavender */
-    --scheme-15: #F2E9FF;
-    /* lavender-white */
+    --scheme-11: light-dark(#ffb86c, #ffb86c);
+    --scheme-12: light-dark(#ff6f61, #ff6f61);
+    --scheme-13: light-dark(#6ce0c3, #6ce0c3);
+    --scheme-14: light-dark(#c792ea, #c792ea);
+    --scheme-15: light-dark(#f2e9ff, #f2e9ff);
+}
+
+.background-container {
+    .gradient {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: linear-gradient(to bottom,
+                color-mix(in srgb, var(--scheme-1) 40%, transparent),
+                color-mix(in srgb, var(--scheme-11) 40%, transparent));
+    }
+
+    video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        object-fit: cover;
+        z-index: -1;
+    }
+}
+
+.wrapper {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.container {
+    background: color-mix(in srgb, var(--scheme-1) 40%, transparent);
+    backdrop-filter: blur(25px);
+    padding: 20px 12px;
+    border-radius: 30px;
+    outline: 1px solid var(--scheme-13);
+}
+
+.center {
+    text-align: center;
+}
+
+.pfp {
+    height: 60px;
+    border-radius: 50%;
+    outline: 1.4px solid var(--scheme-11);
+}
+
+/* Loader */
+
+/* Loader container */
+.skyline-loader {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.skyline-loader.bg {
+    background: #0a0f1c;
+}
+
+/* Skyline wrapper */
+.skyline {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    position: relative;
+}
+
+/* Base building style */
+.skyline .building {
+    width: 12px;
+    background: #4da3ff;
+    opacity: 0.35;
+    border-radius: 2px;
+    animation: rise 0.9s ease-in-out forwards;
+}
+
+/* Heights + staggered delays */
+.skyline .b1 {
+    height: 22px;
+    animation-delay: 0s;
+}
+
+.skyline .b2 {
+    height: 32px;
+    animation-delay: 0.1s;
+}
+
+.skyline .b3 {
+    height: 48px;
+    animation-delay: 0.2s;
+}
+
+/* tallest */
+.skyline .b4 {
+    height: 30px;
+    animation-delay: 0.3s;
+}
+
+.skyline .b5 {
+    height: 38px;
+    animation-delay: 0.4s;
+}
+
+/* Rise animation */
+@keyframes rise {
+    0% {
+        transform: translateY(0);
+        opacity: 0.35;
+    }
+
+    50% {
+        transform: translateY(-8px);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 0.35;
+    }
+}
+
+/* Beacon on tallest tower */
+.beacon {
+    position: absolute;
+    top: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: var(--scheme-9);
+    border-radius: 50%;
+    opacity: 0;
+}
+
+/* Flicker animation */
+@keyframes flicker {
+    0% {
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    40% {
+        opacity: 0.2;
+    }
+
+    60% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.skyline.flicker .beacon {
+    animation: flicker 0.4s ease-out;
 }
