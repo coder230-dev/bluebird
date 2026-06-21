@@ -1,0 +1,41 @@
+html,
+body {
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+    /* NAVY CORE — 1 to 10 */
+    --scheme-1: #0A0F17;
+    /* deep navy-black */
+    --scheme-2: #0F1622;
+    /* cold dark navy */
+    --scheme-3: #132038;
+    /* true navy */
+    --scheme-4: #182A47;
+    /* muted navy-blue */
+    --scheme-5: #1D3557;
+    /* classic navy */
+    --scheme-6: #1F4168;
+    /* navy w/ teal lift */
+    --scheme-7: #25527C;
+    /* vibrant navy-blue */
+    --scheme-8: #5E86B0;
+    /* soft blue-teal */
+    --scheme-9: #AFCBE6;
+    /* light airy blue */
+    --scheme-10: #F3F8FF;
+    /* near-white w/ blue tint */
+
+    /* ACCENTS — 11 to 15 */
+    --scheme-11: #FFB86C;
+    /* warm amber */
+    --scheme-12: #FF6F61;
+    /* muted coral */
+    --scheme-13: #6CE0C3;
+    /* mint-teal */
+    --scheme-14: #C792EA;
+    /* soft lavender */
+    --scheme-15: #F2E9FF;
+    /* lavender-white */
+}

@@ -14,30 +14,22 @@ body {
 
 video#vid-background {
     position: fixed;
-    /* Keeps it anchored to the viewport */
     top: 0;
     left: 0;
     width: 100vw;
-    /* Always matches window width */
     height: 100vh;
-    /* Always matches window height */
     object-fit: cover;
-    /* Stretches while preserving aspect ratio */
     z-index: -1;
-    /* Sends it behind other content */
 }
 
 
 :root {
-    /* Base palette (1 = darkest, 10 = lightest) */
     --c1: #0A0F17;
     --c2: #0F1622;
     --c3: #132038;
-    /* true navy */
     --c4: #182A47;
     --c5: #1D3557;
     --c6: #1F4168;
-    /* subtle teal lift */
     --c7: #25527C;
     --c8: #5E86B0;
     --c9: #AFCBE6;
