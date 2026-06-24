@@ -1895,7 +1895,7 @@ function openSearch() {
         <div id="search-loading" class="search-loading-bar" style="display:none;height:3px;"></div>
       </div>
 
-      <div id="search-results" style="max-height:60vh;overflow:auto;padding:12px;"></div>
+      <div id="search-results" style="max-height:60dvh;overflow:auto;padding:12px;"></div>
     `;
 
     backdrop.appendChild(searchPop);

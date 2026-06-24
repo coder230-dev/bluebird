@@ -3,7 +3,7 @@
 body {
     background: black;
     color: white;
-    min-height: 100vh;
+    min-height: 100dvh;
     padding: 0;
     margin: 0;
     overflow: hidden;
@@ -27,81 +27,106 @@ body {
 
 body.light {
     background: white;
-    color: black; 
+    color: black;
+
     button:not([class]):not([id]) {
         color: black;
         border: 1px solid black;
     }
+
     button:not([class]):not([id]):hover {
         background: rgb(0, 170, 255);
     }
+
     #sidebar {
         background: rgb(215, 215, 215);
         color: black;
-        .file-in-sidebar:hover, .folder-in-sidebar:hover {
+
+        .file-in-sidebar:hover,
+        .folder-in-sidebar:hover {
             background: rgb(230, 230, 230);
         }
     }
-    #main-content, #navbar, .top-left-c {
+
+    #main-content,
+    #navbar,
+    .top-left-c {
         background: rgb(225, 225, 225);
         color: black;
+
         button {
             border: 1px solid blue;
             color: black;
         }
+
         button:hover {
             background: rgb(86, 148, 255);
         }
     }
+
     button {
         color: black;
     }
+
     button:before {
         background: linear-gradient(cyan, magenta);
     }
+
     .tab {
         background: none;
         border: 1px solid black !important;
     }
+
     .tab.active {
         background: rgb(0, 210, 233) !important;
     }
+
     #bg-overlay {
         #popup-w-overlay-menu {
             background: white;
+
             .sidebar-settings {
                 color: black;
+
                 button {
                     color: black;
                 }
+
                 button:hover {
                     background: rgb(218, 218, 218);
                     color: black;
                 }
+
                 button.active {
                     background: rgb(0, 162, 255);
                     color: black;
                 }
             }
+
             .main-settings {
                 background: white;
                 color: black;
+
                 .item-f {
                     border: 1px solid black;
+
                     select {
                         color: black;
                         border: 1px solid black;
                     }
+
                     select:hover {
                         background: rgba(0, 0, 0, 0.145);
                     }
                 }
             }
         }
+
         .popup-close-btn {
             color: black;
             border: 1px solid black;
         }
+
         .popup-close-btn:hover {
             background: cyan;
         }
@@ -117,7 +142,9 @@ body.light {
 }
 
 .on-app {
-    .top-left-c, #navbar {
+
+    .top-left-c,
+    #navbar {
         min-height: 40px !important;
     }
 }
@@ -130,14 +157,15 @@ button:not([class]):not([id]) {
     color: white;
     margin: 2px;
     cursor: pointer;
-}  
+}
 
 button:not([class]):not([id]):hover {
     background: rgb(0, 72, 255);
 
 }
 
-button, .tab {
+button,
+.tab {
     -webkit-app-region: no-drag;
     user-select: auto;
 }
@@ -156,7 +184,9 @@ button, .tab {
     display: flex;
     gap: 10px;
     align-items: center;
-    i, span {
+
+    i,
+    span {
         font-size: 1.4rem;
     }
 }
@@ -192,20 +222,20 @@ button, .tab {
 }
 
 #context-menu .ul-opt {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 #context-menu .cMB {
-  padding: 6px 10px;
-  border-radius: 8px;
-  margin: 2px 0;
-  cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin: 2px 0;
+    cursor: pointer;
 }
 
 #context-menu .cMB:hover {
-  background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 #context-menu.open {
@@ -223,11 +253,12 @@ button, .tab {
     grid-template-areas:
         "topleft tabbar"
         "sidebar main";
-    min-height: 100vh;
-    max-height: 100vh;
+    min-height: 100dvh;
+    max-height: 100dvh;
     transition: 0.3s !important;
     grid-area: content;
     gap: 5px;
+
     div {
         border-radius: 10px;
     }
@@ -236,13 +267,14 @@ button, .tab {
 body:has(.container #apps-installed.open) {
     .container {
         grid-template-areas:
-        "topleft tabbar tabbar"
-        "sidebar main app";
+            "topleft tabbar tabbar"
+            "sidebar main app";
         grid-template-columns: 225px 1fr 30%;
         transition: 0.4s;
         gap: 10px;
         background: rgb(37, 37, 37);
     }
+
     #apps-installed {
         display: block;
     }
@@ -253,10 +285,11 @@ body:has(.container #apps-installed.open) {
     grid-area: app;
     z-index: 1000;
     background: black;
-    height: 100vh;
+    height: 100dvh;
     display: none;
     color: white;
     padding: 12px;
+
     .app-topbar {
         margin: 4px;
         background: black;
@@ -271,7 +304,7 @@ body:has(.container #apps-installed.open) {
     backdrop-filter: opacity(0.7);
     position: relative;
     overflow: auto;
-    max-height: 100vh;
+    max-height: 100dvh;
 }
 
 .editor-topbar {
@@ -281,6 +314,7 @@ body:has(.container #apps-installed.open) {
     align-items: center;
     gap: 0;
     padding: 6px;
+
     button {
         padding: 10px !important;
         border: none;
@@ -288,12 +322,15 @@ body:has(.container #apps-installed.open) {
         margin: 0;
         border: none !important;
     }
+
     button:hover {
         background: rgb(52, 52, 52);
     }
+
     button:focus {
         border: 1px solid lime;
     }
+
     button::before {
         content: attr(data-action);
         z-index: -1;
@@ -308,6 +345,7 @@ body:has(.container #apps-installed.open) {
         transition: 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
         opacity: 0;
     }
+
     button:hover::before {
         transition-delay: 0.4s;
         z-index: 100;
@@ -322,15 +360,19 @@ body:has(.container #apps-installed.open) {
     backdrop-filter: opacity(0.7);
     overflow-y: auto;
     padding: 10px;
-    max-height: 100vh;
+    max-height: 100dvh;
     overflow: auto;
-    .file-in-sidebar, .folder-in-sidebar {
+
+    .file-in-sidebar,
+    .folder-in-sidebar {
         padding: 7px;
         position: relative;
+
         i {
             margin-right: 10px;
         }
     }
+
     .folder-in-sidebar i:nth-last-of-type(1) {
         position: absolute;
         right: 0;
@@ -338,10 +380,13 @@ body:has(.container #apps-installed.open) {
         transform: translate(0, -50%);
         aspect-ratio: 1/1;
     }
-    .file-in-sidebar:hover, .folder-in-sidebar:hover {
+
+    .file-in-sidebar:hover,
+    .folder-in-sidebar:hover {
         background: rgb(63, 63, 63);
         cursor: pointer;
     }
+
     .folder-in-sidebar.open {
         i:nth-last-of-type(1) {
             top: 5px;
@@ -349,11 +394,13 @@ body:has(.container #apps-installed.open) {
             aspect-ratio: 1/1;
         }
     }
+
     .sidebar-nav {
         display: flex;
         justify-content: right;
         align-items: center;
         gap: 1px;
+
         button {
             padding: 3px;
             aspect-ratio: 1/1;
@@ -363,6 +410,7 @@ body:has(.container #apps-installed.open) {
             border: none;
         }
     }
+
     .hidden-from-sidebar {
         display: none;
     }
@@ -375,11 +423,12 @@ body:has(.container #apps-installed.open) {
     display: flex;
     gap: 10px;
     max-width: 100%;
+
     .tab {
         width: 250px;
         height: calc(100% - 13px);
-        display: flex; 
-        align-items: center; 
+        display: flex;
+        align-items: center;
         border: 1px solid white;
         padding: 6px 30px 6px 6px;
         border-radius: 10px;
@@ -387,21 +436,26 @@ body:has(.container #apps-installed.open) {
         position: relative;
         transition: 0.1s;
         backdrop-filter: opacity(0.5);
+
         span.tab-icon {
             padding: 12px;
         }
+
         .need-save {
             margin-left: 12px;
         }
+
         .close {
             position: absolute;
             right: 10px;
             font-size: 1.3rem;
         }
+
         .close:hover {
             backdrop-filter: blur(20px);
         }
     }
+
     .tab.active {
         background: rgb(0, 0, 157);
         border: 1px solid cyan;
@@ -413,6 +467,7 @@ body:has(.container #apps-installed.open) {
     display: flex;
     gap: 15px;
     align-items: center;
+
     button {
         z-index: 100000 !important;
     }
@@ -421,10 +476,12 @@ body:has(.container #apps-installed.open) {
 .welcome-page {
     padding: 20px;
     text-align: center;
+
     img {
         border-radius: 90px;
         height: 200px;
     }
+
     button {
         padding: 12px 20px;
         border-radius: 20px;
@@ -437,12 +494,14 @@ body:has(.container #apps-installed.open) {
         z-index: 2;
         aspect-ratio: 1/1;
         font-family: "Special Gothic Expanded One";
+
         i {
             display: block;
             margin-bottom: 40px;
             font-size: 3rem;
         }
     }
+
     button::before {
         content: "";
         width: 100%;
@@ -455,6 +514,7 @@ body:has(.container #apps-installed.open) {
         transition: 0.4s;
 
     }
+
     button:hover::before {
         height: 100%;
     }
@@ -464,12 +524,15 @@ body:has(.container #apps-installed.open) {
     width: 100%;
     height: 100%;
     z-index: 103;
+
     div {
         padding: 12px;
         background: rgb(16, 16, 16) !important;
         border-radius: 35px;
+
         svg {
             width: 4.4rem;
+
             circle {
                 stroke: white;
             }
@@ -522,6 +585,7 @@ circle {
     margin: 0;
     display: flex;
     justify-content: space-between;
+
     button {
         padding: 12px;
         background: black;
@@ -529,6 +593,7 @@ circle {
         border-radius: 10px;
         color: white;
         cursor: pointer;
+
         i {
             font-size: 1rem;
         }
@@ -546,6 +611,7 @@ circle {
     display: none;
     justify-content: center;
     align-items: center;
+
     #popup-w-overlay-menu {
         padding: 50px;
         background: rgb(37, 37, 37);
@@ -557,16 +623,18 @@ circle {
         transform: scale(0.9);
         overflow: scroll;
     }
+
     .popup-close-btn {
-        position: absolute; 
-        top: 10px; 
-        left: 10px; 
-        padding: 13px; 
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 13px;
         border-radius: 10px;
         background: none;
         color: white;
         border: 1px solid white;
     }
+
     .popup-close-btn:hover {
         background: navy;
         cursor: pointer;
@@ -575,6 +643,7 @@ circle {
 
 #bg-overlay.open {
     display: flex;
+
     #popup-w-overlay-menu {
         transform: none;
         transition: 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
@@ -585,18 +654,21 @@ circle {
     #popup-w-overlay-menu {
         padding: 12px;
         display: grid;
-        grid-template-areas: 
-        'sidebar-set main-set';
+        grid-template-areas:
+            'sidebar-set main-set';
         grid-template-columns: 200px 1fr;
         gap: 20px;
+
         a {
             color: cyan;
         }
+
         .sidebar-settings {
             grid-area: sidebar-set;
             margin: 40px 5px 5px 5px;
             border-radius: 35px;
             z-index: 0;
+
             button {
                 border-radius: 10px;
                 padding: 15px 12px;
@@ -608,22 +680,27 @@ circle {
                 text-align: left;
                 font-family: "poppins";
                 color: white;
+
                 i {
                     margin-right: 10px;
                 }
             }
+
             button:hover {
                 background: rgb(9, 9, 9);
                 cursor: inherit;
             }
+
             button.active {
                 background: cyan;
                 color: black;
             }
+
             .popup-close-btn {
                 z-index: 10000;
             }
         }
+
         .main-settings {
             grid-area: main-set;
             color: white;
@@ -640,59 +717,59 @@ circle {
 }
 
 .switch {
-	font-size: 17px;
-	position: relative;
-	display: inline-block;
-	width: 3.5em;
-	height: 2em;
+    font-size: 17px;
+    position: relative;
+    display: inline-block;
+    width: 3.5em;
+    height: 2em;
 }
-  
+
 .switch input {
-	opacity: 0;
-	width: 0;
-	height: 0;
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
 
 .switch:has(input:disabled) {
-	opacity: 0.5;
-	background-color: red;
+    opacity: 0.5;
+    background-color: red;
 }
-  
+
 .slider {
-	position: absolute;
-	cursor: pointer;
-	inset: 0;
-	background: rgb(79, 79, 79);
-	border-radius: 50px;
-	transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: rgb(79, 79, 79);
+    border-radius: 50px;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
 }
-  
+
 .slider:before {
-	position: absolute;
-	content: "";
-	height: 1.4em;
-	width: 1.4em;
-	left: 0.3em;
-	bottom: 0.3em;
-	background-color: rgb(255, 255, 255);
-	border-radius: 50px;
-	box-shadow: 0 0px 20px rgba(0,0,0,0.4);
-	transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+    position: absolute;
+    content: "";
+    height: 1.4em;
+    width: 1.4em;
+    left: 0.3em;
+    bottom: 0.3em;
+    background-color: rgb(255, 255, 255);
+    border-radius: 50px;
+    box-shadow: 0 0px 20px rgba(0, 0, 0, 0.4);
+    transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
-  
-.switch input:checked + .slider {
-	background: rgb(0, 238, 255);
+
+.switch input:checked+.slider {
+    background: rgb(0, 238, 255);
 }
-  
-.switch input:focus + .slider {
-	box-shadow: 0 0 1px #574fce;
+
+.switch input:focus+.slider {
+    box-shadow: 0 0 1px #574fce;
 }
-  
-.switch input:checked + .slider:before {
-	transform: translateX(1.6em);
-	height: 1.4em;
-	width: 1.4em;
-	background-color: white;
+
+.switch input:checked+.slider:before {
+    transform: translateX(1.6em);
+    height: 1.4em;
+    width: 1.4em;
+    background-color: white;
 }
 
 .item-f {
@@ -703,18 +780,25 @@ circle {
     border: 1px solid white;
     border-radius: 20px;
     margin-top: 5px;
-    select, button, a {
+
+    select,
+    button,
+    a {
         padding: 12px;
         background: none;
         border: 1px solid white;
         color: white;
         border-radius: 15px;
     }
-    select:hover, button:hover, a:hover {
+
+    select:hover,
+    button:hover,
+    a:hover {
         background: rgba(255, 255, 255, 0.221);
         cursor: pointer;
         transition: 0.1s;
     }
+
     input[type=color] {
         background: white;
         border-radius: 10px;
@@ -722,6 +806,7 @@ circle {
         padding: 0;
         cursor: pointer;
     }
+
     img {
         border-radius: 50%;
         height: 40px;

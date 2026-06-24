@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" color-scheme="light dark">
   <title id="tabTitle">Custom OS</title>
   <link rel="stylesheet" href="os.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.css" integrity="sha512-GmZYQ9SKTnOea030Tbiat0Y+jhnYLIpsGAe6QTnToi8hI2nNbVMETHeK4wm4MuYMQdrc38x+sX77+kVD01eNsQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,700,1,200" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.css"
+    integrity="sha512-GmZYQ9SKTnOea030Tbiat0Y+jhnYLIpsGAe6QTnToi8hI2nNbVMETHeK4wm4MuYMQdrc38x+sX77+kVD01eNsQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,700,1,200" />
   <link rel="shortcut icon" href="../Website/Images/Inspire Logo/inspire-logo2025 circle.png" type="image/x-icon">
 </head>
-<body class="dark" onoffline="addNotification('offlineNoti', 'Your Offline', 'Some things may be unavaiable until you reload the page.', 'System', '')" ononline="addNotification('onlineNoti', 'Your Online', 'Some things may be unavaiable until you reload the page.', 'System', '')">
+
+<body class="dark"
+  onoffline="addNotification('offlineNoti', 'Your Offline', 'Some things may be unavaiable until you reload the page.', 'System', '')"
+  ononline="addNotification('onlineNoti', 'Your Online', 'Some things may be unavaiable until you reload the page.', 'System', '')">
   <div id="tooltip" class="tooltip"></div>
   <div id="notification" class="popup" style="opacity: 1; display: block;" onclick="showNotiPanel(true)"></div>
   <div class="context-menu" id="contextMenu">
@@ -23,23 +30,24 @@
   </div>
   <div id="updateScreen">
     <div>
-    <h1>Updating Firmware Number and Applying Updates</h1>
-    <img width="55px" src="/Website/Images/loader4.gif" alt="loader4">
-    <br>
-    <span>
-      <span id="updateProgressNum"></span>% / 100%
-    </span>
-    <progress id="updateProgress" max="100" value="0"></progress>
-    <p>Page will reload when finished.</p>
-    <p>Do not close this page. Status won't save, but nothing changes will be reverted.</p>
-    <p>If on fullscreen, press ESC and use other apps while updatng. This will take a while.</p>
+      <h1>Updating Firmware Number and Applying Updates</h1>
+      <img width="55px" src="/Website/Images/loader4.gif" alt="loader4">
+      <br>
+      <span>
+        <span id="updateProgressNum"></span>% / 100%
+      </span>
+      <progress id="updateProgress" max="100" value="0"></progress>
+      <p>Page will reload when finished.</p>
+      <p>Do not close this page. Status won't save, but nothing changes will be reverted.</p>
+      <p>If on fullscreen, press ESC and use other apps while updatng. This will take a while.</p>
     </div>
   </div>
   <div id="lockscreen">
     <div>
       <div id="user-preview"></div>
       <div style="display: flex;">
-        <input action="Enter User's Password" class="tooltip-element" type="password" id="password-lock" placeholder="Enter Account Password">
+        <input action="Enter User's Password" class="tooltip-element" type="password" id="password-lock"
+          placeholder="Enter Account Password">
         <button onclick="checkPassword()" action="Log in"><i class="fa-solid fa-arrow-right"></i></button>
       </div>
       <button onclick="openAccountSwitcher()" class="tooltip-element" action="Switch Accounts">Switch Account</button>
@@ -49,75 +57,101 @@
   </div>
   <div class="desktop" id="desktop">
     <section id="notificationCenter" class="popup">
-      <button action="Close Panel" class="close tooltip-element" onclick="showNotiPanel(false)"><i class="fa-solid fa-arrow-left"></i></button>
+      <button action="Close Panel" class="close tooltip-element" onclick="showNotiPanel(false)"><i
+          class="fa-solid fa-arrow-left"></i></button>
       <h1>Notifications</h1>
     </section>
     <section id="quickbar" class="popup">
-      <button class="close tooltip-element" action="Close Panel" onclick="showQuickBar(false)"><i class="fa-solid fa-arrow-left"></i></button>
+      <button class="close tooltip-element" action="Close Panel" onclick="showQuickBar(false)"><i
+          class="fa-solid fa-arrow-left"></i></button>
     </section>
     <section class="taskbar" id="taskbar">
       <section style="float: left; display: flex;">
-        <div class="start-menu-button tooltip-element" action="Open Home Menu" id="startMenuButton"><i class="fa-solid fa-house-chimney"></i></div>
-        <div class="start-menu-button tooltip-element" onclick="openWindow('ai-chat', `<iframe src='../website/ai-chat/index.html'></iframe>`, '750px', '90%', 'rgb(27, 70, 114)', 'transparent', 'BlueAI')"><i class="fa-solid fa-comment"></i></div>
+        <div class="start-menu-button tooltip-element" action="Open Home Menu" id="startMenuButton"><i
+            class="fa-solid fa-house-chimney"></i></div>
+        <div class="start-menu-button tooltip-element"
+          onclick="openWindow('ai-chat', `<iframe src='../website/ai-chat/index.html'></iframe>`, '750px', '90%', 'rgb(27, 70, 114)', 'transparent', 'BlueAI')">
+          <i class="fa-solid fa-comment"></i></div>
       </section>
       <section id="open-apps" style="display: flex; justify-content: center; align-items: center;">
       </section>
       <section>
-        <button onclick="showNotiPanel(true)"><div class="current-time tooltip-element" id="currentTime" action="Open Notification Center"></div> </button>
+        <button onclick="showNotiPanel(true)">
+          <div class="current-time tooltip-element" id="currentTime" action="Open Notification Center"></div>
+        </button>
         <button onclick="togglePopup('quickbar')" id="battery-status-container" class="tooltip-element">
           <div class="battery-container" style="display: flex;">
             <p style="padding: 0; padding-right: 5px; margin: 0;" id="batteryPercentage">50%</p>
             <div class="battery" action="Battery">
-                <div class="battery-level" id="batteryLevel"></div>
+              <div class="battery-level" id="batteryLevel"></div>
             </div>
       </section>
-    </button>
-        </div>
-    </section>
-    <!-- Start Menu Button -->
-    <!-- Start Menu -->
-    <div class="start-menu popup" id="startMenu" style="max-height: 70%;">
-      <button class="closebtn" id="closeStartMenu">X</button>
-      <!-- Templete
+      </button>
+  </div>
+  </section>
+  <!-- Start Menu Button -->
+  <!-- Start Menu -->
+  <div class="start-menu popup" id="startMenu" style="max-height: 70%;">
+    <button class="closebtn" id="closeStartMenu">X</button>
+    <!-- Templete
         function openWindow(id, content = '', width = '600px', height = '400px', headerBgColor = '#333', bodyBgColor = '#fff', headerName = '')
       -->
-      <ul>
-        <li id="account-container"></li>
-        <h3>Portal Apps</h3>
-        <div id="app-list"></div>
-        <li onclick="openWindow('notepad', `<h1>Note Pad</h1><textarea></textarea><p>**Data is not saved</p>`, '450px', '450px', 'var(--primary)', 'transparent', 'Notepad v1')">Notepad</li>
-        <li onclick="openWindow('fileOpener', `<h2>Upload a file here.</h2><<input type='file' id='fileInput' onchange='handleFileUpload(event)' />`, '350px', '200px', 'black', '#007bff', 'Upload a File', 'none')">File Opener</li>
-        <li onclick="openWindow('portalCustom', `<iframe src='../website/portal/index.html'>`, '80%', '90%', '#007BFF', '#003f82', 'Portal')">Portal App</li>
-        <li onclick="openWindow('ipeHome', `<iframe width='100vh' height='100vh' src='../index.html' frameborder='0'></iframe>`, '70%', '70%', 'lime', 'black', 'Home')">Inspire Home</li>
-        <li onclick="openWindow('browser', `<iframe width='100vh' height='100vh' src='../webbrowser/browser.html' frameborder='0'></iframe>`, '80%', '80%', 'navy', 'transparent', 'Bluebird Browser');"><i class="fa-solid fa-globe"></i>Bluebird Browser</li>
-        <li onclick="openWindow('settings', `<iframe width='100vh' height='100vh' src='../website/settings/index.html' frameborder='0'></iframe>`, '600px', '90%', 'green', 'transparent', 'Inspire Settings');"><i class="fa-solid fa-globe"></i>Settings</li>
-        <details>
-          <summary>Developer Tools</summary>
-          <ul>
-            <li onclick="openWindow('secondScreen', `<iframe src='index.html' frameborder='0'></iframe>`, '90%', '90%', 'blue', 'black', 'Second Desktop')">Second Desktop</li>
-            <li onclick="openTaskManager()">Task Manager</li>
-          </ul>
-        </details>
-        <li onclick="openWindow('games', `<iframe src='../website/games/'></iframe>`, '80%', '80%', 'yellow', 'black', 'Bluebird Games')"><i class="fa-solid fa-gamepad"></i>Bluebird Games</li>
-        <hr>
-          <li onclick="togglePopup('settings')"><i class="fa-solid fa-gear"></i>Settings</li>
-          <li onclick="keyboardShortcuts()"><i class="fa-regular fa-keyboard"></i>Keyboard Shortcuts</li>
-          <h3>Opened Apps</h3>
-          <ul id="openedAppsSection"></ul>
-      </ul>
-    </div>
-    <section id="settings" class="popup">
-      <h2>Settings</h2>
-      <button class="closebtn tooltip-element" onclick="togglePopup('settings', true)" action="Close Settings"><i class="fa-solid fa-x"></i></button>
-      <iframe src="../website/settings/index.html" frameborder="0"></iframe>
-      <button onclick="checkForUpdates()">Check for Updates</button>
-    </section>
-    </section>
-    <!-- Windows Container -->
-    <div class="windows-container" id="windowsContainer"></div>
+    <ul>
+      <li id="account-container"></li>
+      <h3>Portal Apps</h3>
+      <div id="app-list"></div>
+      <li
+        onclick="openWindow('notepad', `<h1>Note Pad</h1><textarea></textarea><p>**Data is not saved</p>`, '450px', '450px', 'var(--primary)', 'transparent', 'Notepad v1')">
+        Notepad</li>
+      <li
+        onclick="openWindow('fileOpener', `<h2>Upload a file here.</h2><<input type='file' id='fileInput' onchange='handleFileUpload(event)' />`, '350px', '200px', 'black', '#007bff', 'Upload a File', 'none')">
+        File Opener</li>
+      <li
+        onclick="openWindow('portalCustom', `<iframe src='../website/portal/index.html'>`, '80%', '90%', '#007BFF', '#003f82', 'Portal')">
+        Portal App</li>
+      <li
+        onclick="openWindow('ipeHome', `<iframe width='100dvh' height='100dvh' src='../index.html' frameborder='0'></iframe>`, '70%', '70%', 'lime', 'black', 'Home')">
+        Inspire Home</li>
+      <li
+        onclick="openWindow('browser', `<iframe width='100dvh' height='100dvh' src='../webbrowser/browser.html' frameborder='0'></iframe>`, '80%', '80%', 'navy', 'transparent', 'Bluebird Browser');">
+        <i class="fa-solid fa-globe"></i>Bluebird Browser</li>
+      <li
+        onclick="openWindow('settings', `<iframe width='100dvh' height='100dvh' src='../website/settings/index.html' frameborder='0'></iframe>`, '600px', '90%', 'green', 'transparent', 'Inspire Settings');">
+        <i class="fa-solid fa-globe"></i>Settings</li>
+      <details>
+        <summary>Developer Tools</summary>
+        <ul>
+          <li
+            onclick="openWindow('secondScreen', `<iframe src='index.html' frameborder='0'></iframe>`, '90%', '90%', 'blue', 'black', 'Second Desktop')">
+            Second Desktop</li>
+          <li onclick="openTaskManager()">Task Manager</li>
+        </ul>
+      </details>
+      <li
+        onclick="openWindow('games', `<iframe src='../website/games/'></iframe>`, '80%', '80%', 'yellow', 'black', 'Bluebird Games')">
+        <i class="fa-solid fa-gamepad"></i>Bluebird Games</li>
+      <hr>
+      <li onclick="togglePopup('settings')"><i class="fa-solid fa-gear"></i>Settings</li>
+      <li onclick="keyboardShortcuts()"><i class="fa-regular fa-keyboard"></i>Keyboard Shortcuts</li>
+      <h3>Opened Apps</h3>
+      <ul id="openedAppsSection"></ul>
+    </ul>
+  </div>
+  <section id="settings" class="popup">
+    <h2>Settings</h2>
+    <button class="closebtn tooltip-element" onclick="togglePopup('settings', true)" action="Close Settings"><i
+        class="fa-solid fa-x"></i></button>
+    <iframe src="../website/settings/index.html" frameborder="0"></iframe>
+    <button onclick="checkForUpdates()">Check for Updates</button>
+  </section>
+  </section>
+  <!-- Windows Container -->
+  <div class="windows-container" id="windowsContainer"></div>
   </div>
   <audio id="error-sound" src="https://freesound.org/data/previews/353/353497_2256123-lq.mp3"></audio>
   <script src="os.js"></script>
-  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script type="text/javascript"
+    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
+
 </html>

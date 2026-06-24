@@ -839,7 +839,7 @@ function openDropdownMenu(content, eleClicked = document.body) {
 
     dropdown.style.left = x + 'px';
     dropdown.style.top = y + 'px';
-    dropdown.style.maxHeight = `calc(100vh - ${rect.top}px - ${rect.height}px - 50px)`;
+    dropdown.style.maxHeight = `calc(100dddvh - ${rect.top}px - ${rect.height}px - 50px)`;
 
     requestAnimationFrame(() => {
         eleClicked.classList.add('lock-hover');

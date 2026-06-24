@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Special+Gothic+Expanded+One&display=swap');
+
 /* Currently in BETA */
 #saved-files {
     text-align: center;
@@ -6,11 +7,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
     .box {
         max-width: 300px;
         aspect-ratio: 1 / 1;
         text-align: left;
     }
+
     .box:hover {
         background: navy;
         cursor: pointer;
@@ -22,7 +25,7 @@ body {
     color: white;
     padding: 0;
     margin: 0;
-    min-height: 100vh;
+    min-height: 100dvh;
     font-family: "Poppins";
 }
 
@@ -34,6 +37,7 @@ body {
     width: calc(100% - 40px);
     border-radius: 20px;
     margin-top: 10px;
+
     button {
         padding: 20px 40px;
         background: none;
@@ -42,6 +46,7 @@ body {
         border-radius: 30px;
         cursor: pointer;
     }
+
     button:hover {
         background: purple;
         border: 2px solid white;
@@ -52,7 +57,8 @@ body {
     display: block;
 }
 
-input[type=text], input[type=url] {
+input[type=text],
+input[type=url] {
     padding: 15px 29px;
     background: none;
     border: 1.3px solid magenta;
@@ -62,7 +68,8 @@ input[type=text], input[type=url] {
     width: calc(100% - 58px);
 }
 
-input[type=text]:focus, input[type=url]:focus {
+input[type=text]:focus,
+input[type=url]:focus {
     transition: 0.3s;
 }
 
@@ -70,7 +77,7 @@ input[type=text]:focus, input[type=url]:focus {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    min-height: 100dvh;
     padding: 0;
     display: block;
 }
@@ -93,6 +100,7 @@ input[type=text]:focus, input[type=url]:focus {
     z-index: -10;
     transition: 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
     overflow: auto;
+
     nav {
         position: sticky;
         display: flex;
@@ -102,6 +110,7 @@ input[type=text]:focus, input[type=url]:focus {
         border: 2px solid magenta;
         padding: 20px;
         border-radius: 20px;
+
         button {
             background: none;
             color: white;
@@ -112,6 +121,7 @@ input[type=text]:focus, input[type=url]:focus {
             cursor: pointer;
             transition: 0.12s;
         }
+
         button:hover {
             background: magenta;
         }
@@ -127,10 +137,12 @@ input[type=text]:focus, input[type=url]:focus {
 table {
     width: 100%;
     text-align: center;
+
     th {
         border-bottom: 2px solid white;
         border-right: 2px solid white;
     }
+
     td {
         padding: 12px;
     }
@@ -138,7 +150,7 @@ table {
 
 #home-main.container {
     width: calc(100% - 40px);
-    height: calc(100vh - 45px);
+    height: calc(100dvh - 45px);
     border: none;
 }
 
@@ -162,6 +174,7 @@ table {
     width: 95%;
     display: flex;
     gap: 10px;
+
     .action-ele:nth-last-child(1) {
         background: magenta;
     }
@@ -210,7 +223,8 @@ table {
 
 /* Preview Container (570) */
 
-#preview, .preview-file-element {
+#preview,
+.preview-file-element {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -220,6 +234,7 @@ table {
     z-index: 10;
     background-color: rgba(0, 0, 0, 0.631);
     display: none;
+
     nav {
         display: flex;
         justify-content: space-between;
@@ -227,12 +242,14 @@ table {
         padding: 0 20px;
         height: 77px;
         z-index: 100;
+
         h1 {
             max-width: 35%;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
         }
+
         button {
             background: none;
             color: white;
@@ -241,28 +258,34 @@ table {
             font-size: 2rem;
             cursor: pointer;
         }
+
         input {
             width: 50px;
         }
     }
+
     iframe {
         width: calc(100% - 10px);
-        min-height: calc(100vh - 50px); /* Deduct toolbar height */
+        min-height: calc(100dvh - 50px);
+        /* Deduct toolbar height */
         border: none;
         display: block;
         padding: 10px;
         background: none;
         color: white;
     }
+
     img {
         max-height: calc(100% - 77px);
     }
+
     textarea {
         border: 0;
         width: 100%;
         padding: 12px;
         overflow: auto;
     }
+
     .flexbox {
         position: relative;
         min-height: calc(100% - 100px);
@@ -271,6 +294,7 @@ table {
         display: flex;
         justify-content: space-between;
         padding: 12px;
+
         #sidebarTxt {
             width: 500px;
             overflow: auto;
@@ -278,6 +302,7 @@ table {
             width: 100%;
             resize: horizontal;
         }
+
         div {
             width: 100%;
             resize: horizontal;
@@ -327,7 +352,8 @@ video {
     transition: 0.12s;
 }
 
-.video-controls button, select {
+.video-controls button,
+select {
     background: none;
     padding: 12px;
     border: none;
@@ -342,13 +368,16 @@ progress {
 }
 
 progress::-webkit-progress-bar {
-    background: white; /* Adds a custom transition effect */
+    background: white;
+    /* Adds a custom transition effect */
     border-radius: 5px;
     height: 100px;
 }
 
-progress::-webkit-progress-value, progress::-moz-progress-bar {
-    background: linear-gradient(to right, #0033ff, #00aaff); /* Smooth gradient from deep blue to light blue */
+progress::-webkit-progress-value,
+progress::-moz-progress-bar {
+    background: linear-gradient(to right, #0033ff, #00aaff);
+    /* Smooth gradient from deep blue to light blue */
     border-radius: 5px;
 }
 
@@ -363,6 +392,7 @@ progress::-webkit-progress-value, progress::-moz-progress-bar {
     padding: 10px;
     border-radius: 5px;
     transition: 0.15s;
+
     .m-option {
         display: block;
         width: 100%;
@@ -370,7 +400,7 @@ progress::-webkit-progress-value, progress::-moz-progress-bar {
     }
 }
 
-#moreOptions:focus + .more-menu,
+#moreOptions:focus+.more-menu,
 .more-menu:hover {
     z-index: unset;
     transform: scale(1);
@@ -383,7 +413,8 @@ progress::-webkit-progress-value, progress::-moz-progress-bar {
 }
 
 .video-container:fullscreen .video-controls {
-    position: fixed; /* Keeps it visible even in fullscreen */
+    position: fixed;
+    /* Keeps it visible even in fullscreen */
     bottom: 0px;
     left: 50%;
     width: calc(100% - 40px);
@@ -396,35 +427,45 @@ progress::-webkit-progress-value, progress::-moz-progress-bar {
     justify-content: space-between;
     padding: 12px 20px;
     border-radius: 0px;
+
     div {
         display: flex;
         align-items: center;
     }
+
     div:nth-child(2) {
         width: 50%;
     }
+
     #videoTimestamp {
         min-width: 70px;
         text-align: center;
     }
+
     #progressBar {
         width: calc(100% - 70px);
     }
-    button, #videoTimestamp {
+
+    button,
+    #videoTimestamp {
         padding: 20px 40px;
         background: rgba(0, 162, 255, 0.322);
         aspect-ratio: initial;
     }
+
     button:hover {
         background: magenta;
     }
+
     * {
         border-radius: 10px;
         gap: 5px;
     }
+
     *:focus {
         border: 1px solid cyan;
     }
+
     .more-menu {
         bottom: 80px;
     }
@@ -443,6 +484,7 @@ preloader {
     width: 100%;
     height: 100%;
     z-index: 100;
+
     div {
         background: rgb(86, 86, 86);
         padding: 12px;
@@ -452,9 +494,9 @@ preloader {
 
 /* Preloader from UIVerse.io */
 svg {
- width: 4em;
- transform-origin: center;
- animation: rotate4 2s linear infinite;
+    width: 4em;
+    transform-origin: center;
+    animation: rotate4 2s linear infinite;
 }
 
 circle {

@@ -4,10 +4,10 @@ let entries = [];
 const openTabsMap = new Map();
 let saveIntervals = new Map();
 const pulsewriteInfo = {
-	'version': 'v2.3.0',
-	'lastUpdated': '8/7/25',
-	'buildNumber': 'a7F-9z_',
-	'sessionNumber': genRandomId(10),
+  'version': 'v2.3.0',
+  'lastUpdated': '8/7/25',
+  'buildNumber': 'a7F-9z_',
+  'sessionNumber': genRandomId(10),
 }
 
 let settings
@@ -16,75 +16,76 @@ let ids = []
 let idsHiddenFromSidebar = []
 
 
-setInterval(function() {
-	loadStorage('pulsewriteSettings', { })
+setInterval(function () {
+  loadStorage('pulsewriteSettings', {})
 }, 1000)
 
 window.addEventListener('keydown', e => {
-    const isMac = navigator.userAgent.includes('Mac');
-    const isShortcutPressed = isMac ? e.metaKey : e.ctrlKey;
+  const isMac = navigator.userAgent.includes('Mac');
+  const isShortcutPressed = isMac ? e.metaKey : e.ctrlKey;
 
-    const tabIndex = parseInt(e.key, 10) - 1;
-    const tabKeys = Array.from(openTabsMap.keys());
-  
-    if (isShortcutPressed && e.key === ',') {
-      e.preventDefault();
-        openMenu('settings')
-    } else if (isShortcutPressed && e.key == 'o') {
-        e.preventDefault()
-        handleUploadFiles()
-    } else if (isShortcutPressed && e.shiftKey && e.key == 'O') {
-        e.preventDefault()
-        handleUploadFolder()
-    } else if (isShortcutPressed && e.key == '/') {
-        e.preventDefault()
-		openMenu('about')
-	} else if (e.altKey && e.key == String(tabIndex)) { {
-        e.preventDefault()
-        alert('Clicked')
-    }
-        if (tabIndex < tabKeys.length) {
-            const tabId = tabKeys[tabIndex];
-            const { section } = openTabsMap.get(tabId);
+  const tabIndex = parseInt(e.key, 10) - 1;
+  const tabKeys = Array.from(openTabsMap.keys());
 
-            document.querySelectorAll('.editor-tab').forEach(s => s.style.display = 'none');
-            document.querySelectorAll('.tab').forEach(s => s.classList.remove('active'));
-            activateTab(tabId);
-            section.style.display = 'block';
-            section.__editor?.layout();
-        }
-        return;
+  if (isShortcutPressed && e.key === ',') {
+    e.preventDefault();
+    openMenu('settings')
+  } else if (isShortcutPressed && e.key == 'o') {
+    e.preventDefault()
+    handleUploadFiles()
+  } else if (isShortcutPressed && e.shiftKey && e.key == 'O') {
+    e.preventDefault()
+    handleUploadFolder()
+  } else if (isShortcutPressed && e.key == '/') {
+    e.preventDefault()
+    openMenu('about')
+  } else if (e.altKey && e.key == String(tabIndex)) {
+    {
+      e.preventDefault()
+      alert('Clicked')
     }
+    if (tabIndex < tabKeys.length) {
+      const tabId = tabKeys[tabIndex];
+      const { section } = openTabsMap.get(tabId);
+
+      document.querySelectorAll('.editor-tab').forEach(s => s.style.display = 'none');
+      document.querySelectorAll('.tab').forEach(s => s.classList.remove('active'));
+      activateTab(tabId);
+      section.style.display = 'block';
+      section.__editor?.layout();
+    }
+    return;
+  }
 });
 
 function loadStorage(name, fallback = null) {
-    try {
-        const raw = localStorage.getItem(name);
-        return raw ? JSON.parse(raw) : fallback ?? { };
-    } catch (e) {
-        console.warn(`Failed to parse localStorage item "${name}":`, e);
-        return fallback ?? { error: 'Invalid JSON format' };
-    }
+  try {
+    const raw = localStorage.getItem(name);
+    return raw ? JSON.parse(raw) : fallback ?? {};
+  } catch (e) {
+    console.warn(`Failed to parse localStorage item "${name}":`, e);
+    return fallback ?? { error: 'Invalid JSON format' };
+  }
 }
 
 function saveSettings(key, name, value) {
-    try {
-        const data = loadStorage(key) || {};
+  try {
+    const data = loadStorage(key) || {};
 
-        if (typeof data !== 'object' || data === null || Array.isArray(data)) {
-            throw new Error("Invalid settings object");
-        }
-
-        data[name] = value;
-        localStorage.setItem(key, JSON.stringify(data));
-        displayNotification("Settings Saved.", `<i class="fa-solid fa-gear"></i>`, 2000);
-    } catch (e) {
-        console.error("Save failed:", e);
-        displayNotification(
-            "Couldn't save your settings. Try again later or contact owner if this might be a mistake.",
-            `<i class="fa-solid fa-circle-exclamation"></i>`
-        );
+    if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+      throw new Error("Invalid settings object");
     }
+
+    data[name] = value;
+    localStorage.setItem(key, JSON.stringify(data));
+    displayNotification("Settings Saved.", `<i class="fa-solid fa-gear"></i>`, 2000);
+  } catch (e) {
+    console.error("Save failed:", e);
+    displayNotification(
+      "Couldn't save your settings. Try again later or contact owner if this might be a mistake.",
+      `<i class="fa-solid fa-circle-exclamation"></i>`
+    );
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -103,8 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   `;
   if (navigator.userAgent.includes('Macintosh') || navigator.userAgent.includes('Mac OS X')) {
-	document.getElementById('context-menu').classList.add('mac-action');
-  }  
+    document.getElementById('context-menu').classList.add('mac-action');
+  }
   openNewTab('Welcome Back!', `<i class="fa-solid fa-door-open"></i>`, welcomeTabContent, 'welcome-screen');
 });
 
@@ -134,30 +135,30 @@ function getLangFromName(filename) {
 }
 
 function getIconFromExtension(filename) {
-	if (typeof filename !== 'string') return `<i class="fa-solid fa-file"></i>`;
-	
-	const ext = filename.split('.').pop().toLowerCase();
-  
-	switch (ext) {
-	  case 'js':    return `<i class="fa-brands fa-square-js"></i>`;
-	  case 'html':  return `<i class="fa-brands fa-html5"></i>`;
-	  case 'css':   return `<i class="fa-brands fa-css3-alt"></i>`;
-	  case 'json':  return `<i class="fa-solid fa-arrow-right-to-bracket"></i>`;
-	  case 'txt':   return `<i class="fa-solid fa-file-lines"></i>`;
-	  case 'py':    return `<i class="fa-brands fa-python"></i>`;
-	  case 'java':  return `<i class="fa-brands fa-java"></i>`;
-	  default:      return `<i class="fa-solid fa-file"></i>`;
-	}
+  if (typeof filename !== 'string') return `<i class="fa-solid fa-file"></i>`;
+
+  const ext = filename.split('.').pop().toLowerCase();
+
+  switch (ext) {
+    case 'js': return `<i class="fa-brands fa-square-js"></i>`;
+    case 'html': return `<i class="fa-brands fa-html5"></i>`;
+    case 'css': return `<i class="fa-brands fa-css3-alt"></i>`;
+    case 'json': return `<i class="fa-solid fa-arrow-right-to-bracket"></i>`;
+    case 'txt': return `<i class="fa-solid fa-file-lines"></i>`;
+    case 'py': return `<i class="fa-brands fa-python"></i>`;
+    case 'java': return `<i class="fa-brands fa-java"></i>`;
+    default: return `<i class="fa-solid fa-file"></i>`;
   }
-	
+}
+
 
 function makeId() {
-	const genId = Date.now() + '-' + Math.random().toString(36).slice(2);
-	if (ids.includes(genId)) {
-	  return makeId();
-	}
-	return genId;
-}  
+  const genId = Date.now() + '-' + Math.random().toString(36).slice(2);
+  if (ids.includes(genId)) {
+    return makeId();
+  }
+  return genId;
+}
 
 function openNewTab(name, icon, contentNode, tabId) {
   const entry = entries.find(e => e.name === name);
@@ -191,8 +192,8 @@ function openNewTab(name, icon, contentNode, tabId) {
   });
 
   btn.querySelector('.close').addEventListener('click', () => {
-	closeTab(tabId);
-  });  
+    closeTab(tabId);
+  });
 
   // 🔄 Drag-n-drop tab reordering
   btn.addEventListener('dragstart', e => {
@@ -223,60 +224,60 @@ function openNewTab(name, icon, contentNode, tabId) {
 
 
 function activateTab(tabID) {
-	document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-	document.querySelectorAll('.editor-tab').forEach(t => t.style.display = 'none');
-  
-	const tabButton = document.getElementById(tabID + '-nav');
-	const tabContent = document.getElementById(tabID);
-  
-	if (tabButton && tabContent) {
-	  tabButton.classList.add('active');
-	  tabContent.style.display = 'block';
-	  const label = tabButton.querySelector('span')?.innerHTML || tabID;
-	  document.title = `${label} - PulseWrite`;
-	  
-	  lastActiveTabID = tabID;
-	}
-  }  
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.editor-tab').forEach(t => t.style.display = 'none');
+
+  const tabButton = document.getElementById(tabID + '-nav');
+  const tabContent = document.getElementById(tabID);
+
+  if (tabButton && tabContent) {
+    tabButton.classList.add('active');
+    tabContent.style.display = 'block';
+    const label = tabButton.querySelector('span')?.innerHTML || tabID;
+    document.title = `${label} - PulseWrite`;
+
+    lastActiveTabID = tabID;
+  }
+}
 
 function closeTab(tabId, userCEditor) {
-	const tabButton = document.getElementById(`${tabId}-nav`);
-	const tabContent = document.getElementById(tabId);
-  
-	// Dispose editor if present
-	const editor = tabContent?.__editor;
-	if (editor) {
-	  editor.dispose();
-	} else {
-        console.log('No Editor Found')
-    }
-  
-	// Remove from openTabsMap
-	if (openTabsMap.has(tabId)) {
-	  openTabsMap.delete(tabId);
-	}
-  
-	// Clear autosave interval
-	if (saveIntervals.has(tabId)) {
-	  clearInterval(saveIntervals.get(tabId));
-	  saveIntervals.delete(tabId);
-	}
-  
-	// Remove tab button and content
-	tabButton?.remove();
-	tabContent?.remove();
-  
-  
-	// Activate fallback tab or show empty screen
-	const remainingTabs = Array.from(document.querySelectorAll('.editor-tab'));
-	if (remainingTabs.length) {
-	  const fallbackTabId = remainingTabs[0].id;
-	  activateTab(fallbackTabId);
-	} else {
-	  lastActiveTabID = null;
-	  const welcomeTabContent = document.createElement('div');
-  	welcomeTabContent.classList.add('welcome-page');
-  	welcomeTabContent.innerHTML = `
+  const tabButton = document.getElementById(`${tabId}-nav`);
+  const tabContent = document.getElementById(tabId);
+
+  // Dispose editor if present
+  const editor = tabContent?.__editor;
+  if (editor) {
+    editor.dispose();
+  } else {
+    console.log('No Editor Found')
+  }
+
+  // Remove from openTabsMap
+  if (openTabsMap.has(tabId)) {
+    openTabsMap.delete(tabId);
+  }
+
+  // Clear autosave interval
+  if (saveIntervals.has(tabId)) {
+    clearInterval(saveIntervals.get(tabId));
+    saveIntervals.delete(tabId);
+  }
+
+  // Remove tab button and content
+  tabButton?.remove();
+  tabContent?.remove();
+
+
+  // Activate fallback tab or show empty screen
+  const remainingTabs = Array.from(document.querySelectorAll('.editor-tab'));
+  if (remainingTabs.length) {
+    const fallbackTabId = remainingTabs[0].id;
+    activateTab(fallbackTabId);
+  } else {
+    lastActiveTabID = null;
+    const welcomeTabContent = document.createElement('div');
+    welcomeTabContent.classList.add('welcome-page');
+    welcomeTabContent.innerHTML = `
     	<img src="https://bing.com/th/id/BCO.6355e1b5-cb70-4368-a053-5d43c3357421.png">
     	<h1>Welcome to PulseWrite, Bluebirds Code Editor!</h1>
     	<p>Edit your files, like any other code editor. Files can be saved after a set number of seconds, on text editor blur, CMD/CTRL + S (as always), and before closing (and as always). More updates, allowing this, coming soon.</p>
@@ -287,12 +288,12 @@ function closeTab(tabId, userCEditor) {
       		<button id="uploadFolderBtn" onclick="handleUploadFolder()"><i class="fa-solid fa-folder"></i> Upload Folder</button>
     	</div>
   		`;
-  		if (navigator.userAgent.includes('Macintosh') || navigator.userAgent.includes('Mac OS X')) {
-			document.getElementById('context-menu').classList.add('mac-action');
-  		}  
-  		openNewTab('Start a New Project!', `<i class="fa-solid fa-door-open"></i>`, welcomeTabContent, 'welcome-screen');
-	}
-}  
+    if (navigator.userAgent.includes('Macintosh') || navigator.userAgent.includes('Mac OS X')) {
+      document.getElementById('context-menu').classList.add('mac-action');
+    }
+    openNewTab('Start a New Project!', `<i class="fa-solid fa-door-open"></i>`, welcomeTabContent, 'welcome-screen');
+  }
+}
 
 async function openFile(name, handle, pulseWriteFileID, openIn, language = getLangFromName(name) || 'plaintext') {
   const tabId = `tab-${pulseWriteFileID}`;
@@ -311,7 +312,7 @@ async function openFile(name, handle, pulseWriteFileID, openIn, language = getLa
   // 🧱 Create editor container
   const editorDiv = document.createElement('div');
   editorDiv.style.width = '100%';
-  editorDiv.style.height = 'calc(100vh - 120px)';
+  editorDiv.style.height = 'calc(100dvh - 120px)';
 
   const { section, btn } = openNewTab(
     name,
@@ -382,20 +383,20 @@ async function openFile(name, handle, pulseWriteFileID, openIn, language = getLa
         entry.__fileContent = section.__fileContent;
         entry.path = handle?.path || name;
         entry.folderPath = getFolderPathFromParts(entry.parts);
-        saveFile(entry);				
-        
-      const searchBtn = topBar.querySelector('[data-action="find"]');
-          searchBtn.addEventListener('click', () => {
-          editor.getAction('actions.find').run();
-      });
+        saveFile(entry);
 
-      const saveBtn = topBar.querySelector('[data-action="save"]')
-      saveBtn.addEventListener('click', () => {
-        downloadFile(entry)
-        section.__isDirty = false;
-        const icon = btn.querySelector('.need-save');
-        if (icon) icon.remove();
-      })
+        const searchBtn = topBar.querySelector('[data-action="find"]');
+        searchBtn.addEventListener('click', () => {
+          editor.getAction('actions.find').run();
+        });
+
+        const saveBtn = topBar.querySelector('[data-action="save"]')
+        saveBtn.addEventListener('click', () => {
+          downloadFile(entry)
+          section.__isDirty = false;
+          const icon = btn.querySelector('.need-save');
+          if (icon) icon.remove();
+        })
 
         // ⌨️ Keyboard shortcuts
         function handleKeyboardShortcuts(event) {
@@ -468,32 +469,32 @@ function saveFile(entry) {
 
   saveIntervals.set(entry.id, intervalID);
   console.log('Saved.')
-  
+
   clearInterval(intervalID)
 }
 
 function extractFolder(fullPath) {
-	if (!fullPath) return '';
-	const parts = fullPath.split('/');
-	parts.pop();
-	return parts.join('/');
-  }
+  if (!fullPath) return '';
+  const parts = fullPath.split('/');
+  parts.pop();
+  return parts.join('/');
+}
 
-  function getFolderPathFromParts(parts) {
-	if (!Array.isArray(parts) || parts.length < 2) return '';
-	return parts.slice(0, -1).join('/');
-  }
-  
+function getFolderPathFromParts(parts) {
+  if (!Array.isArray(parts) || parts.length < 2) return '';
+  return parts.slice(0, -1).join('/');
+}
+
 
 async function saveViaFS(entry) {
-	console.log(entry);
+  console.log(entry);
   const writable = await entry.handle.createWritable();
   await writable.write(entry.__fileContent());
   await writable.close();
   displayNotification(
     `${entry.name} has been saved.`,
     `<i class="fa-solid fa-download"></i>`,
-    5000, 
+    5000,
     2
   );
 }
@@ -550,7 +551,7 @@ function saveAllTabs() {
     displayNotification('Error while saving files. See console for details.');
     console.error('saveAllTabs error:', e);
   }
-} 
+}
 
 function downloadFile(entry) {
   if (useFS && entry.handle) {
@@ -574,151 +575,151 @@ async function downloadZip() {
 }
 
 async function handleUploadFiles() {
-	preloader(document.getElementById('sidebar'))
-    try {
-        return useFS ? uploadFiles() : fallbackUploadFiles();
-    } catch (e) {
-        displayNotification("Couldn't open prompt. Full log in console.")
-    }
+  preloader(document.getElementById('sidebar'))
+  try {
+    return useFS ? uploadFiles() : fallbackUploadFiles();
+  } catch (e) {
+    displayNotification("Couldn't open prompt. Full log in console.")
+  }
 }
 
 async function handleUploadFolder() {
-    try {
-        return useFS ? uploadFolder() : fallbackUploadFolder();
-    } catch (e) {
-        displayNotification("Couldn't open prompt. Full log in console.")
-    }
+  try {
+    return useFS ? uploadFolder() : fallbackUploadFolder();
+  } catch (e) {
+    displayNotification("Couldn't open prompt. Full log in console.")
+  }
 }
 
 async function uploadFiles() {
-	preloader(document.getElementById('sidebar'))
+  preloader(document.getElementById('sidebar'))
   if (!window.showOpenFilePicker) { preloader(document.getElementById('sidebar'), true); return alert('No File API'); }
   try {
-	  const handles = await showOpenFilePicker({ multiple: true });
-	  const batch = await Promise.all(handles.map(async h => {
-		  const file = await h.getFile();
-		  return {
-			  id: makeId(),
-			  handle: h,
-			  name: file.name,
-			  parts: [file.name],
-			  file,
-			  __fileContent: () => file.text()
-			};
-		}));
-		entries.push(...batch);
-		buildSidebar();
-	} catch (e) {
-		preloader(document.getElementById('sidebar'), true)
-		displayNotification("Couldn't Upload File(s). Try again later.", `<i class="fa-solid fa-file-circle-xmark"></i>`)
-	}
+    const handles = await showOpenFilePicker({ multiple: true });
+    const batch = await Promise.all(handles.map(async h => {
+      const file = await h.getFile();
+      return {
+        id: makeId(),
+        handle: h,
+        name: file.name,
+        parts: [file.name],
+        file,
+        __fileContent: () => file.text()
+      };
+    }));
+    entries.push(...batch);
+    buildSidebar();
+  } catch (e) {
+    preloader(document.getElementById('sidebar'), true)
+    displayNotification("Couldn't Upload File(s). Try again later.", `<i class="fa-solid fa-file-circle-xmark"></i>`)
+  }
 }
 
 async function uploadFolder() {
-	preloader(document.getElementById('sidebar'));
-	const batch = [];
-  
-	function makeId() {
-	  return Math.random().toString(36).substr(2, 9);
-	}
-  
-	function normalizeParts(parts) {
-	  return parts.join('/').replace(/\\/g, '/');
-	}
-  
-	// Modern browser API
-	if (window.showDirectoryPicker) {
-	  try {
-		const root = await showDirectoryPicker();
-  
-		async function walk(dir, path = []) {
-		  for await (const [name, child] of dir) {
-			if (child.kind === 'file') {
-			  const file = await child.getFile();
-			  batch.push({
-				id: makeId(),
-				handle: child,
-				name: file.name,
-				parts: [...path, file.name],
-				file,
-				__fileContent: () => file.text()
-			  });
-			} else {
-			  await walk(child, [...path, child.name]);
-			}
-		  }
-		}
-  
-		await walk(root, [root.name]);
-	  } catch (err) {
-		console.error('Directory picker failed:', err);
-		displayNotification('Failed to open folder. Try again later.', `<i class="fa-solid fa-folder-closed"></i>`);
-		preloader(document.getElementById('sidebar'), true);
-		return;
-	  }
-	} else {
-	  // Electron fallback
-	  const { dialog } = require('electron').remote || require('@electron/remote');
-	  const fs = require('fs');
-	  const path = require('path');
-  
-	  const result = await dialog.showOpenDialog({
-		properties: ['openDirectory']
-	  });
-  
-	  if (result.canceled || !result.filePaths.length) {
-		alert('No folder selected.');
-		return;
-	  }
-  
-	  const folderPath = result.filePaths[0];
-  
-	  function walkLocal(dirPath, pathParts = []) {
-		const entriesInDir = fs.readdirSync(dirPath, { withFileTypes: true });
-		for (const entry of entriesInDir) {
-		  const fullPath = path.join(dirPath, entry.name);
-		  if (entry.isFile()) {
-			const fileContent = fs.readFileSync(fullPath, 'utf-8');
-			batch.push({
-			  id: makeId(),
-			  name: entry.name,
-			  parts: [...pathParts, entry.name],
-			  file: {
-				name: entry.name,
-				path: fullPath,
-				text: () => Promise.resolve(fileContent)
-			  },
-			  __fileContent: () => Promise.resolve(fileContent)
-			});
-		  } else if (entry.isDirectory()) {
-			walkLocal(fullPath, [...pathParts, entry.name]);
-		  }
-		}
-	  }
-  
-	  walkLocal(folderPath, [path.basename(folderPath)]);
-	}
-  
-	// 🔍 Prevent duplicate folder upload
-	const folderName = batch[0]?.parts[0];
-	const folderAlreadyExists = entries.some(e => e.parts[0] === folderName);
-  
-	if (folderAlreadyExists) {
-	  displayNotification(`Folder "${folderName}" already uploaded. Check your hidden list. If not, reload or open a new window.`, `<i class="fa-solid fa-folder-open"></i>`);
-	  preloader(document.getElementById('sidebar'), true);
-	  return;
-	}
-  
-	// 🧹 Deduplicate files by normalized path
-	const existingPaths = new Set(entries.map(e => normalizeParts(e.parts)));
-	const dedupedBatch = batch.filter(e => {
-	  const path = normalizeParts(e.parts);
-	  return !existingPaths.has(path);
-	});
-  
-	entries.push(...dedupedBatch);
-	buildSidebar();
-  }  
+  preloader(document.getElementById('sidebar'));
+  const batch = [];
+
+  function makeId() {
+    return Math.random().toString(36).substr(2, 9);
+  }
+
+  function normalizeParts(parts) {
+    return parts.join('/').replace(/\\/g, '/');
+  }
+
+  // Modern browser API
+  if (window.showDirectoryPicker) {
+    try {
+      const root = await showDirectoryPicker();
+
+      async function walk(dir, path = []) {
+        for await (const [name, child] of dir) {
+          if (child.kind === 'file') {
+            const file = await child.getFile();
+            batch.push({
+              id: makeId(),
+              handle: child,
+              name: file.name,
+              parts: [...path, file.name],
+              file,
+              __fileContent: () => file.text()
+            });
+          } else {
+            await walk(child, [...path, child.name]);
+          }
+        }
+      }
+
+      await walk(root, [root.name]);
+    } catch (err) {
+      console.error('Directory picker failed:', err);
+      displayNotification('Failed to open folder. Try again later.', `<i class="fa-solid fa-folder-closed"></i>`);
+      preloader(document.getElementById('sidebar'), true);
+      return;
+    }
+  } else {
+    // Electron fallback
+    const { dialog } = require('electron').remote || require('@electron/remote');
+    const fs = require('fs');
+    const path = require('path');
+
+    const result = await dialog.showOpenDialog({
+      properties: ['openDirectory']
+    });
+
+    if (result.canceled || !result.filePaths.length) {
+      alert('No folder selected.');
+      return;
+    }
+
+    const folderPath = result.filePaths[0];
+
+    function walkLocal(dirPath, pathParts = []) {
+      const entriesInDir = fs.readdirSync(dirPath, { withFileTypes: true });
+      for (const entry of entriesInDir) {
+        const fullPath = path.join(dirPath, entry.name);
+        if (entry.isFile()) {
+          const fileContent = fs.readFileSync(fullPath, 'utf-8');
+          batch.push({
+            id: makeId(),
+            name: entry.name,
+            parts: [...pathParts, entry.name],
+            file: {
+              name: entry.name,
+              path: fullPath,
+              text: () => Promise.resolve(fileContent)
+            },
+            __fileContent: () => Promise.resolve(fileContent)
+          });
+        } else if (entry.isDirectory()) {
+          walkLocal(fullPath, [...pathParts, entry.name]);
+        }
+      }
+    }
+
+    walkLocal(folderPath, [path.basename(folderPath)]);
+  }
+
+  // 🔍 Prevent duplicate folder upload
+  const folderName = batch[0]?.parts[0];
+  const folderAlreadyExists = entries.some(e => e.parts[0] === folderName);
+
+  if (folderAlreadyExists) {
+    displayNotification(`Folder "${folderName}" already uploaded. Check your hidden list. If not, reload or open a new window.`, `<i class="fa-solid fa-folder-open"></i>`);
+    preloader(document.getElementById('sidebar'), true);
+    return;
+  }
+
+  // 🧹 Deduplicate files by normalized path
+  const existingPaths = new Set(entries.map(e => normalizeParts(e.parts)));
+  const dedupedBatch = batch.filter(e => {
+    const path = normalizeParts(e.parts);
+    return !existingPaths.has(path);
+  });
+
+  entries.push(...dedupedBatch);
+  buildSidebar();
+}
 
 function fallbackUploadFiles() {
   return new Promise(resolve => {
@@ -815,12 +816,12 @@ function buildSidebar() {
   function render(node, container, path = []) {
     // Files
     for (const file of node._files || []) {
-		const folderName = path[path.length - 1] || '/';
-		const el = document.createElement('div');
-		el.classList.add('file-in-sidebar');
-		el.id = file.id;
-		const icon = getIconFromExtension(file.name);
-		el.innerHTML = `${icon} ${file.name}`;	  
+      const folderName = path[path.length - 1] || '/';
+      const el = document.createElement('div');
+      el.classList.add('file-in-sidebar');
+      el.id = file.id;
+      const icon = getIconFromExtension(file.name);
+      el.innerHTML = `${icon} ${file.name}`;
 
       el.draggable = true;
 
@@ -828,9 +829,9 @@ function buildSidebar() {
         openFile(file.name, file.handle, `${folderName}-${file.name} `);
       });
 
-      el.addEventListener('contextmenu', function(event) {
+      el.addEventListener('contextmenu', function (event) {
         event.preventDefault()
-		var fileHandle = file.handle
+        var fileHandle = file.handle
         setUpAndOpenContextMenu('file', el, { file, folderName, fileHandle, el })
       })
 
@@ -843,33 +844,33 @@ function buildSidebar() {
 
     // Folders
     for (const folder of Object.keys(node).filter(k => k !== '_files').sort()) {
-	const pulid = makeId()
+      const pulid = makeId()
       const header = document.createElement('div');
-	  header.classList.add('folder-in-sidebar')
-	  header.id = `${folder}-${randomId}`
+      header.classList.add('folder-in-sidebar')
+      header.id = `${folder}-${randomId}`
       header.innerHTML = '📁 ' + folder + `<i class="material-symbols-rounded">arrow_right</i>`;
       header.style.fontWeight = 'bold';
 
       var randomId = Math.floor(Math.random() * 10000)
       const subContainer = document.createElement('div');
-	  subContainer.classList.add('sub-container');
-		subContainer.id = `${folder}-${randomId}`
+      subContainer.classList.add('sub-container');
+      subContainer.id = `${folder}-${randomId}`
       subContainer.style.display = 'none';
       subContainer.style.paddingLeft = '12px';
 
       header.addEventListener('click', () => {
         subContainer.style.display =
           subContainer.style.display === 'none' ? 'block' : 'none';
-		  if (header.classList.contains('open')) {
-			header.classList.remove('open')
-		  } else {
-			header.classList.add('open')
-		  }
+        if (header.classList.contains('open')) {
+          header.classList.remove('open')
+        } else {
+          header.classList.add('open')
+        }
       });
-	  header.addEventListener('contextmenu', (e) => {
-		e.preventDefault()
-		setUpAndOpenContextMenu('folder-sidebar', header, { header })
-	  })
+      header.addEventListener('contextmenu', (e) => {
+        e.preventDefault()
+        setUpAndOpenContextMenu('folder-sidebar', header, { header })
+      })
 
       header.draggable = true;
       header.addEventListener('dragstart', e => {
@@ -908,12 +909,12 @@ function buildSidebar() {
 }
 
 function hideFromSidebar(id) {
-	const elements = document.querySelectorAll('#' + id);
-	elements.forEach(el => el.classList.add('hidden-from-sidebar'));
-	idsHiddenFromSidebar.push(id)
-  
-	displayNotification(`Removed from Sidebar.`, `<i class="fa-solid fa-square-minus"></i>`);
-  }  
+  const elements = document.querySelectorAll('#' + id);
+  elements.forEach(el => el.classList.add('hidden-from-sidebar'));
+  idsHiddenFromSidebar.push(id)
+
+  displayNotification(`Removed from Sidebar.`, `<i class="fa-solid fa-square-minus"></i>`);
+}
 
 const notificationQueue = [];
 let isDisplaying = false;
@@ -948,47 +949,47 @@ function processQueue() {
 }
 
 function preloader(element = document.body, remove = false) {
-	const existing = element.querySelector('.preloader');
-  
-	if (remove) {
-	  if (existing) existing.remove();
-	  return;
-	}
-  
-	if (existing) return;
-  
-	const newPreloader = document.createElement('div');
-	newPreloader.classList.add('preloader');
-	newPreloader.innerHTML = `
+  const existing = element.querySelector('.preloader');
+
+  if (remove) {
+    if (existing) existing.remove();
+    return;
+  }
+
+  if (existing) return;
+
+  const newPreloader = document.createElement('div');
+  newPreloader.classList.add('preloader');
+  newPreloader.innerHTML = `
 	<div>
 	  <svg viewBox="25 25 50 50" class="spinner">
 		<circle r="20" cy="50" cx="50"></circle>
 	  </svg>
 	</div>
 	`;
-	element.appendChild(newPreloader);
-}  
+  element.appendChild(newPreloader);
+}
 
-  function showNoTabScreen() {
-    const welcome = document.createElement('div');
-    welcome.className = 'welcome-page';
-    welcome.innerHTML = `
+function showNoTabScreen() {
+  const welcome = document.createElement('div');
+  welcome.className = 'welcome-page';
+  welcome.innerHTML = `
       <h1>👋 Need to Upload Another File?</h1>
       <p>Edit code, preview outputs, upload files, or open folders.</p>
       <button onclick="handleUploadFiles()">Upload File</button>
       <button onclick="handleUploadFolder()">Upload Folder</button>
     `;
-    document.getElementById('main-content').appendChild(welcome);
-  }
-  
-  function updatePreview(folderPath) {
-	// Use fetch to get files from the folder
-	Promise.all([
-	  fetch(`${folderPath}/index.html`).then(res => res.text()),
-	  fetch(`${folderPath}/style.css`).then(res => res.ok ? res.text() : ''),
-	  fetch(`${folderPath}/script.js`).then(res => res.ok ? res.text() : '')
-	]).then(([html, css, js]) => {
-	  const previewContent = `
+  document.getElementById('main-content').appendChild(welcome);
+}
+
+function updatePreview(folderPath) {
+  // Use fetch to get files from the folder
+  Promise.all([
+    fetch(`${folderPath}/index.html`).then(res => res.text()),
+    fetch(`${folderPath}/style.css`).then(res => res.ok ? res.text() : ''),
+    fetch(`${folderPath}/script.js`).then(res => res.ok ? res.text() : '')
+  ]).then(([html, css, js]) => {
+    const previewContent = `
 		<!DOCTYPE html>
 		<html>
 		  <head><style>${css}</style></head>
@@ -998,11 +999,11 @@ function preloader(element = document.body, remove = false) {
 		  </body>
 		</html>
 	  `;
-	  const frame = document.getElementById('preview-frame');
-	  if (frame) frame.srcdoc = previewContent;
-	}).catch(err => console.error('Preview error:', err));
-  }
-  
+    const frame = document.getElementById('preview-frame');
+    if (frame) frame.srcdoc = previewContent;
+  }).catch(err => console.error('Preview error:', err));
+}
+
 function setUpAndOpenContextMenu(type, elementClicked, passThru = undefined) {
   const contextMenu = document.getElementById('context-menu');
   let content
@@ -1038,13 +1039,13 @@ function setUpAndOpenContextMenu(type, elementClicked, passThru = undefined) {
 	</ul>
 	`;
   } else if (type == 'folder-sidebar') {
-	content = `
+    content = `
 	<ul class="ul-opt">
 		<li class="cMB" onclick="hideFromSidebar('${passThru?.tabID}')">Hide Folder from Editor</li>
 	</ul>
 	`
   } else if (type == 'add-items') {
-	content = `
+    content = `
 	<ul class="ul-opt">
 		<li class="cMB" onclick="handleUploadFiles()">Upload Files...</li>
 		<li class="cMB" onclick="handleUploadFolder()">Upload Folder...</li>
@@ -1070,71 +1071,71 @@ function setUpAndOpenContextMenu(type, elementClicked, passThru = undefined) {
     contextMenu.querySelector('.open-file-btn').addEventListener('click', () => {
       openFile(
         passThru?.file.name,
-			  passThru?.fileHandle,
-			  passThru?.folderName + passThru?.file.name
-			);
-		});
-	}
+        passThru?.fileHandle,
+        passThru?.folderName + passThru?.file.name
+      );
+    });
+  }
   if (contextMenu.querySelector('.open-file-btn-in-new-tab')) {
     contextMenu.querySelector('.open-file-btn-in-new-tab').addEventListener('click', () => {
       openFile(
-        passThru?.file.name, 
-        passThru?.fileHandle, 
+        passThru?.file.name,
+        passThru?.fileHandle,
         passThru?.folderName + passThru?.file.name, 'new-window')
     })
   }
 
   const rect = elementClicked.getBoundingClientRect();
-    const menuWidth = contextMenu.offsetWidth || 200; // estimate if not rendered yet
-    const menuHeight = contextMenu.offsetHeight || 150;
+  const menuWidth = contextMenu.offsetWidth || 200; // estimate if not rendered yet
+  const menuHeight = contextMenu.offsetHeight || 150;
 
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
 
-    let top = rect.bottom;
-    let left = rect.left;
+  let top = rect.bottom;
+  let left = rect.left;
 
-    if (top + menuHeight > viewportHeight) {
-        top = rect.top - menuHeight;
-    }
+  if (top + menuHeight > viewportHeight) {
+    top = rect.top - menuHeight;
+  }
 
-    if (left + menuWidth > viewportWidth) {
-        left = rect.left - menuWidth;
-    }
+  if (left + menuWidth > viewportWidth) {
+    left = rect.left - menuWidth;
+  }
 
-    contextMenu.style.position = 'absolute';
-    contextMenu.style.top = `${top}px`;
-    contextMenu.style.left = `${left}px`;
-    contextMenu.classList.add('open');
+  contextMenu.style.position = 'absolute';
+  contextMenu.style.top = `${top}px`;
+  contextMenu.style.left = `${left}px`;
+  contextMenu.classList.add('open');
 
 
-  setTimeout(function() {
+  setTimeout(function () {
     document.addEventListener('click', () => {
-    contextMenu.classList.remove('open');
-	setTimeout(function() {
-		contextMenu.innerHTML = '';
-	}, 400) 
-  }, { once: true });
+      contextMenu.classList.remove('open');
+      setTimeout(function () {
+        contextMenu.innerHTML = '';
+      }, 400)
+    }, { once: true });
   }, 400)
 }
 
 function renderMenu(menu) {
   if (menu == 'settings') {
-	let allUsers
-	if (loadStorage('users').forEach) {
-		loadStorage('users').forEach(one => {
-			allUsers += `
+    let allUsers
+    if (loadStorage('users').forEach) {
+      loadStorage('users').forEach(one => {
+        allUsers += `
 			<div class="item-f">
 				<span style="display: flex; align-items: center; gap: 10px;">
 					<span>${one.avatarPath || `<i class="fa-solid fa-users-between-lines"></i>`}</span>
 					<span>${one.username}</span>
 				</span>
 				<a href="../website/account/index.html?name=${one.username}">Switch</a>
-			</div>` 
-		})
-	}
-  const settings = loadStorage('pulsewriteSettings', { 'oPopinNewW': false })
-  return `
+			</div>`
+      })
+    }
+    const settings = loadStorage('pulsewriteSettings', { 'oPopinNewW': false })
+    return `
     <button class="popup-close-btn">
       <i class="fa-solid fa-xmark"></i>
     </button>
@@ -1222,17 +1223,17 @@ function renderMenu(menu) {
     </section>
     </div>
   `;
-	} else if (menu == 'about') {
-		let aboutCard = ``
-		Object.entries(pulsewriteInfo).forEach(([key, value]) => {
-			aboutCard += `
+  } else if (menu == 'about') {
+    let aboutCard = ``
+    Object.entries(pulsewriteInfo).forEach(([key, value]) => {
+      aboutCard += `
 				<div class="item-f">
 					<p>${key}</p>
 					<p>${value}</p>
 				</div>
 			`
-		  });		  
-		return `
+    });
+    return `
 			<button class="popup-close-btn">
       			<i class="fa-solid fa-xmark"></i>
     		</button>
@@ -1240,7 +1241,7 @@ function renderMenu(menu) {
 		  	<h2>Bluebird PulseWrite</h2>
 			${aboutCard}
 		`
-	}
+  }
 }
 
 /* 2️⃣  Core toggle logic (main window)  */
@@ -1269,25 +1270,25 @@ function wireSidebarButtons(doc = document) {
 }
 
 function openMenu(menu, openSection = 'general') {
-	if (!loadStorage('pulsewriteSettings').oPopinNewW) {
+  if (!loadStorage('pulsewriteSettings').oPopinNewW) {
 
-		const overlay = document.getElementById('bg-overlay');
-		const popup   = document.getElementById('popup-w-overlay-menu');
-		popup.innerHTML  = renderMenu(menu);
-		overlay.className = `open ${menu}-menu-app`;
-		
-		const mainClose = popup.querySelector('.popup-close-btn');
-		if (mainClose) mainClose.addEventListener('click', () => overlay.className = '');
-		
-		wireSidebarButtons();
-		changeSettingsMenu(openSection);
-	} else {
+    const overlay = document.getElementById('bg-overlay');
+    const popup = document.getElementById('popup-w-overlay-menu');
+    popup.innerHTML = renderMenu(menu);
+    overlay.className = `open ${menu}-menu-app`;
 
-		const win = window.open('', '', 'width=800,height=550,left=200,top=200');
-		const base = location.origin + location.pathname.replace(/\/[^\/]*$/, '/')
-		
-		/* basic shell first */
-		win.document.write(`
+    const mainClose = popup.querySelector('.popup-close-btn');
+    if (mainClose) mainClose.addEventListener('click', () => overlay.className = '');
+
+    wireSidebarButtons();
+    changeSettingsMenu(openSection);
+  } else {
+
+    const win = window.open('', '', 'width=800,height=550,left=200,top=200');
+    const base = location.origin + location.pathname.replace(/\/[^\/]*$/, '/')
+
+    /* basic shell first */
+    win.document.write(`
 			<!DOCTYPE html>
 			<html>
 			<head>
@@ -1305,32 +1306,32 @@ function openMenu(menu, openSection = 'general') {
 			</body>
 			</html>
 			`);
-			
-			win.changeSettingsMenu = (name) => changeSettingsMenu(name, win.document);
-			wireSidebarButtons(win.document);
-			win.changeSettingsMenu('general');
-			win.document.querySelector('.popup-close-btn').remove()
-		}
-	};
-		
-const request = indexedDB.open("pulseWriteApps", 1);
-	request.onupgradeneeded = event => {
-		const db = event.target.result;
-		db.createObjectStore("apps", { keyPath: "name" });
+
+    win.changeSettingsMenu = (name) => changeSettingsMenu(name, win.document);
+    wireSidebarButtons(win.document);
+    win.changeSettingsMenu('general');
+    win.document.querySelector('.popup-close-btn').remove()
+  }
 };
-		
+
+const request = indexedDB.open("pulseWriteApps", 1);
+request.onupgradeneeded = event => {
+  const db = event.target.result;
+  db.createObjectStore("apps", { keyPath: "name" });
+};
+
 const addNewApp = (appName, appContent) => {
-  	const transaction = db.transaction("users", "readwrite");
-  	const store = transaction.objectStore("users");
-  	store.add({ name: appName, name: appContent });
-	displayNotification('App Added and Ready to Run!', `<span class="material-symbols-rounded">app_registration</span>`, 5000)
+  const transaction = db.transaction("users", "readwrite");
+  const store = transaction.objectStore("users");
+  store.add({ name: appName, name: appContent });
+  displayNotification('App Added and Ready to Run!', `<span class="material-symbols-rounded">app_registration</span>`, 5000)
 }
 
-function genRandomId(length = 6) { 
-	const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.';
-	let result = '';
-	for (let i = 0; i < length; i++) {
-	  result += chars.charAt(Math.floor(Math.random() * chars.length));
-	}
-	return result;
+function genRandomId(length = 6) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
 }

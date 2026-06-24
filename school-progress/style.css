@@ -10,18 +10,18 @@
 }
 
 :root {
-  --primary-color:   #007acc;
-  --bg-light:        #3a3a3a;
-  --bg-lighter:      #5c5c5c;
-  --bg-white:        #000000;
-  --text-color:      #ffffff;
-  --muted-text:      #65e1e3;
-  --holiday-color:   #d4ff00;
-  --weekend-color:   #436f2a;
-  --today-border:    #4caf50;
-  --modal-backdrop:  rgba(0, 0, 0, 0.5);
-  --font-sans:       'Segoe UI', Tahoma, Verdana, sans-serif;
-  --bord-radius:      35px
+  --primary-color: #007acc;
+  --bg-light: #3a3a3a;
+  --bg-lighter: #5c5c5c;
+  --bg-white: #000000;
+  --text-color: #ffffff;
+  --muted-text: #65e1e3;
+  --holiday-color: #d4ff00;
+  --weekend-color: #436f2a;
+  --today-border: #4caf50;
+  --modal-backdrop: rgba(0, 0, 0, 0.5);
+  --font-sans: 'Segoe UI', Tahoma, Verdana, sans-serif;
+  --bord-radius: 35px
 }
 
 /*────────────────────────────────────────────────────────────
@@ -33,25 +33,27 @@ html {
   justify-content: center;
   align-items: center;
   background: url('https://images.unsplash.com/photo-1601425276965-bdb69f1f3977?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bm8lMjBjb3B5cmlnaHR8ZW58MHx8MHx8fDA%3D');
-  max-height: 100vh;
+  max-height: 100dvh;
   overflow: auto;
   padding: 30px;
 }
 
 body {
-    font-family: var(--font-sans);
-    background: var(--bg-light);
-    color: var(--text-color);
-    line-height: 1.5;
-    min-height: 100vh;
-    max-height: 100vh;
-    width: 900px;
-    overflow: auto;
-    margin: 40px;
-    border-radius: 45px;
+  font-family: var(--font-sans);
+  background: var(--bg-light);
+  color: var(--text-color);
+  line-height: 1.5;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  width: 900px;
+  overflow: auto;
+  margin: 40px;
+  border-radius: 45px;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   color: var(--text-color);
   margin-bottom: 8px;
 }
@@ -234,7 +236,7 @@ button {
   overflow-y: auto;
 }
 
-.panel + .panel {
+.panel+.panel {
   margin-top: 24px;
 }
 
@@ -249,27 +251,30 @@ button {
 /*────────────────────────────────────────────────────────────
   Duration Overrides Form
 ────────────────────────────────────────────────────────────*/
-.add-class-form, form {
-    padding: 20px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.245);
-    backdrop-filter: blur(50px);
-    border: 1px solid magenta;
-    width: 500px;
-    height: fit-content;
-    z-index: 2;
-    border-radius: var(--bord-radius);
-    div {
-        width: 100%;
-    }
-    input {
-        display: block;
-        width: 100%;
-        padding: 12px !important;
-    }
+.add-class-form,
+form {
+  padding: 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.245);
+  backdrop-filter: blur(50px);
+  border: 1px solid magenta;
+  width: 500px;
+  height: fit-content;
+  z-index: 2;
+  border-radius: var(--bord-radius);
+
+  div {
+    width: 100%;
+  }
+
+  input {
+    display: block;
+    width: 100%;
+    padding: 12px !important;
+  }
 }
 
 #override-form {
