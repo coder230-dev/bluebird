@@ -43,7 +43,7 @@ let SOCIALS = [
     },
     {
         label: 'TikTok',
-        username: 'bryant230sacramento',
+        username: '@bryant230sacramento',
         url: 'https://tiktok.com/@bryant230sacramento',
         icon: 'tiktok',
         tags: [
@@ -84,6 +84,42 @@ function createFeaturedCont() {
         createCard(content);
     });
     FEATURED_CONTENT = null;
+}
+
+function createSocialBtns() {
+    const socialCont = document.getElementById('socials');
+    SOCIALS.forEach(s => {
+        // Creating the button
+        let socBtn = document.createElement('a');
+        socBtn.href = s.url;
+        socBtn.className = 'wide-btn flex-3-sections';
+
+        // Adding HTML
+        socBtn.innerHTML = `
+        <i class="fa-solid fa-${s.icon}">
+        <section>
+            <div class="tags">
+                ${createTags(s.tags)}
+            </div>
+            <b class="platform-name">${s.label}</b>
+            <p class="social-name">${s.username}</p>
+        </section>
+        `
+    });
+}
+
+function createTags(tagArray = "") {
+    let html;
+    if (typeof tagArray === 'array') {
+        tagArray.forEach(tag => {
+            html += `
+                <span class="tag" style="background: ${tag.bg || 'black'}" color="${tag.color || 'white'}">
+                    ${tag.label || 'Unamed Tag'}
+                </span>
+            `
+        })
+    }
+    return html;
 }
 
 function createCard(data) {

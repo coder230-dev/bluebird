@@ -62,13 +62,12 @@ body {
 .container {
     background: color-mix(in srgb, var(--scheme-1) 40%, transparent);
     backdrop-filter: blur(25px);
-    padding: 20px 12px;
+    padding: 30px 18px;
     border-radius: 30px;
     outline: 1px solid var(--scheme-13);
     width: 95%;
-    height: 95%;
     max-width: 800px;
-    max-height: 1000px;
+    max-height: fit-content;
     transform: translate(-50%, -50%);
     position: absolute;
     left: 50%;
