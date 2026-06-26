@@ -67,9 +67,12 @@ body {
     padding: 30px 18px;
     border-radius: 30px;
     outline: 1px solid var(--scheme-13);
-    width: 95%;
-    max-width: 800px;
+    width: calc(95% - 36px - 10px);
+    max-width: calc(800px - 36px - 10px);
     margin: 30px 5px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .profile-overview {
@@ -77,9 +80,9 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
-    outline: 1px solid color-mix(in srgb, var(--scheme-3) 50%, transparent);
+    outline: 1px solid var(--scheme-13);
     box-shadow: 2px 2px color-mix(in srgb, var(--scheme-10) 30%, transparent);
-    background: color-mix(in srgb, var(--scheme-4) 40%, transparent);
+    background: color-mix(in srgb, var(--scheme-5) 40%, transparent);
     border-radius: 14px;
 
     .main-header {
