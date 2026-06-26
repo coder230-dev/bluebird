@@ -8,6 +8,7 @@ body {
     color: var(--scheme-10);
     font-family: "Poppins";
     overflow-x: hidden;
+    color-scheme: dark;
 }
 
 :root {
@@ -69,17 +70,18 @@ body {
     width: 95%;
     max-width: 800px;
     transform: translate(-50%, -50%);
-    position: absolute;
-    left: 50%;
-    top: 50%;
+    margin: 30px 5px;
 }
 
 .profile-overview {
+    padding: 6px;
     display: flex;
+    align-items: center;
     gap: 6px;
     outline: 1px solid color-mix(in srgb, var(--scheme-3) 50%, transparent);
     box-shadow: 2px 2px color-mix(in srgb, var(--scheme-10) 30%, transparent);
-    background: color-mix(in srgb, var(--scheme-2) 30%, transparent);
+    background: color-mix(in srgb, var(--scheme-4) 40%, transparent);
+    border-radius: 14px;
 
     .main-header {
         font-family: "Special Gothic Expanded One";
