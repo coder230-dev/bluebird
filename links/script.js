@@ -8,7 +8,7 @@ document.onload = () => {
     mainLoader();
 }
 
-const FEATURED_CONTENT = [
+let FEATURED_CONTENT = [
     {
         icon: "beach",
         title: "Vacation in Boise!",
@@ -30,7 +30,7 @@ const FEATURED_CONTENT = [
     }
 ];
 
-const SOCIALS = [
+let SOCIALS = [
     {
         label: 'Instagram',
         username: 'bryant_san230',
@@ -83,6 +83,7 @@ function createFeaturedCont() {
     FEATURED_CONTENT.forEach(content => {
         createCard(content);
     });
+    FEATURED_CONTENT = null;
 }
 
 function createCard(data) {

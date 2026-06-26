@@ -6,6 +6,7 @@ body {
     margin: 0;
     background: var(--scheme-1);
     color: var(--scheme-10);
+    font-family: "Poppins";
 }
 
 :root {
@@ -41,7 +42,8 @@ body {
                 color-mix(in srgb, var(--scheme-11) 40%, transparent));
     }
 
-    video {
+    video,
+    img {
         position: fixed;
         top: 0;
         left: 0;
@@ -67,6 +69,10 @@ body {
     height: 95%;
     max-width: 800px;
     max-height: 1000px;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    left: 50%;
+    top: 50%;
 }
 
 .center {
