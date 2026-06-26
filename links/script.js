@@ -1,4 +1,4 @@
-let mainLoader = createSkylineLoader();
+let mainLoader = createSkylineLoader(document.body, true);
 
 document.addEventListener('DOMContentLoaded', () => {
     createFeaturedCont();
@@ -28,6 +28,55 @@ const FEATURED_CONTENT = [
             { type: 'image', }
         ]
     }
+];
+
+const SOCIALS = [
+    {
+        label: 'Instagram',
+        username: 'bryant_san230',
+        url: 'https://instagram.com/bryant_san230',
+        icon: 'instagram',
+        tags: [
+            { label: 'Prefered', bg: 'gold', color: 'white' },
+            { label: 'Most Used', bg: 'purple', color: 'black' },
+        ]
+    },
+    {
+        label: 'TikTok',
+        username: 'bryant230sacramento',
+        url: 'https://tiktok.com/@bryant230sacramento',
+        icon: 'tiktok',
+        tags: [
+            { label: 'More Posts', bg: 'green', color: 'white' },
+        ]
+    },
+    {
+        label: 'Threads',
+        username: 'bryant_san230',
+        url: 'https://threads.com/bryant_san230',
+        icon: 'threads',
+        tags: [
+            { label: 'See my Threads on my Story', bg: 'black', color: 'white' },
+        ]
+    },
+    {
+        label: 'GitHub',
+        username: 'coder230-dev',
+        url: 'https://github.com/coder230-dev',
+        icon: 'github',
+        tags: [
+            { label: 'Bluebird Browser Now Public', bg: 'cyan', color: 'black' },
+        ]
+    },
+    {
+        label: 'X (Twitter)',
+        username: 'bryant_san230',
+        url: 'https://x.com/bryant_san230',
+        icon: 'github',
+        tags: [
+            { label: 'See my Threads on my Story', bg: 'orange', color: 'black' },
+        ]
+    },
 ];
 
 function createFeaturedCont() {
