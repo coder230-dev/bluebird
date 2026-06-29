@@ -1,18 +1,30 @@
-let mainLoader = createSkylineLoader(document.body, true);
+let mainLoader = createSkylineLoader(document.querySelector('.container'), true);
 
 document.addEventListener('DOMContentLoaded', () => {
     createFeaturedCont();
 })
 
-document.onload = () => {
+window.onload = () => {
     mainLoader();
+    createSocialBtns();
+    loadIcons()
 }
+
+let iconsUsed = [
+    'open_in_new',
+    'link',
+    'touch_double',
+    'arrow_right',
+    'arrow_left',
+    'feedback',
+    'more_vert'
+];
 
 let FEATURED_CONTENT = [
     {
-        icon: "beach",
+        icon: "beach_access",
         title: "Vacation in Boise!",
-        content: "See my vacation in my story highlights on IG.",
+        content: "See my vacation in my story highlights on IG. (linked below)",
         tags: [
             { color: '#c6b200', label: 'Summer 2026' },
 
@@ -22,11 +34,14 @@ let FEATURED_CONTENT = [
                 label: 'IG Highlights of my Vacay.',
                 desc: "* Must be following to see.",
                 url: 'https://www.instagram.com/s/aGlnaGxpZ2h0OjE4MzcwMTM3NDI0MjMxNDU5?story_media_id=3922566942301223962&igsh=NTc4MTIwNjQ2YQ=='
-            }
+            },
         ],
         attached: [
             { type: 'image', }
         ]
+    },
+    {
+        title: 'apple'
     }
 ];
 
@@ -37,8 +52,8 @@ let SOCIALS = [
         url: 'https://instagram.com/bryant_san230',
         icon: 'instagram',
         tags: [
-            { label: 'Prefered', bg: 'gold', color: 'white' },
-            { label: 'Most Used', bg: 'purple', color: 'black' },
+            { label: 'Prefered', bg: 'gold', color: 'black' },
+            { label: 'Most Used', bg: 'purple', color: 'white' },
         ]
     },
     {
@@ -56,7 +71,7 @@ let SOCIALS = [
         url: 'https://threads.com/bryant_san230',
         icon: 'threads',
         tags: [
-            { label: 'See my Threads on my Story', bg: 'black', color: 'white' },
+            { label: 'See my Threads on my Instagram Story', bg: 'black', color: 'white' },
         ]
     },
     {
@@ -72,12 +87,24 @@ let SOCIALS = [
         label: 'X (Twitter)',
         username: 'bryant_san230',
         url: 'https://x.com/bryant_san230',
-        icon: 'github',
+        icon: 'x-twitter',
         tags: [
-            { label: 'See my Threads on my Story', bg: 'orange', color: 'black' },
+
         ]
     },
 ];
+
+function loadIcons() {
+    let linkElement = document.getElementById('icon_href');
+    linkElement.href = 'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=';
+    iconsUsed.sort((a, b) => a.localeCompare(b));
+
+    const listWithComma = iconsUsed
+        .filter(icon => icon)
+        .join(',');
+
+    linkElement.href = `https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=${listWithComma}`;
+}
 
 function createFeaturedCont() {
     FEATURED_CONTENT.forEach(content => {
@@ -91,34 +118,43 @@ function createSocialBtns() {
     SOCIALS.forEach(s => {
         // Creating the button
         let socBtn = document.createElement('a');
+        socBtn.target = '_blank'
         socBtn.href = s.url;
         socBtn.className = 'wide-btn flex-3-sections';
 
         // Adding HTML
         socBtn.innerHTML = `
-        <i class="fa-solid fa-${s.icon}">
+        <i class="fa-brands fa-${s.icon}"></i>
         <section>
+            <b class="platform-name">${s.label}</b>
+            <p class="social-name">${s.username}</p>
             <div class="tags">
                 ${createTags(s.tags)}
             </div>
-            <b class="platform-name">${s.label}</b>
-            <p class="social-name">${s.username}</p>
         </section>
+        <button class="material-symbols-rounded">
+            more_vert
+        </button>
         `
+        socialCont.appendChild(socBtn);
+    });
+
+    socialCont.querySelectorAll('a button').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault()
+        })
     });
 }
 
 function createTags(tagArray = "") {
-    let html;
-    if (typeof tagArray === 'array') {
-        tagArray.forEach(tag => {
-            html += `
-                <span class="tag" style="background: ${tag.bg || 'black'}" color="${tag.color || 'white'}">
-                    ${tag.label || 'Unamed Tag'}
-                </span>
+    let html = '';
+    tagArray.forEach(tag => {
+        html += `
+            <span class="tag" style="background: ${tag.bg || 'black'}; color:${tag.color || 'white'}">
+                ${tag.label || 'Unamed Tag'}
+            </span>
             `
-        })
-    }
+    })
     return html;
 }
 
@@ -130,38 +166,43 @@ function createCard(data) {
     card.classList.add('card-in-feat');
     mainCont.appendChild(card);
 
-    // Creating the h1
-    let h1 = document.createElement('h1');
-    h1.innerHTML = `<i class="material-symbols-rounded" font-size: inherent;>${data.icon}</i> ${data.title}`;
-    card.appendChild(h1);
-
-    // Content
-    let p = document.createElement('p');
-    p.innerHTML = data.content;
-    card.appendChild(p);
-
     // Tags
-    if (typeof data.tags == 'array' && data.tags) {
+    if (data.tags) {
         let tagCont = document.createElement('div');
         tagCont.className = 'tagCont';
         card.appendChild(tagCont);
         data.tags.forEach(tag => {
-            let tagEl = document.createElement('span');
+            let tagEl = document.createElement('div');
+            tagEl.className = 'tag'
             tagEl.innerText = tag.label;
             tagEl.style.background = tag.color;
             tagCont.appendChild(tagEl);
         });
     }
 
-    if (typeof data.links === 'array' && data.links) {
+    // Creating the h1
+    let h1 = document.createElement('h1');
+    h1.innerHTML = `<i class="material-symbols-rounded" font-size: inherent;>${data.icon}</i> ${data.title}`;
+    card.appendChild(h1);
+
+    iconsUsed.push(data.icon);
+
+    // Content
+    let p = document.createElement('p');
+    p.innerHTML = data.content;
+    card.appendChild(p);
+
+    if (data.links) {
         let linksCont = document.createElement('div');
         linksCont.className = 'linksCont';
         card.appendChild(linksCont);
         data.links.forEach(link => {
             let linkType = link.jsFunc && !link.url ? 'jsFunc' : 'url';
 
-            let linkEl = document.createElement('div');
+            let linkEl = document.createElement('a');
+            linkEl.href = link.url
             linkEl.className = 'link';
+            linkEl.title = link.url;
             linkEl.innerHTML = `
             <div class="linkHeader">
                 <b>${link.label}</b>
@@ -170,11 +211,12 @@ function createCard(data) {
             <p class="linkDesc">
                 ${link.desc || linkType}
             </p>
-            <p>
-                ${link.url && linkType === 'url' ? `<i class="material-symbols-rounded">link</i> ${link.url}` : ''}
+            <p style="display: flex; align-items: center; gap: 7px;">
+                <i class="material-symbols-rounded">link</i>
+                ${getBaseURL(link.url)}
             </p>
             <p>
-                ${!link.desc ? '' : linkType}
+                ${link.desc ? '' : linkType}
             </p>
             `
             linksCont.appendChild(linkEl);
@@ -233,4 +275,13 @@ function createSkylineLoader(targetElement, withBackground = false) {
         clearInterval(interval);
         wrapper.remove();
     };
+}
+
+function getBaseURL(url) {
+    try {
+        const u = new URL(url);
+        return `${u.protocol}//${u.hostname}`;
+    } catch {
+        return null; // invalid URL
+    }
 }
