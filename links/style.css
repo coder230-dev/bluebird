@@ -184,7 +184,7 @@ button {
 }
 
 .skyline-loader.bg {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: calc(100% - 80px);
@@ -470,5 +470,69 @@ button {
 
     a:hover {
         color: var(--scheme-13);
+    }
+}
+
+.context-menu,
+.context-submenu {
+    position: fixed;
+    padding: 20px 6px;
+    background: color-mix(in srgb, var(--scheme-3) 60%, transparent);
+    backdrop-filter: blur(20px);
+    border-radius: var(--radius);
+    outline: 1px solid var(--scheme-9);
+    min-width: 200px;
+    user-select: none;
+}
+
+.context-menu-category {
+    color: var(--scheme-9);
+    font-weight: 700;
+}
+
+.context-menu-item+.context-menu-category {
+    border-top: 1px solid var(--scheme-10);
+    margin-top: 3px;
+}
+
+.context-menu-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 12px;
+    border-radius: 7px;
+
+    span {
+        display: flex;
+        align-items: center;
+
+        i {
+            font-size: 20px;
+        }
+    }
+}
+
+.context-menu-item:hover {
+    background: var(--scheme-5);
+    cursor: default;
+}
+
+@media screen and (max-width: 800px) {
+    .context-menu-backdrop {
+        background: rgba(0, 0, 0, 0.249);
+    }
+
+    .context-menu {
+        width: calc(100% - 12px);
+        border-radius: var(--radius) var(--radius) 0 0;
+        max-height: 40%;
+    }
+
+    .context-menu-item {
+        padding: 15px;
+        margin: 5px 0;
+    }
+
+    .context-menu-item:hover {
+        outline: 1px solid var(--scheme-12);
     }
 }
