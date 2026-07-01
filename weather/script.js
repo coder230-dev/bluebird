@@ -118,7 +118,9 @@ const ALERT_ICONS = {
         "911 Telephone Outage Emergency": `<i class="fa fa-phone-slash"></i>`,
         "Child Abduction Emergency": `<i class="fa fa-child"></i>`,
         "Evacuation Immediate": `<i class="fa fa-siren-on"></i>`,
-        "Nuclear Power Plant Warning": `<i class="fa fa-radiation"></i>`
+        "Nuclear Power Plant Warning": `<i class="fa fa-radiation"></i>`,
+
+        undefined: '<i class="material-symbols-rounded">alert</i>',
     }
 }
 
@@ -321,75 +323,196 @@ const weatherIcons = {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-
-    const parLat = readParam('lat')
-    const parLon = readParam('lon')
-    if (parLat && parLon) {
-        const locationInfo = await getInfoFromCoordinates(parLat, parLon);
-        if (locationInfo) {
-            await renderWeatherForCoords(parLon, parLat, locationInfo)
+    if (window.location.pathname === '/weather/' || window.location.pathname === 'weather/' || window.location.pathname === 'weather/index.html') {
+        const parLat = readParam('lat')
+        const parLon = readParam('lon')
+        if (parLat && parLon) {
+            const locationInfo = await getInfoFromCoordinates(parLat, parLon);
+            if (locationInfo) {
+                await renderWeatherForCoords(parLon, parLat, locationInfo)
+            }
         }
+
+        loadWeatherNewsContent();
+
+        document.getElementById('search-head').addEventListener('mouseover', () => {
+            document.getElementById('search-locations').innerHTML = 'Click here to open the search dialog.'
+        });
+
+        document.getElementById('search-head').addEventListener('mouseleave', () => {
+            document.getElementById('search-locations').innerHTML = 'Search for Locations, News, and Alerts'
+        })
+        loadMotto();
     }
-})
+});
 
-document.getElementById('settings-btn').onclick = async () => {
-    const pop = showFloatingPopup('float', 'settings-pop', document.getElementById('settings-btn'), 'Settings');
+window.addEventListener("scroll", () => {
+    const nav = document.querySelector("nav");
+    nav.classList.toggle("stuck", window.scrollY > 400);
+});
 
-    const settingsLoaded = await loadAllSettings({ darkTheme: true, })
-
-    pop.innerHTML += `
-    <div class="setting-cont">
-        <span>
-            <h3>Theme</h3>
-        </span>
-        <label class="theme-switch">
-            <input ${settingsLoaded.darkTheme ? '' : 'checked'} type="checkbox">
-            <span class="theme-slider"></span>
-        </label>
-    </div>
-    <div class="setting-cont" style="margin-top: 20px;">
-        <h3>Temperature Unit</h3>
-        <select>
-            <option value="fahrenheit">℉</option>
-            <option value="celsius">℃</option>
-        </select>
-    </div>
-    `
+function loadMotto() {
+    let mottos = [
+        'Weather, simplified',
+        'Precision in every cloud',
+        'Built for the sky ahead.',
+        'Own the day, whatever the weather',
+        'Stay ready for anything',
+        'Weather that works for you',
+        'Sky-ready, every moment',
+        'Weather made effortless',
+        'Your forecast, your flow',
+        'Stay ahead of the sky',
+        'Clarity for every day',
+        'Feel the day before it begins'
+    ]
+    let randomNum = Math.floor(Math.random() * 12);
+    document.getElementById('head-motto').innerHTML = mottos[randomNum];
 }
 
-function loadWeatherNews() {
-    const newRssLinks = [
-        'https://moxie.foxweather.com/google-publisher/weather-news.xml',
-        'https://moxie.foxweather.com/google-publisher/extreme-weather.xml',
-        'https://moxie.foxweather.com/google-publisher/earth-space.xml'
-    ]
+async function loadWeatherNewsContent(forceRefresh = false) {
+    const newsFeedCont = document.getElementById('weather-news-feed');
+    const weatherNews = await loadWeatherNews(forceRefresh);
+
+    for (const [topic, items] of Object.entries(weatherNews)) {
+
+        // Skip empty feeds
+        if (!items || items.length === 0) continue;
+
+        // Create section container
+        const section = document.createElement('div');
+        section.classList.add('news-section');
+
+        // Create section title (source)
+        const title = document.createElement('h2');
+        title.className = 'news-section-header';
+        title.textContent = topic
+            .replace(/-/g, ' ')
+            .replace(/\b\w/g, c => c.toUpperCase());
+
+        // Build each news card
+        items.forEach(item => {
+
+            const card = document.createElement('a');
+            card.href = item.link;
+            card.classList.add('news-card');
+
+            // Extract description HTML
+            let desc = item.description || "";
+            const temp = document.createElement('div');
+            temp.innerHTML = desc;
+
+            // Remove images from description
+            const imgEl = temp.querySelector('img');
+            let imgSrc = null;
+
+            if (imgEl) {
+                imgSrc = imgEl.src;
+                imgEl.remove();
+            }
+
+            // Replace <pre> with <p>
+            temp.querySelectorAll('pre').forEach(pre => {
+                const p = document.createElement('p');
+                p.textContent = pre.textContent;
+                pre.replaceWith(p);
+            });
+
+            // Cleaned description
+            const cleanedDesc = temp.innerHTML;
+
+            // Title
+            const h3 = document.createElement('h3');
+            h3.textContent = item.title;
+            card.appendChild(h3);
+
+            // Description
+            const p = document.createElement('p');
+            p.innerHTML = cleanedDesc;
+            card.appendChild(p);
+
+            const btmSect = document.createElement('p');
+            btmSect.classList.add('bottom-sect');
+            btmSect.innerHTML = `
+            <p class="published-date">${item.pubDate}</p>
+            <a href="${item.link}">Read More</a>
+            `
+            card.appendChild(btmSect);
+
+            // Add image to side (if exists)
+            if (imgSrc) {
+                const img = document.createElement('img');
+                img.src = imgSrc;
+                img.classList.add('news-card-image');
+                card.appendChild(img);
+            }
+
+            section.appendChild(card);
+        });
+
+        // Append section only if it has cards
+        if (section.children.length > 1) {
+            newsFeedCont.appendChild(title);
+            newsFeedCont.appendChild(section);
+        }
+    }
+}
+
+async function loadWeatherNews(forceRefresh = false) {
+    const FEEDS = [
+        { id: "weather-news", url: "https://moxie.foxweather.com/google-publisher/weather-news.xml" },
+        { id: "extreme-weather", url: "https://moxie.foxweather.com/google-publisher/extreme-weather.xml" },
+        { id: "noaa-alerts", url: "https://www.weather.gov/alerts/wwrss.xml" },
+        { id: "storm-prediction-center", url: "https://www.spc.noaa.gov/products/spcrss.xml" },
+        { id: "earthquake-news", url: "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.atom" },
+        { id: "volcano-updates", url: "https://volcanoes.usgs.gov/rss/vhpcurrent.xml" },
+        { id: "wildfire-news", url: "https://inciweb.wildfire.gov/feeds/rss/incidents/" }
+    ];
+
+    const THREE_HOURS = 1000 * 60 * 60 * 3;
+    const db = await openDB();
+
+    const results = {}; // ← store by feed ID
+
+    for (const feed of FEEDS) {
+        const cached = await getNewsFromDB(db, feed.id);
+
+        const needsRefresh =
+            forceRefresh ||
+            !cached ||
+            (Date.now() - cached.lastUpdated) > THREE_HOURS;
+
+        if (!needsRefresh) {
+            results[feed.id] = cached.items;
+            continue;
+        }
+
+        const freshItems = await fetchAndParseRSS(feed.url);
+
+        await saveNewsToDB(db, feed.id, freshItems);
+
+        results[feed.id] = freshItems;
+    }
+
+    return results; // ← return grouped object
 }
 
 function setParam(name, value) {
     const url = new URL(window.location.href);
     url.searchParams.set(name, value);
-    history.pushState({}, '', `${url.pathname}?${url.searchParams.toString()}${url.hash}`);
+    history.pushState({}, '', `${url.pathname}?${url.searchParams.toString()}${url.hash} `);
 }
 
 function removeParam(name) {
     const url = new URL(window.location.href);
     url.searchParams.delete(name);
-    history.pushState({}, '', `${url.pathname}?${url.searchParams.toString()}${url.hash}`);
+    history.pushState({}, '', `${url.pathname}?${url.searchParams.toString()}${url.hash} `);
 }
 
 function readParam(name) {
     const url = new URL(window.location.href);
     return url.searchParams.get(name);
 }
-
-function detectDeviceUA() {
-    const ua = navigator.userAgent;
-
-    if (/Mobi|Android/i.test(ua)) return "mobile";
-    if (/iPad|Tablet|PlayBook|Silk/i.test(ua)) return "tablet";
-    return "desktop";
-}
-
 
 navigator.geolocation.getCurrentPosition(async function (position) {
     const lat = position.coords.latitude;
@@ -423,7 +546,9 @@ navigator.geolocation.getCurrentPosition(async function (position) {
 
     const info = await getInfoFromCoordinates(homeLocationY, homeLocationX);
 
-    loadAlertsForState(info.stateCode, info.state);
+    if (window.location.pathname === 'weather/' || window.location.pathname === '/weather/' || window.location.pathname === 'weather/index.html') {
+        loadAlertsForState(info.stateCode, info.state);
+    }
 });
 
 // ===============================
@@ -435,8 +560,6 @@ navigator.geolocation.getCurrentPosition(async function (position) {
 // ===============================
 
 async function loadAlertsForState(stateCode, stateName) {
-    // document.getElementById('state-weather-alerts-h').innerText =
-    //     `${stateCode} Weather Alerts`;
     if (!stateCode) return;
 
 
@@ -513,7 +636,7 @@ async function loadAlertsForCoordinates(latitude, longitude) {
 // ===============================
 
 const DB_NAME = "InspireWeatherDB";
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 
 async function openDB() {
     return new Promise((resolve, reject) => {
@@ -536,6 +659,11 @@ async function openDB() {
                 store.createIndex("lastUpdatedAlerts", "lastUpdatedAlerts");
             }
 
+            if (!db.objectStoreNames.contains('newsData')) {
+                db.createObjectStore('newsData', { keyPath: 'id' })
+                    .createIndex('category', 'category', { unique: false });
+            }
+
             if (!db.objectStoreNames.contains("settings")) {
                 db.createObjectStore("settings", { keyPath: "id" });
             }
@@ -544,7 +672,6 @@ async function openDB() {
                 db.createObjectStore("cleanupMeta", { keyPath: "id" });
             }
 
-            // NEW: State alerts
             if (!db.objectStoreNames.contains("stateAlerts")) {
                 db.createObjectStore("stateAlerts", { keyPath: "stateCode" });
             }
@@ -559,9 +686,6 @@ async function openDB() {
     });
 }
 
-// ===============================
-// Generic DB Helpers
-// ===============================
 
 async function read(storeName, key) {
     const db = await openDB();
@@ -752,33 +876,54 @@ async function getSavedLocations() {
     });
 }
 
-function loadLoader(element = document.body, remove = false, bgColor = 'transparent') {
-    if (remove) {
-        element.querySelector('loader').remove()
-    }
-    const loader = document.createElement('loader');
-    loader.style.display = 'flex';
-    loader.style.alignItems = 'center';
-    loader.style.justifyContent = 'center';
-    loader.style.background = bgColor;
+async function fetchAndParseRSS(url) {
+    const res = await fetch(url);
+    if (!res.ok) return [];
 
-    loader.innerHTML = `
-    <svg viewBox="25 25 50 50" class="loader">
-        <circle r="20" cy="50" cx="50"></circle>
-    </svg> `
+    const xmlText = await res.text();
+    const xml = new DOMParser().parseFromString(xmlText, "application/xml");
 
-    element.appendChild(loader)
+    console.log(xmlText);
+
+    const items = [...xml.querySelectorAll("item")].map(item => ({
+        title: item.querySelector("title")?.textContent ?? "",
+        link: item.querySelector("link")?.textContent ?? "",
+        description: item.querySelector("description")?.textContent ?? "",
+        contentEncoded: item.getElementsByTagName("content:encoded")[0]?.innerHTML ?? "",
+        pubDate: item.querySelector("pubDate")?.textContent ?? ""
+    }));
+
+    return items;
 }
 
-document.querySelectorAll('.search-cont button').forEach(btn => {
-    const parent = btn.parentElement;
+function saveNewsToDB(db, id, items) {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction("newsData", "readwrite");
+        const store = tx.objectStore("newsData");
 
-    btn.addEventListener('click', function () {
-        parent.querySelector('input').value = ' '
-        parent.querySelector('input').focus()
-        parent.querySelector('input').dispatchEvent(new Event("input", { bubbles: true }))
-    })
-})
+        store.put({
+            id,
+            category: id,
+            lastUpdated: Date.now(),
+            items
+        });
+
+        tx.oncomplete = resolve;
+        tx.onerror = reject;
+    });
+}
+
+function getNewsFromDB(db, id) {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction("newsData", "readonly");
+        const store = tx.objectStore("newsData");
+
+        const request = store.get(id);
+
+        request.onsuccess = () => resolve(request.result || null);
+        request.onerror = reject;
+    });
+}
 
 document.querySelectorAll('.search-cont button').forEach(btn => {
     const parent = btn.parentElement;
@@ -919,17 +1064,6 @@ async function renderLocationOptions(popup) {
             popup.appendChild(makeOption(`<i class="material-symbols-rounded">location_on</i> ${loc.name}`, loc.lon, loc.lat));
         });
     }
-
-    // if (recent.length > 0) {
-    //     const header = document.createElement("div");
-    //     header.className = "popup-header";
-    //     header.textContent = "Recent";
-    //     popup.appendChild(header);
-
-    //     recent.forEach(loc => {
-    //         popup.appendChild(makeOption("🕘 " + loc.name, loc, "recent"));
-    //     });
-    // }
 }
 
 function findBtn(prefix, id) {
@@ -940,7 +1074,6 @@ function findBtn(prefix, id) {
         return undefined
     }
 }
-
 
 function makeOption(label, lat, lon) {
     const div = document.createElement("button");
@@ -997,7 +1130,7 @@ async function searchForCountries(keyword, countryCode = getActiveCountryCode())
 }
 
 async function renderSearchResults(results) {
-    const container = document.getElementById('search-add-location');
+    const container = document.getElementById('search-results');
 
     results.forEach(r => {
         const item = document.createElement('button');
@@ -1090,17 +1223,6 @@ function getWarningImage(warningName) {
     return warningImages.default;
 }
 
-function openFullWeatherDetails(lon, lat) {
-    const a = document.createElement('a');
-    a.href = `/location/?lon=${encodeURIComponent(lon)}&lat=${encodeURIComponent(lat)}`;
-    a.target = '_blank';
-    a.rel = 'noopener';
-
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-}
-
 async function showNewLocationPreview(data) {
     const lat = data.y ?? data.lat ?? data.latitude;
     const lon = data.x ?? data.lon ?? data.longitude;
@@ -1143,7 +1265,6 @@ async function showNewLocationPreview(data) {
         try {
             await saveLocation(`${locationInfo.city}, ${locationInfo.state}, ${locationInfo.country}`, lat, lon);
             displayNotification('Location Saved!');
-            openFullWeatherDetails(lon, lat);
         } catch (e) {
             displayNotification('Error while saving location. Try again.');
             console.error(e)
@@ -1470,10 +1591,9 @@ async function getInfoFromCoordinates(lat, lon) {
 
 function renderAlertPreviews(alerts, stateCode) {
     const container = document.getElementById("state-weather-alerts");
-    loadLoader(container);
     container.innerHTML = '';
 
-    container.insertAdjacentHTML('beforebegin', `<h2>${stateCode} Weather Alerts</h2>`)
+    document.getElementById('weather-alert-header').innerHTML += `<span class="tag">${alerts.length}</span></h2>`
 
     const now = Date.now();
 
@@ -1544,8 +1664,6 @@ function renderAlertPreviews(alerts, stateCode) {
         container.appendChild(preview);
     });
 
-    // loadLoader(container, true);
-
     const savedId = readParam("alertId");
     if (savedId) {
         const found = alerts.find(a => a.properties.id === savedId);
@@ -1555,66 +1673,7 @@ function renderAlertPreviews(alerts, stateCode) {
             openAlertPopup(props, document.body);
         }
     }
-
-    const viewMore = document.createElement("div");
-    viewMore.className = "view-more-alerts";
-    viewMore.innerHTML = `
-    <i class="material-symbols-rounded">read_more</i>
-    <br>
-    View All Alerts
-`;
-    container.appendChild(viewMore);
-
-    viewMore.onclick = () => {
-        // Create the popup content container
-        const wrapper = document.createElement("div");
-        wrapper.className = "all-alerts-wrapper";
-
-        alerts.forEach(alert => {
-            const props = alert.properties;
-
-            const item = document.createElement("div");
-            item.className = "all-alert-item";
-
-            item.innerHTML += `
-                <div class="alert-title-row">
-                    <span class="alert-icon" style="color:${getAlertIcon(props)[0]};">
-                        ${getAlertIcon(props)[1]}
-                    </span>
-                    <h3>${props.event}</h3>
-                    <span class="alert-severity-tag severity-${props.severity.toLowerCase()}">
-                        ${props.severity}
-                    </span>
-                </div>
-    
-                <div class="alert-location">
-                    <i class="material-symbols-rounded">location_on</i>
-                    <span>${props.areaDesc}</span>
-                </div>
-    
-                <div class="alert-meta">
-                    Starts: ${new Date(props.effective).toLocaleString()}<br>
-                    Ends: ${new Date(props.expires).toLocaleString()}
-                </div>
-            `;
-
-            // Clicking an item inside the popup opens the alert
-            item.onclick = () => openAlertPopup(props, item);
-
-            wrapper.appendChild(item);
-        });
-
-        // Open the popup
-        showFloatingPopup(
-            'right',
-            'all-alerts',
-            document.body,
-            'All Alerts',
-            wrapper
-        );
-    };
-
-}
+};
 
 function openAlertPopup(props, preview) {
     if (document.querySelector('float-pop')) {
@@ -1766,11 +1825,6 @@ function showFloatingPopup(popType, id, elementClicked, title, content, passThru
     return newPop
 }
 
-
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/service-worker.js");
-}
-
 // Search Functionality
 
 // =========================================================
@@ -1781,70 +1835,26 @@ if ("serviceWorker" in navigator) {
 //   highlight matches, preview callback (commented).
 // =========================================================
 
-window.addEventListener("load", attachSearchListeners);
-window.addEventListener("resize", attachSearchListeners);
-
 let activePopupInput = '';
 
-function attachSearchListeners() {
-    const navInput = document.querySelector("#searchBarNav");
-    const popupInput = document.querySelector("#search-input");
+function attachSearchListeners(navInput) {
+    activePopupInput = false
 
-    const isDesktop = window.innerWidth >= 768;
+    navInput.oninput = () => {
+        handleSearch(navInput.value.trim(), false);
+        showNavDropdown();
+    };
 
-    // Remove old listeners cleanly
-    if (navInput) {
-        activePopupInput = true
+    navInput.onfocus = () => {
+        showNavDropdown();
+        handleSearch(navInput.value.trim(), false);
+    };
 
-        navInput.oninput = null;
-        navInput.onfocus = null;
-        navInput.onblur = null;
-    }
-    if (popupInput) {
-        popupInput.oninput = null;
-        popupInput.onfocus = null;
-        popupInput.onblur = null;
-    }
-
-    // -----------------------------
-    // DESKTOP MODE (nav search bar)
-    // -----------------------------
-    if (isDesktop && navInput) {
-        activePopupInput = false
-
-        navInput.oninput = () => {
-            handleSearch(navInput.value.trim(), true);
-            showNavDropdown();
-        };
-
-        navInput.onfocus = () => {
-            showNavDropdown();
-            handleSearch(navInput.value.trim(), true);
-        };
-
-        navInput.onblur = () => {
-            // Delay closing so clicks inside dropdown still register
-            setTimeout(() => hideNavDropdown(), 850);
-        };
-
-        // Popup input disabled
-        if (popupInput) popupInput.oninput = null;
-        return;
-    }
-
-    // -----------------------------
-    // MOBILE MODE (popup search bar)
-    // -----------------------------
-    if (!isDesktop && popupInput) {
-        popupInput.oninput = () => handleSearch(popupInput.value.trim(), true);
-
-        // Nav input disabled
-        if (navInput) {
-            navInput.oninput = null;
-            navInput.onfocus = null;
-            navInput.onblur = null;
-        }
-    }
+    navInput.onblur = () => {
+        // Delay closing so clicks inside dropdown still register
+        setTimeout(() => hideNavDropdown(), 850);
+    };
+    return;
 }
 
 function showNavDropdown() {
@@ -1877,7 +1887,6 @@ let newLocationTimeout = null;
 // ENTRY: openSearch()
 // -----------------------------
 function openSearch() {
-    attachSearchListeners();
 
     const backdrop = document.createElement("div");
     const searchPop = document.createElement("div");
@@ -1885,17 +1894,17 @@ function openSearch() {
     searchPop.classList.add("search-pop");
 
     searchPop.innerHTML = `
-      <div style="position:relative;">
-        <div class="nav-search" style="display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(0,0,0,0.06);">
-          <i class="material-symbols-rounded" style="margin-right:8px;color:#4f8cff">search</i>
-          <input id="search-input" type="search" placeholder="Search cities, countries, coordinates, or alerts" style="flex:1;border:0;outline:none;font-size:16px;padding:8px;">
-          <button id="close-search-pop" class="material-symbols-rounded" style="background:none;border:0;font-size:20px;cursor:pointer">close</button>
-        </div>
-
-        <div id="search-loading" class="search-loading-bar" style="display:none;height:3px;"></div>
-      </div>
-
-      <div id="search-results" style="max-height:60dvh;overflow:auto;padding:12px;"></div>
+    <div style="position:relative;">
+    <div class="nav-search" style="display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(0,0,0,0.06);">
+    <i class="material-symbols-rounded" style="margin-right:8px;color:#4f8cff">search</i>
+    <input id="search-input" type="search" placeholder="Search cities, countries, coordinates, or alerts" style="flex:1;border:0;outline:none;font-size:16px;padding:8px;">
+    <button id="close-search-pop" class="material-symbols-rounded" style="background:none;border:0;font-size:20px;cursor:pointer">close</button>
+    </div>
+    
+    <div id="search-loading" class="search-loading-bar" style="display:none;height:3px;"></div>
+    </div>
+    
+    <div id="search-results" style="max-height:60dvh;overflow:auto;padding:12px;"></div>
     `;
 
     backdrop.appendChild(searchPop);
@@ -1910,6 +1919,7 @@ function openSearch() {
             if (e.key === "Escape") backdrop.remove();
         };
     }
+    attachSearchListeners(input);
 
     // initial empty render: show everything except new locations
     handleSearch("", false);
@@ -2274,7 +2284,7 @@ async function indexSimpleSearch(query) {
                 icon: "location_on",
                 execute: () => {
                     console.log(loc)
-                    safeShowNewLocationPreview(loc);
+                    openWeatherInNewPage(loc);
                 }
             });
         }
@@ -2293,7 +2303,7 @@ async function indexSimpleSearch(query) {
                 data: loc,
                 icon: "my_location",
                 execute: () => {
-                    safeShowNewLocationPreview(loc);
+                    openWeatherInNewPage(loc);
                 }
             });
         }
@@ -2316,7 +2326,7 @@ async function indexSimpleSearch(query) {
                     data: loc || { latitude: lat, longitude: lon },
                     icon: "home",
                     execute: () => {
-                        safeShowNewLocationPreview({ latitude: lat, longitude: lon });
+                        openWeatherInNewPage({ latitude: lat, longitude: lon });
                     }
                 });
             }
@@ -2339,7 +2349,7 @@ async function indexSimpleSearch(query) {
             isCoordinate: true,
             score: 1.0,
             execute: () => {
-                safeShowNewLocationPreview({ latitude: coord.lat, longitude: coord.lon });
+                openWeatherInNewPage({ latitude: coord.lat, longitude: coord.lon });
             }
         });
     }
@@ -2436,7 +2446,7 @@ async function buildNewLocationResults(query, existingResults, activeCountryCode
             isCoordinate: false,
             score,
             execute: () => {
-                safeShowNewLocationPreview(place);
+                openWeatherInNewPage(place);
             }
         });
     }
@@ -2493,7 +2503,7 @@ function renderSearchResults(results, navSearch) {
         return;
     }
 
-    const groupsOrder = ["recent", "saved-location", "current-location", "home-location", "alert", "new-location"];
+    const groupsOrder = ["recent", "saved-location", "current-location", "home-location", "new-location", "alert"];
     let html = "";
     const rendered = [];
 
@@ -2507,11 +2517,11 @@ function renderSearchResults(results, navSearch) {
             const subtitle = r.subtitle != null ? safeString(r.subtitle) : null;
             rendered.push(r);
             html += `
-              <div class="search-item" data-type="${escapeHtml(r.type)}" style="display:flex;align-items:center;padding:10px;border-radius:8px;cursor:pointer;margin-bottom:6px;">
-                <i class="material-symbols-rounded" style="margin-right:12px;color:#4f8cff">${escapeHtml(r.icon || "")}</i>
+              <div class="search-item" data-type="${escapeHtml(r.type)}" style="display:flex;align-items:center;padding:12px;border-radius:14px;cursor:pointer;margin-bottom:4px;">
+                <i class="material-symbols-rounded" style="margin-right:12px;color:var(--scheme-13);">${escapeHtml(r.icon || "")}</i>
                 <div style="flex:1">
                   <div class="title" style="font-weight:600;">${highlightMatch(title, lastSearchQuery)}</div>
-                  ${subtitle ? `<div class="subtitle" style="font-size:13px;color:#666;margin-top:4px">${highlightMatch(subtitle, lastSearchQuery)}</div>` : ""}
+                  ${subtitle ? `<div class="subtitle" style="font-size:13px;color:var(--scheme-9);margin-top:4px">${highlightMatch(subtitle, lastSearchQuery)}</div>` : ""}
                 </div>
                 <div style="margin-left:12px;color:#999;font-size:12px">${Number(r.score ?? 0).toFixed(2)}</div>
               </div>
@@ -2528,7 +2538,7 @@ function renderSearchResults(results, navSearch) {
         el.onclick = () => {
             if (!r) return;
             if (r.isCoordinate) {
-                safeShowNewLocationPreview(r.data);
+                openWeatherInNewPage(r.data);
                 return;
             }
             if (typeof r.execute === "function") {
@@ -2536,11 +2546,22 @@ function renderSearchResults(results, navSearch) {
                 return;
             }
             if (r.type === 'home-location' || r.type === "new-location" || r.type === "saved-location" || r.type === "current-location") {
-                safeShowNewLocationPreview(r.data);
+                openWeatherInNewPage(r.data);
                 return;
             }
         };
     }
+}
+
+function openWeatherInNewPage(data) {
+    const lon = data.x ?? data.lon ?? data.longitude;
+    const lat = data.y ?? data.lat ?? data.latitude;
+    let a = document.createElement('a');
+    a.href = `./location/?x=${lon}&y=${lat}`;
+    a.rel = 'noopener noreferer';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
 }
 
 // -----------------------------
